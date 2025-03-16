@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import logo from "../../../public/logo.png";
 import React from "react";
+import Link from "next/link";
 
 export default function AppHome() {
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
@@ -62,24 +63,18 @@ export default function AppHome() {
           />
         </div>
         <div className="w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg z-10">
-          <button
-            onClick={() => (window.location.href = "/app-frame")}
-            type="button"
+          <Link
+            href="/app-frame?function=md"
             className="w-full flex justify-center items-center gap-3 text-white font-medium text-[16px] py-4 text-center"
           >
             <Aperture />
             Sáng tạo hình ảnh cá nhân
-          </button>
+          </Link>
         </div>
         <Dialog>
           <DialogTrigger asChild>
             <div className="w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl rounded-lg z-10">
-              <button
-                // onClick={() => (window.location.href = "/app-album")}
-                type="button"
-                // bg-[#4285F4]
-                className="w-4/5 flex justify-center items-center gap-4 text-white  font-medium text-[16px] py-4 text-center"
-              >
+              <button className="w-full flex justify-center items-center gap-4 text-white  font-medium text-[16px] py-4 text-center">
                 <SquareLibrary />
                 Tạo album cá nhân hoá
               </button>

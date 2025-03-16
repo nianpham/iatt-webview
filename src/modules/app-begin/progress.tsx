@@ -16,7 +16,7 @@ export function CustomProgress() {
         }
         return prevProgress + 1;
       });
-    }, 10);
+    }, 20);
 
     return () => clearInterval(timer);
   }, []);

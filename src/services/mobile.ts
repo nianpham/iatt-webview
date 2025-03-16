@@ -51,14 +51,14 @@ const increaseQuality = async (image: string) => {
   }
 };
 
-const imageAI = async (image: string) => {
+const imageAI = async (image: string, style: string) => {
   try {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const payload = JSON.stringify({
       imageUrl: image,
-      style: "face2paint",
+      style: style,
     });
 
     const response = await fetch(`${API.MOBILE.IMAGE_AI}`, {

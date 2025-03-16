@@ -1,8 +1,6 @@
 // components/NavigationBar.tsx
-import { IMAGES } from "@/utils/image";
 import { ROUTES } from "@/utils/route";
-import { Sparkles } from "lucide-react";
-import Image from "next/image";
+import { Sparkles, WandSparkles } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -21,7 +19,7 @@ const NavItem: React.FC<NavItemProps> = ({
 }) => {
   return (
     <Link href={path}>
-      <div className="flex flex-col items-center justify-center px-2">
+      <div className="flex flex-col items-center justify-center h-full px-2">
         <div className={`mb-1 ${active ? "text-black" : "text-gray-400"}`}>
           {icon}
         </div>
@@ -46,32 +44,14 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ action }) => {
     <div className="w-full border-t border-gray-400 fixed bottom-0 left-0 right-0">
       <div className="flex justify-evenly items-center py-3">
         <NavItem
-          icon={
-            action === null ? (
-              <Image
-                src={IMAGES.FUNCTION_1_ACTION}
-                alt=""
-                width={1000}
-                height={1000}
-                className="w-5 h-5"
-              />
-            ) : (
-              <Image
-                src={IMAGES.FUNCTION_1}
-                alt=""
-                width={1000}
-                height={1000}
-                className="w-5 h-5"
-              />
-            )
-          }
+          icon={<WandSparkles />}
           label="Mịn da"
-          active={action === null}
-          path={`${ROUTES.APP_FRAME}`}
+          active={action === "md"}
+          path={`${ROUTES.APP_FRAME}?function=md`}
         />
 
         <NavItem
-          icon={<Sparkles size={20} />}
+          icon={<Sparkles />}
           label="Chất lượng"
           active={action === "cl"}
           path={`${ROUTES.APP_FRAME}?function=cl`}

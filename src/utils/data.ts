@@ -62,8 +62,27 @@ const BACKGROUND = [
     url: "https://res.cloudinary.com/farmcode/image/upload/v1741887108/iatt/golden_zy4p2a.png",
   },
 ];
+
+const AI_STYLE = [
+  {
+    id: 1,
+    style: "face2paint",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119428/iatt/face2paint_jelau3.avif",
+  },
+  {
+    id: 2,
+    style: "paprika",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119526/iatt/parika_rfkktv.jpg",
+  },
+  {
+    id: 3,
+    style: "webtoon",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119464/iatt/webtoon_yw6j3k.png",
+  },
+];
 export const DATA = {
   REVIEWS,
   CATEGORIES,
+  AI_STYLE,
   BACKGROUND,
 };

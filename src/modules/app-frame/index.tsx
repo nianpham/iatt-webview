@@ -21,6 +21,17 @@ export default function AppFrameClient() {
 
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
+  const [originalImage, setOriginalImage] = React.useState<string | null>(null);
+  const [responseImage1, setResponseImage1] = React.useState<string | null>(
+    null
+  ); // face2paint
+  const [responseImage2, setResponseImage2] = React.useState<string | null>(
+    null
+  ); // paprika
+  const [responseImage3, setResponseImage3] = React.useState<string | null>(
+    null
+  );
+  const [selectedStyle, setSelectedStyle] = React.useState<string>("original");
   const [loading, setLoading] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [removeBackground, setRemoveBackground] = React.useState(false);
@@ -45,6 +56,10 @@ export default function AppFrameClient() {
   React.useEffect(() => {
     setUploadedFile(null);
     setCurrentImage(null);
+    setOriginalImage(null);
+    setResponseImage1(null);
+    setResponseImage2(null);
+    setResponseImage3(null);
     setLoading(false);
     setSelectedBackground(null);
   }, [tab]);
@@ -58,6 +73,50 @@ export default function AppFrameClient() {
       setUploadedFile(file);
       const originalUrl = URL.createObjectURL(file);
       setCurrentImage(originalUrl);
+      setOriginalImage(originalUrl);
+      setSelectedStyle("original");
+    }
+  };
+
+  const handleStyleSelect = (style: string) => {
+    // Allow switching to original anytime
+    if (style === "original") {
+      setSelectedStyle(style);
+      setCurrentImage(originalImage);
+      return;
+    }
+
+    // Check if the selected style has a result
+    let hasResult = false;
+    switch (style) {
+      case "face2paint":
+        if (responseImage1) {
+          setCurrentImage(responseImage1);
+          hasResult = true;
+        }
+        break;
+      case "paprika":
+        if (responseImage2) {
+          setCurrentImage(responseImage2);
+          hasResult = true;
+        }
+        break;
+      case "webtoon":
+        if (responseImage3) {
+          setCurrentImage(responseImage3);
+          hasResult = true;
+        }
+        break;
+    }
+
+    if (hasResult) {
+      setSelectedStyle(style);
+    } else {
+      toast({
+        title: "",
+        description: "Vui lòng tạo ảnh AI trước khi chọn kiểu này!",
+        variant: "destructive",
+      });
     }
   };
 
@@ -100,7 +159,19 @@ export default function AppFrameClient() {
       } else if (tab === "cl") {
         response = await MobileService.increaseQuality(upload[0].secure_url);
       } else if (tab === "ai") {
-        response = await MobileService.imageAI(upload[0].secure_url);
+        const [res1, res2, res3] = await Promise.all([
+          MobileService.imageAI(upload[0].secure_url, "face2paint"),
+          MobileService.imageAI(upload[0].secure_url, "paprika"),
+          MobileService.imageAI(upload[0].secure_url, "webtoon"),
+        ]);
+        if (res1.data && res2.data && res3.data) {
+          response = res1;
+        }
+        setResponseImage1(res1.data);
+        setResponseImage2(res2.data);
+        setResponseImage3(res3.data);
+        setCurrentImage(res1.data);
+        setSelectedStyle("face2paint");
       } else if (tab === "xp") {
         response = await MobileService.removeBackground(upload[0].secure_url);
         setRemoveBackground(true);
@@ -185,7 +256,7 @@ export default function AppFrameClient() {
           </div>
         </header>
         {/* MIN DA  */}
-        {!tab && (
+        {tab === "md" && (
           <main className="w-full flex flex-col flex-1 p-4">
             <div className="flex-1">
               <ImageUploadMobile
@@ -248,7 +319,7 @@ export default function AppFrameClient() {
                 />
               )}
             </div>
-            <div className="flex flex-row gap-4 py-5">
+            <div className="flex flex-row gap-4 py-4">
               <div
                 className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${
                   selectedBackground === null
@@ -271,7 +342,7 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`w-14 h-full object-cover rounded-lg border-2 ${
+                    className={`w-14 h-[90px] object-cover rounded-lg border-2 ${
                       selectedBackground === item.url
                         ? "border-[#645bff]"
                         : "border-white"
@@ -302,6 +373,37 @@ export default function AppFrameClient() {
                 title={"Chọn hình ảnh bạn muốn tạo với AI"}
                 newImage={currentImage ?? undefined}
               />
+            </div>
+            <div className="flex flex-row gap-4 py-4">
+              <div
+                className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
+                    ? "border-[#645bff]"
+                    : "border-white"
+                } cursor-pointer`}
+                onClick={() => handleBackgroundSelect(null)}
+              >
+                <Ban />
+              </div>
+              <div className="h-3/4 w-0.5 bg-gray-300 my-auto"></div>
+              {DATA.AI_STYLE.map((item: any, index: number) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleStyleSelect(item?.style)}
+                >
+                  <Image
+                    src={item.url}
+                    alt=""
+                    width={1000}
+                    height={1000}
+                    className={`flex justify-center items-center w-14 h-[90px] rounded-lg border-2 ${
+                      selectedStyle === item?.style
+                        ? "border-[#645bff]"
+                        : "border-white"
+                    } cursor-pointer`}
+                  />
+                </div>
+              ))}
             </div>
             <div
               onClick={handleSubmit}

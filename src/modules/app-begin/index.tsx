@@ -10,7 +10,7 @@ export default function AppBegin() {
   useEffect(() => {
     setTimeout(() => {
       window.location.href = "/app-home";
-    }, 1000);
+    }, 2000);
   }, []);
 
   return (
