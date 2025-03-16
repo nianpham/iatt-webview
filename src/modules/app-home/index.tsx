@@ -12,10 +12,28 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import logo from "../../../public/logo.png";
+import React from "react";
 
 export default function AppHome() {
+  const [deviceHeight, setDeviceHeight] = React.useState("90vh");
+
+  React.useEffect(() => {
+    const updateHeight = () => {
+      setDeviceHeight(`${window.innerHeight}px`);
+    };
+
+    updateHeight();
+
+    window.addEventListener("resize", updateHeight);
+
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
-    <div className="relative w-full h-screen flex flex-col justify-center items-center gap-2">
+    <div
+      className="relative w-full flex flex-col justify-center items-center gap-2"
+      style={{ height: deviceHeight }}
+    >
       <Image
         src={IMAGES.BACKGROUND_MOBILE}
         alt=""
@@ -23,7 +41,10 @@ export default function AppHome() {
         priority
         className="object-cover opacity-50 z-0"
       />
-      <div className="w-full h-full flex flex-col justify-center items-center gap-3 z-10">
+      <div
+        className="w-full flex flex-col justify-center items-center gap-3 z-10"
+        style={{ height: deviceHeight }}
+      >
         <div className="w-full flex flex-col justify-center items-center gap-1">
           <Image
             src={IMAGES.LOGO}
