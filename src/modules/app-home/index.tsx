@@ -37,7 +37,7 @@ export default function AppHome() {
             alt=""
             width={200}
             height={200}
-            className="w-3/4 h-10 mb-10"
+            className="w-2/3 h-full mb-10"
           />
         </div>
         <div className="w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg z-10">
