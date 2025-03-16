@@ -5,6 +5,10 @@ import { ChooseOption } from "./dialog/choose-option";
 import ImageUploadMobileAlbum from "./components/image-upload-mobile-album";
 import { UploadService } from "@/services/upload";
 import ImageProcessing from "../app-frame/components/image-processing";
+import Image from "next/image";
+import { IMAGES } from "@/utils/image";
+import Link from "next/link";
+import { ChevronLeft, RefreshCcw, Undo2 } from "lucide-react";
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,6 +22,7 @@ export default function AppAlbumClient() {
   const [currentImages, setCurrentImages] = React.useState<string[]>([]);
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const [refresh, setRefresh] = React.useState(false);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const MIN_IMAGES = 2;
@@ -121,8 +126,31 @@ export default function AppAlbumClient() {
     }
   };
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="relative w-full flex flex-col justify-center items-center">
+      {!isOpen ? (
+        <Image
+          src={IMAGES.BACKGROUND_MOBILE}
+          alt=""
+          fill
+          priority
+          objectFit="cover"
+          className="opacity-50 z-0 h-[100vh]"
+        />
+      ) : (
+        <Image
+          src={IMAGES.BACKGROUND_MOBILE}
+          alt=""
+          width={1000}
+          height={1000}
+          objectFit="cover"
+          className="opacity-50 z-0 h-[100vh]"
+        />
+      )}
       <ChooseOption
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -140,11 +168,27 @@ export default function AppAlbumClient() {
           </div>
         </div>
       )}
-      <div className="w-full h-full flex flex-col">
-        <header className="w-full bg-blue-500 text-white p-4 text-center">
-          <h1 className="text-xl font-bold">Action</h1>
+      <div className="w-full h-full flex flex-col z-20">
+        <header className="w-full text-white pt-3 p-2 text-center shrink-0">
+          <div className="flex flex-row justify-between items-center">
+            <Link href="/app-home">
+              <ChevronLeft color="black" />
+            </Link>
+            <div className="flex flex-row justify-center items-center gap-3 ml-12">
+              <RefreshCcw
+                color="black"
+                onClick={() => {
+                  handleRefresh();
+                  setRefresh(!refresh);
+                }}
+              />
+            </div>
+            <div className="bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl text-white font-medium text-sm px-3 py-2 rounded-lg">
+              Tiếp tục
+            </div>
+          </div>
         </header>
-        <main className="w-full flex-grow bg-gray-100 p-4 overflow-auto flex flex-col gap-4">
+        <main className="w-full flex-grow p-4 overflow-auto flex flex-col gap-4">
           {albumConfig.pages > 0 &&
             Array.from({ length: albumConfig.pages }).map((_, index) => (
               <div key={index}>

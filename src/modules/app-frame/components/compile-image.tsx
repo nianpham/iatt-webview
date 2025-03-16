@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function ImageComposer({
   foregroundImage,
@@ -76,10 +76,26 @@ export default function ImageComposer({
     }
   };
 
+  const [deviceHeight, setDeviceHeight] = React.useState("410px");
+
+  React.useEffect(() => {
+    const updateHeight = () => {
+      const height = window.innerHeight;
+      setDeviceHeight(height < 720 ? "325px" : "410px");
+    };
+
+    updateHeight();
+
+    window.addEventListener("resize", updateHeight);
+
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
     <div>
       <canvas
-        className="h-[400px] w-full border-2 border-white rounded-xl"
+        className="w-full border-2 border-white rounded-xl"
+        style={{ height: deviceHeight }}
         ref={canvasRef}
       />
     </div>

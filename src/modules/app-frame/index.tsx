@@ -165,21 +165,21 @@ export default function AppFrameClient() {
       >
         <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
-            <Link href="/app-home">
-              <ChevronLeft color="black" />
+            <Link href="/app-home" className="ml-1">
+              <ChevronLeft className="text-[#4B5563]" />
             </Link>
-            <div className="flex flex-row justify-center items-center gap-3 ml-12">
-              <Undo2 color="black" />
+            <div className="flex flex-row justify-center items-center gap-5 ml-12">
+              <Undo2 className="text-[#4B5563]" />
               <RefreshCcw
-                color="black"
+                className="text-[#4B5563]"
                 onClick={() => {
                   handleRefresh();
                   setRefresh(!refresh);
                 }}
               />
-              <Undo2 color="black" className="scale-x-[-1] z-0" />
+              <Undo2 className="scale-x-[-1] text-[#4B5563] z-0" />
             </div>
-            <div className="bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl text-white font-medium text-sm px-3 py-2 rounded-lg">
+            <div className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg">
               Tiếp tục
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
@@ -219,7 +219,7 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
@@ -282,7 +282,7 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
@@ -305,7 +305,7 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >

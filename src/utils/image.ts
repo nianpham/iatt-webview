@@ -18,4 +18,6 @@ export const IMAGES = {
     "https://res.cloudinary.com/farmcode/image/upload/v1741856102/iatt/function-1-action_tc4ie4.png",
   BACKGROUND_MOBILE:
     "https://res.cloudinary.com/farmcode/image/upload/v1741943743/iatt/background_ojfgm4.jpg",
+  TITLE_MOBILE:
+    "https://res.cloudinary.com/farmcode/image/upload/v1742113336/iatt/title_rejh3g.png",
 };
