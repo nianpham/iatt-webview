@@ -13,6 +13,7 @@ import Image from "next/image";
 import ImageProcessing from "./components/image-processing";
 import ImageComposer from "./components/compile-image";
 import { IMAGES } from "@/utils/image";
+import Link from "next/link";
 
 export default function AppFrameClient() {
   const searchParams = useSearchParams();
@@ -26,6 +27,20 @@ export default function AppFrameClient() {
   const [selectedBackground, setSelectedBackground] = React.useState<
     string | null
   >(null);
+
+  const [deviceHeight, setDeviceHeight] = React.useState("90vh");
+
+  React.useEffect(() => {
+    const updateHeight = () => {
+      setDeviceHeight(`${window.innerHeight}px`);
+    };
+
+    updateHeight();
+
+    window.addEventListener("resize", updateHeight);
+
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   React.useEffect(() => {
     setUploadedFile(null);
@@ -116,14 +131,20 @@ export default function AppFrameClient() {
   };
 
   return (
-    <div className="relative w-full flex flex-col justify-center items-center">
+    <div
+      className="relative w-full flex flex-col justify-center items-center"
+      style={{ height: deviceHeight }}
+    >
       {/* PROCESSING  */}
       {loading && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 z-10">
-          <div className="w-full h-screen bg-black bg-opacity-50 flex flex-col gap-10 justify-center items-center">
+        <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
+          <div
+            className="w-full bg-black bg-opacity-50 flex flex-col gap-10 justify-center items-center"
+            style={{ height: deviceHeight }}
+          >
             <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
               <ImageProcessing />
-              <div className="text-balck font-medium">
+              <div className="text-black font-medium">
                 Hình ảnh đang được xử lí...
               </div>
             </div>
@@ -136,14 +157,17 @@ export default function AppFrameClient() {
         fill
         priority
         objectFit="cover"
-        className="opacity-50 h-screen w-full absolute top-0 left-0 z-0"
+        className="opacity-50 absolute top-0 left-0 z-0"
       />
-      <div className="w-full h-screen flex flex-col z-10">
-        <header className="w-full text-white pt-3 p-2 text-center">
+      <div
+        className="w-full flex flex-col z-10"
+        style={{ height: deviceHeight }}
+      >
+        <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
-            <div>
+            <Link href="/app-home">
               <ChevronLeft color="black" />
-            </div>
+            </Link>
             <div className="flex flex-row justify-center items-center gap-3 ml-12">
               <Undo2 color="black" />
               <RefreshCcw
@@ -155,64 +179,76 @@ export default function AppFrameClient() {
               />
               <Undo2 color="black" className="scale-x-[-1] z-0" />
             </div>
-            <div className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 rounded-lg">
+            <div className="bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl text-white font-medium text-sm px-3 py-2 rounded-lg">
               Tiếp tục
             </div>
           </div>
         </header>
         {/* MIN DA  */}
         {!tab && (
-          <main className="w-full h-screen flex flex-col justify-between p-4 overflow-auto">
-            <ImageUploadMobile
-              onImageChange={handleImageUpload}
-              title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
-              newImage={currentImage ?? undefined}
-            />
+          <main className="w-full flex flex-col flex-1 p-4">
+            <div className="flex-1">
+              <ImageUploadMobile
+                onImageChange={handleImageUpload}
+                title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
+                newImage={currentImage ?? undefined}
+              />
+            </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-10 ${
+              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu làm mịn"}
             </div>
+            <footer className="w-full text-white text-center shrink-0">
+              <NavigationBar action={tab} />
+            </footer>
           </main>
         )}
         {/* CHAT LUONG  */}
         {tab === "cl" && (
-          <main className="w-full h-screen flex flex-col justify-between p-4 overflow-auto">
-            <ImageUploadMobile
-              onImageChange={handleImageUpload}
-              title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
-              newImage={currentImage ?? undefined}
-            />
+          <main className="w-full flex flex-col flex-1 p-4">
+            <div className="flex-1">
+              <ImageUploadMobile
+                onImageChange={handleImageUpload}
+                title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
+                newImage={currentImage ?? undefined}
+              />
+            </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-10 ${
+              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
               {loading ? "Đang xử lý..." : "Tăng chất lượng"}
             </div>
+            <footer className="w-full text-white text-center shrink-0">
+              <NavigationBar action={tab} />
+            </footer>
           </main>
         )}
         {/* XOA PHONG  */}
         {tab === "xp" && (
-          <main className="w-full h-screen flex flex-col justify-between p-4 overflow-auto">
-            {removeBackground && (
-              <ImageComposer
-                foregroundImage={currentImage}
-                backgroundImage={selectedBackground}
-              />
-            )}
-            {!removeBackground && (
-              <ImageUploadMobile
-                onImageChange={handleImageUpload}
-                title={"Chọn hình ảnh bạn muốn xóa phông"}
-                newImage={currentImage ?? undefined}
-              />
-            )}
-            <div className="flex flex-row gap-4 overflow-auto">
+          <main className="w-full flex flex-col flex-1 p-4">
+            <div className="flex-1">
+              {removeBackground && (
+                <ImageComposer
+                  foregroundImage={currentImage}
+                  backgroundImage={selectedBackground}
+                />
+              )}
+              {!removeBackground && (
+                <ImageUploadMobile
+                  onImageChange={handleImageUpload}
+                  title={"Chọn hình ảnh bạn muốn xóa phông"}
+                  newImage={currentImage ?? undefined}
+                />
+              )}
+            </div>
+            <div className="flex flex-row gap-4 py-5">
               <div
                 className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${
                   selectedBackground === null
@@ -246,35 +282,40 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-10 ${
+              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
               {loading ? "Đang xử lý..." : "Xóa phông"}
             </div>
+            <footer className="w-full text-white text-center shrink-0">
+              <NavigationBar action={tab} />
+            </footer>
           </main>
         )}
         {/* AI  */}
         {tab === "ai" && (
-          <main className="w-full h-screen flex flex-col justify-between p-4 overflow-auto">
-            <ImageUploadMobile
-              onImageChange={handleImageUpload}
-              title={"Chọn hình ảnh bạn muốn tạo với AI"}
-              newImage={currentImage ?? undefined}
-            />
+          <main className="w-full flex flex-col flex-1 p-4">
+            <div className="flex-1">
+              <ImageUploadMobile
+                onImageChange={handleImageUpload}
+                title={"Chọn hình ảnh bạn muốn tạo với AI"}
+                newImage={currentImage ?? undefined}
+              />
+            </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-10 ${
+              className={`bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl rounded-lg py-3 text-center text-white mb-[4.5rem] ${
                 loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
               {loading ? "Đang xử lý..." : "Tạo ảnh AI"}
             </div>
+            <footer className="w-full text-white text-center shrink-0">
+              <NavigationBar action={tab} />
+            </footer>
           </main>
         )}
-        <footer className="w-full text-white p-4 text-center">
-          <NavigationBar action={tab} />
-        </footer>
       </div>
     </div>
   );

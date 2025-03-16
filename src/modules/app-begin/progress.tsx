@@ -1,16 +1,25 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { Progress } from "@/components/ui/progress"
+import { Progress } from "@/components/ui/progress";
 
 export function CustomProgress() {
-    const [progress, setProgress] = React.useState(0)
+  const [progress, setProgress] = React.useState(0);
 
-    React.useEffect(() => {
-        const timer = setTimeout(() => setProgress(100), 500)
-        return () => clearTimeout(timer)
-    }, [])
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(timer);
+          return 100;
+        }
+        return prevProgress + 1;
+      });
+    }, 30);
 
-    return <Progress value={progress} className="w-[60%]" />
+    return () => clearInterval(timer);
+  }, []);
+
+  return <Progress value={progress} className="w-[60%]" />;
 }

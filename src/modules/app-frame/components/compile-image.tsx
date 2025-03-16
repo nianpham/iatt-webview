@@ -79,10 +79,9 @@ export default function ImageComposer({
   return (
     <div>
       <canvas
-        className="h-[500px] w-full border-2 border-white rounded-xl"
+        className="h-[400px] w-full border-2 border-white rounded-xl"
         ref={canvasRef}
       />
-      {/* <button onClick={downloadImage}>Download New Image</button> */}
     </div>
   );
 }

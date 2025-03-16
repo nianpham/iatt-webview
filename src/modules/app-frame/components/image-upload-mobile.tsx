@@ -69,7 +69,7 @@ const ImageUploadMobile = ({
         <div className="flex justify-center !w-full">
           <div
             onClick={handleClick}
-            className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 h-[500px] mb-0 rounded-lg"
+            className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 h-[410px] mb-0 rounded-lg"
           >
             <div className="text-gray-700 flex flex-col items-center">
               <div className="flex flex-row justify-center items-center gap-2">
@@ -83,7 +83,7 @@ const ImageUploadMobile = ({
       ) : (
         <div className="relative group w-full h-full">
           <div className={cn("relative w-full overflow-hidden rounded-xl")}>
-            <div className="relative !w-full !h-[500px]" />
+            <div className="relative !w-full !h-[410px]" />
             {newImage ? (
               <Image
                 src={newImage}
