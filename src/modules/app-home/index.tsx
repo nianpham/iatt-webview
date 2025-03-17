@@ -35,13 +35,13 @@ export default function AppHome() {
       className="relative w-full flex flex-col justify-center items-center gap-2"
       style={{ height: deviceHeight }}
     >
-      <Image
+      {/* <Image
         src={IMAGES.BACKGROUND_MOBILE}
         alt=""
         fill
         priority
         className="object-cover opacity-50 z-0"
-      />
+      /> */}
       <div
         className="w-full flex flex-col justify-center items-center gap-3 z-10"
         style={{ height: deviceHeight }}
@@ -49,14 +49,14 @@ export default function AppHome() {
         <div className="w-full flex flex-col justify-center items-center gap-1">
           <Image
             src={IMAGES.LOGO}
-            alt=""
+            alt="alt"
             width={200}
             height={200}
             className="w-16 h-16"
           />
           <Image
             src={IMAGES.TITLE_MOBILE}
-            alt=""
+            alt="alt"
             width={200}
             height={200}
             className="w-2/3 h-full mb-10"
@@ -85,26 +85,20 @@ export default function AppHome() {
             onOpenAutoFocus={(e) => e.preventDefault()}
             showCloseButton={false}
           >
-            <div className="flex flex-col justify-center items-center overflow-y-auto pt-3 px-3">
-              <Image
-                src={logo}
-                alt=""
-                width={1000}
-                height={1000}
-                className="w-12 h-12"
-              />
-              <div className="text-center text-[15px] font-medium mt-3">
-                Chức năng đang được phát triển. Vui lòng quay trở lại sau.
+            <div className="flex flex-col justify-center items-center overflow-y-auto px-3">
+              <div className="text-center text-indigo-600 text-[20px] font-bold">
+                Coming soon!
+              </div>
+              <div className="text-center text-[14px] font-medium mt-3">
+                Chức năng đang được phát triển
               </div>
             </div>
-            <DialogFooter className="px-3">
+            <DialogFooter className="">
               <DialogClose asChild>
                 <Button
-                  type="button"
-                  variant="secondary"
-                  className="!px-10 !text-[16px] mt-3"
+                  className="!px-10 !text-[16px] mt-3 bg-indigo-100 text-gray-700"
                 >
-                  Quay lại
+                  Quay lại sau
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -123,7 +117,7 @@ export default function AppHome() {
         </div> */}
       </div>
       <footer className="pb-2 text-gray-400 text-[14px]">
-        inanhtructuyen.com
+        www.inanhtructuyen.com
       </footer>
     </div>
   );

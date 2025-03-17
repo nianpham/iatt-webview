@@ -1,6 +1,6 @@
 "use client";
 
-import { Ban, ChevronLeft, RefreshCcw, Undo2 } from "lucide-react";
+import { Ban, ChevronLeft, Plus, RefreshCcw, Undo2, Upload } from "lucide-react";
 import React from "react";
 import NavigationBar from "./components/navigation-bar";
 import { useSearchParams } from "next/navigation";
@@ -239,7 +239,7 @@ export default function AppFrameClient() {
             <Link href="/app-home" className="ml-1">
               <ChevronLeft className="text-[#4B5563]" />
             </Link>
-            <div className="flex flex-row justify-center items-center gap-5 ml-12">
+            <div className="flex flex-row justify-center items-center gap-8 ml-8">
               <Undo2 className="text-[#4B5563]" />
               <RefreshCcw
                 className="text-[#4B5563]"
@@ -267,9 +267,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu làm mịn"}
             </div>
@@ -290,9 +289,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Tăng chất lượng"}
             </div>
@@ -321,16 +319,24 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${
-                  selectedBackground === null
+                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
-                } cursor-pointer`}
+                  } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban />
               </div>
-              <div className="h-3/4 w-0.5 bg-gray-300 my-auto"></div>
+              <div className="h-2/4 w-0.5 bg-indigo-300 my-auto"></div>
+              <div
+                className={`bg-indigo-50 flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${selectedBackground === null
+                    ? "border-white"
+                    : "border-white"
+                  } cursor-pointer`}
+                onClick={() => handleBackgroundSelect(null)}
+              >
+                <Upload />
+              </div>
               {DATA.BACKGROUND.map((item) => (
                 <div
                   key={item.id}
@@ -342,22 +348,20 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`w-14 h-[90px] object-cover rounded-lg border-2 ${
-                      selectedBackground === item.url
+                    className={`w-20 h-[90px] object-cover rounded-lg border-2 ${selectedBackground === item.url
                         ? "border-[#645bff]"
                         : "border-white"
-                    }`}
+                      }`}
                   />
                 </div>
               ))}
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
-              {loading ? "Đang xử lý..." : "Xóa phông"}
+              {loading ? "Đang xử lý..." : "Bắt đầu xử lý"}
             </div>
             <footer className="w-full text-white text-center shrink-0">
               <NavigationBar action={tab} />
@@ -376,11 +380,10 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${
-                  selectedBackground === null
+                className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
-                } cursor-pointer`}
+                  } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban />
@@ -396,20 +399,18 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`flex justify-center items-center w-14 h-[90px] rounded-lg border-2 ${
-                      selectedStyle === item?.style
+                    className={`flex justify-center items-center w-14 h-[90px] rounded-lg border-2 ${selectedStyle === item?.style
                         ? "border-[#645bff]"
                         : "border-white"
-                    } cursor-pointer`}
+                      } cursor-pointer`}
                   />
                 </div>
               ))}
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Tạo ảnh AI"}
             </div>

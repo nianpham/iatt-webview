@@ -56,11 +56,6 @@ const BACKGROUND = [
     name: "Eiffel",
     url: "https://res.cloudinary.com/farmcode/image/upload/v1741882899/iatt/eiffel_dqme1q.png",
   },
-  {
-    id: 3,
-    name: "Golden Bridge",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1741887108/iatt/golden_zy4p2a.png",
-  },
 ];
 
 const AI_STYLE = [
