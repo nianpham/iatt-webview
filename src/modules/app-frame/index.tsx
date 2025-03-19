@@ -1,6 +1,13 @@
 "use client";
 
-import { Ban, ChevronLeft, Plus, RefreshCcw, Undo2, Upload } from "lucide-react";
+import {
+  Ban,
+  ChevronLeft,
+  Plus,
+  RefreshCcw,
+  Undo2,
+  Upload,
+} from "lucide-react";
 import React from "react";
 import NavigationBar from "./components/navigation-bar";
 import { useSearchParams } from "next/navigation";
@@ -267,8 +274,9 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu làm mịn"}
             </div>
@@ -289,8 +297,9 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {loading ? "Đang xử lý..." : "Tăng chất lượng"}
             </div>
@@ -319,20 +328,20 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${selectedBackground === null
+                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
-                  } cursor-pointer`}
+                } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban />
               </div>
               <div className="h-2/4 w-0.5 bg-indigo-300 my-auto"></div>
               <div
-                className={`bg-indigo-50 flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${selectedBackground === null
-                    ? "border-white"
-                    : "border-white"
-                  } cursor-pointer`}
+                className={`bg-indigo-50 flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null ? "border-white" : "border-white"
+                } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Upload />
@@ -348,18 +357,20 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`w-20 h-[90px] object-cover rounded-lg border-2 ${selectedBackground === item.url
+                    className={`w-20 h-[90px] object-cover rounded-lg border-2 ${
+                      selectedBackground === item.url
                         ? "border-[#645bff]"
                         : "border-white"
-                      }`}
+                    }`}
                   />
                 </div>
               ))}
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu xử lý"}
             </div>
@@ -380,15 +391,16 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-14 h-full object-cover rounded-lg border-2 ${selectedBackground === null
+                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
-                  } cursor-pointer`}
+                } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban />
               </div>
-              <div className="h-3/4 w-0.5 bg-gray-300 my-auto"></div>
+              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               {DATA.AI_STYLE.map((item: any, index: number) => (
                 <div
                   key={item.id}
@@ -399,18 +411,20 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`flex justify-center items-center w-14 h-[90px] rounded-lg border-2 ${selectedStyle === item?.style
+                    className={`w-20 h-[90px] rounded-lg border-2 ${
+                      selectedStyle === item?.style
                         ? "border-[#645bff]"
                         : "border-white"
-                      } cursor-pointer`}
+                    } cursor-pointer`}
                   />
                 </div>
               ))}
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
+                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {loading ? "Đang xử lý..." : "Tạo ảnh AI"}
             </div>

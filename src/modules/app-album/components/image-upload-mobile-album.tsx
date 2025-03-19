@@ -83,173 +83,12 @@ const ImageUploadMobileAlbum = ({
       return;
     }
 
-    // Notify parent component of removal
     onImageChange(null, indexToRemove);
   };
 
   const handleClick = () => {
     fileInputRef.current?.click();
   };
-
-  // const renderImageGrid = () => {
-  //   if (newImages.length === 0) {
-  //     return (
-  //       <div
-  //         className={`border-2 border-gray-300 grid grid-cols-2 px-5 gap-5 !w-full rounded-lg ${
-  //           albumSize === "25x25"
-  //             ? "h-[300px]"
-  //             : albumSize === "30x20"
-  //             ? "h-[200px]"
-  //             : albumSize === "35x25"
-  //             ? "h-[250px]"
-  //             : ""
-  //         }`}
-  //       >
-  //         <div className="w-full flex justify-center items-center">
-  //           <div className="w-[100%] h-[87%] bg-gray-200 rounded-lg"></div>
-  //         </div>
-  //         <div className="w-full flex justify-center items-center">
-  //           <div className="w-[100%] h-[87%] bg-gray-200 rounded-lg"></div>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-
-  //   switch (newImages.length) {
-  //     case 2:
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : albumSize === "35x25"
-  //               ? "h-[250px]"
-  //               : ""
-  //           }`}
-  //         >
-  //           {newImages.map((img, index) => (
-  //             <div
-  //               key={index}
-  //               className="w-full flex justify-center items-center"
-  //             >
-  //               <Image
-  //                 src={img}
-  //                 alt={`Image ${index + 1}`}
-  //                 width={1000}
-  //                 height={1000}
-  //                 className={`w-[100%] ${
-  //                   albumSize === "25x25"
-  //                     ? "h-[270px]"
-  //                     : albumSize === "30x20"
-  //                     ? "h-[170px]"
-  //                     : albumSize === "35x25"
-  //                     ? "h-[220px]"
-  //                     : ""
-  //                 } object-cover rounded-lg`}
-  //               />
-  //             </div>
-  //           ))}
-  //         </div>
-  //       );
-  //     case 3:
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : albumSize === "35x25"
-  //               ? "h-[250px]"
-  //               : ""
-  //           }`}
-  //         >
-  //           <div className="w-full flex justify-center items-center">
-  //             <Image
-  //               src={newImages[0]}
-  //               alt="Image 1"
-  //               width={1000}
-  //               height={1000}
-  //               className={`w-[100%] ${
-  //                 albumSize === "25x25"
-  //                   ? "h-[270px]"
-  //                   : albumSize === "30x20"
-  //                   ? "h-[170px]"
-  //                   : albumSize === "35x25"
-  //                   ? "h-[220px]"
-  //                   : ""
-  //               } object-cover rounded-lg`}
-  //             />
-  //           </div>
-  //           <div className="grid grid-rows-2 gap-2">
-  //             {newImages.slice(1).map((img, index) => (
-  //               <div
-  //                 key={index}
-  //                 className="w-full flex justify-center items-center"
-  //               >
-  //                 <Image
-  //                   src={img}
-  //                   alt={`Image ${index + 2}`}
-  //                   width={1000}
-  //                   height={1000}
-  //                   className={`w-[100%] ${
-  //                     albumSize === "25x25"
-  //                       ? "h-[130px]"
-  //                       : albumSize === "30x20"
-  //                       ? "h-[80px]"
-  //                       : albumSize === "35x25"
-  //                       ? "h-[105px]"
-  //                       : ""
-  //                   } object-cover rounded-lg`}
-  //                 />
-  //               </div>
-  //             ))}
-  //           </div>
-  //         </div>
-  //       );
-  //     case 4:
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : albumSize === "35x25"
-  //               ? "h-[250px]"
-  //               : ""
-  //           }`}
-  //         >
-  //           {newImages.map((img, index) => (
-  //             <div
-  //               key={index}
-  //               className="w-full flex justify-center items-center"
-  //             >
-  //               <Image
-  //                 src={img}
-  //                 alt={`Image ${index + 1}`}
-  //                 width={1000}
-  //                 height={1000}
-  //                 className={`w-[100%] ${
-  //                   albumSize === "25x25"
-  //                     ? "h-[130px]"
-  //                     : albumSize === "30x20"
-  //                     ? "h-[80px]"
-  //                     : albumSize === "35x25"
-  //                     ? "h-[105px]"
-  //                     : ""
-  //                 } object-cover rounded-lg`}
-  //               />
-  //             </div>
-  //           ))}
-  //         </div>
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   const renderImageGrid = () => {
     if (newImages.length === 0) {
@@ -444,7 +283,7 @@ const ImageUploadMobileAlbum = ({
               </DialogTitle>
               <DialogDescription>
                 <span className="!text-[16px]">
-                  Danh sách hình ảnh trên trang album số{" "}
+                  Danh sách hình ảnh trang số{" "}
                   {pageIndex !== undefined ? pageIndex + 1 : ""}.
                 </span>
               </DialogDescription>
