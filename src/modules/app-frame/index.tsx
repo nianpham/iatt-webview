@@ -134,14 +134,14 @@ export default function AppFrameClient() {
   };
 
   const handleBackgroundSelect = (backgroundUrl: string | null) => {
-    if (!removeBackground) {
-      toast({
-        title: "",
-        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
-        variant: "destructive",
-      });
-      return;
-    }
+    // if (!removeBackground) {
+    //   toast({
+    //     title: "",
+    //     description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     setSelectedBackground(backgroundUrl);
   };
 
@@ -362,67 +362,75 @@ export default function AppFrameClient() {
                 />
               )}
             </div>
-            <div className="flex flex-row gap-4 py-4 overflow-x-auto">
-              <div
-                className={`flex justify-center items-center mx-auto px-5 w-16 h-[90px] object-cover rounded-lg border-2 ${
-                  selectedBackground === null
-                    ? "border-[#645bff]"
-                    : "border-white"
-                } cursor-pointer`}
-                onClick={() => handleBackgroundSelect(null)}
-              >
-                <Ban />
-              </div>
-              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
-              <div
-                className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${
-                  selectedBackground === null ? "border-white" : "border-white"
-                } cursor-pointer`}
-              >
-                <UploadBackground
-                  onBackgroundAdd={addCustomBackground}
-                  // result={removeBackground}
-                />
-              </div>
-
-              {DATA.BACKGROUND.map((item) => (
+            <div className="flex flex-row gap-4 py-4 overflow-x-auto scroll-bar-style">
+              <div className="flex flex-row gap-4">
                 <div
-                  key={item.id}
-                  className="cursor-pointer flex-shrink-0"
-                  onClick={() => handleBackgroundSelect(item.url)}
+                  className={`flex justify-center items-center mx-auto w-[66px] h-[90px] object-cover rounded-lg border-2 ${
+                    selectedBackground === null
+                      ? "border-[#645bff]"
+                      : "border-white"
+                  } cursor-pointer`}
+                  onClick={() => handleBackgroundSelect(null)}
                 >
-                  <Image
-                    src={item.url}
-                    alt=""
-                    width={1000}
-                    height={1000}
-                    className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
-                      selectedBackground === item.url
-                        ? "border-[#645bff]"
-                        : "border-white"
-                    }`}
+                  <Ban size={25} />
+                </div>
+                <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
+              </div>
+              <div className="flex flex-row gap-4">
+                <div
+                  className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${
+                    selectedBackground === null
+                      ? "border-white"
+                      : "border-white"
+                  } cursor-pointer`}
+                >
+                  <UploadBackground
+                    onBackgroundAdd={addCustomBackground}
+                    // result={removeBackground}
                   />
                 </div>
-              ))}
-              {customBackgrounds.map((item) => (
-                <div
-                  key={item.id}
-                  className="cursor-pointer flex-shrink-0"
-                  onClick={() => handleBackgroundSelect(item.url)}
-                >
-                  <Image
-                    src={item.url}
-                    alt=""
-                    width={1000}
-                    height={1000}
-                    className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
-                      selectedBackground === item.url
-                        ? "border-[#645bff]"
-                        : "border-white"
-                    }`}
-                  />
-                </div>
-              ))}
+                {customBackgrounds
+                  .slice()
+                  .reverse()
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="cursor-pointer flex-shrink-0"
+                      onClick={() => handleBackgroundSelect(item.url)}
+                    >
+                      <Image
+                        src={item.url}
+                        alt=""
+                        width={1000}
+                        height={1000}
+                        className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
+                          selectedBackground === item.url
+                            ? "border-[#645bff]"
+                            : "border-white"
+                        }`}
+                      />
+                    </div>
+                  ))}
+                {DATA.BACKGROUND.map((item) => (
+                  <div
+                    key={item.id}
+                    className="cursor-pointer flex-shrink-0"
+                    onClick={() => handleBackgroundSelect(item.url)}
+                  >
+                    <Image
+                      src={item.url}
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
+                        selectedBackground === item.url
+                          ? "border-[#645bff]"
+                          : "border-white"
+                      }`}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <div
               onClick={handleSubmit}
@@ -456,7 +464,7 @@ export default function AppFrameClient() {
                 } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
-                <Ban />
+                <Ban size={25} />
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               {DATA.AI_STYLE.map((item: any, index: number) => (

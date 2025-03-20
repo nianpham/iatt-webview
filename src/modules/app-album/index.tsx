@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChooseOption } from "./dialog/choose-option";
 import ImageUploadMobileAlbum from "./components/image-upload-mobile-album";
 import { UploadService } from "@/services/upload";
@@ -8,7 +8,7 @@ import ImageProcessing from "../app-frame/components/image-processing";
 import Image from "next/image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";
-import { ChevronLeft, RefreshCcw, Undo2 } from "lucide-react";
+import { ChevronLeft, RefreshCcw } from "lucide-react";
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
@@ -17,12 +17,12 @@ export default function AppAlbumClient() {
     pages: 0,
   });
 
-  const [pageImages, setPageImages] = useState<{ [key: number]: string[] }>({});
-  const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([]);
-  const [currentImages, setCurrentImages] = React.useState<string[]>([]);
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [refresh, setRefresh] = React.useState(false);
+  const [pageImages, setPageImages] = useState<{ [key: number]: string[] }>({}); // Cloudinary URLs
+  const [previewImages, setPreviewImages] = useState<{
+    [key: number]: string[];
+  }>({});
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const MIN_IMAGES = 2;
@@ -32,50 +32,34 @@ export default function AppAlbumClient() {
     setAlbumConfig({ size, pages });
   };
 
-  const validateFiles = (files: File[]): boolean => {
-    if (files.length < MIN_IMAGES || files.length > MAX_IMAGES) {
-      setError(`Please upload between ${MIN_IMAGES} and ${MAX_IMAGES} images`);
+  const validateFiles = (files: File[], currentImages: string[]): boolean => {
+    const totalImages = currentImages.length + files.length;
+    if (totalImages > MAX_IMAGES) {
+      setError(
+        `Total images cannot exceed ${MAX_IMAGES}. Currently ${currentImages.length} images, trying to add ${files.length}.`
+      );
       return false;
     }
-
+    if (currentImages.length === 0 && files.length < MIN_IMAGES) {
+      setError(
+        `Please upload at least ${MIN_IMAGES} images when the album is empty.`
+      );
+      return false;
+    }
     const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
     if (oversizedFiles.length > 0) {
-      setError("All images must be less than 5MB");
+      setError("All images must be less than 5MB.");
       return false;
     }
-
+    const nonImageFiles = files.filter(
+      (file) => !file.type.startsWith("image/")
+    );
+    if (nonImageFiles.length > 0) {
+      setError("Please upload only image files.");
+      return false;
+    }
     return true;
   };
-
-  // const handleImageUpload = async (
-  //   pageIndex: number,
-  //   files: FileList | null
-  // ) => {
-  //   if (!files) return;
-
-  //   const fileArray = Array.from(files);
-  //   if (!validateFiles(fileArray)) return;
-
-  //   try {
-  //     const uploadResults = await UploadService.uploadToCloudinary(fileArray);
-
-  //     if (uploadResults === false) {
-  //       throw new Error("Upload failed");
-  //     }
-
-  //     const secureUrls = uploadResults.map((result: any) => result.secure_url);
-
-  //     setPageImages((prev) => ({
-  //       ...prev,
-  //       [pageIndex]: secureUrls,
-  //     }));
-
-  //     setError(null);
-  //   } catch (error) {
-  //     setError("Failed to upload images to Cloudinary");
-  //     console.error(error);
-  //   }
-  // };
 
   const handleImageUpload = async (
     pageIndex: number,
@@ -84,15 +68,20 @@ export default function AppAlbumClient() {
   ) => {
     if (files) {
       const fileArray = Array.from(files);
-      if (!validateFiles(fileArray)) return;
+      const currentImages = pageImages[pageIndex] || [];
+
+      if (!validateFiles(fileArray, currentImages)) return;
+
+      // Generate local preview URLs and append to existing previews
+      const newPreviewUrls = fileArray.map((file) => URL.createObjectURL(file));
+      setPreviewImages((prev) => ({
+        ...prev,
+        [pageIndex]: [...(prev[pageIndex] || []), ...newPreviewUrls],
+      }));
 
       try {
         setLoading(true);
-
         const uploadResults = await UploadService.uploadToCloudinary(fileArray);
-
-        console.log("check upload: ", uploadResults);
-
         if (uploadResults === false) {
           throw new Error("Upload failed");
         }
@@ -101,29 +90,50 @@ export default function AppAlbumClient() {
           (result: any) => result.secure_url
         );
 
+        // Append new Cloudinary URLs to existing pageImages
         setPageImages((prev) => ({
           ...prev,
-          [pageIndex]: secureUrls,
+          [pageIndex]: [...(prev[pageIndex] || []), ...secureUrls],
         }));
 
-        setLoading(false);
+        // Update previewImages with the full list (existing + new Cloudinary URLs)
+        setPreviewImages((prev) => {
+          const existingPreviews = (prev[pageIndex] || []).filter(
+            (url) => !newPreviewUrls.includes(url)
+          ); // Keep only non-temporary URLs
+          existingPreviews.forEach((url) => URL.revokeObjectURL(url)); // Clean up old temporary URLs
+          return {
+            ...prev,
+            [pageIndex]: [...(pageImages[pageIndex] || []), ...secureUrls],
+          };
+        });
 
+        setLoading(false);
         setError(null);
       } catch (error) {
         setError("Failed to upload images to Cloudinary");
         console.error(error);
+        setLoading(false);
+        // Optionally revert previewImages on failure
+        setPreviewImages((prev) => ({
+          ...prev,
+          [pageIndex]: pageImages[pageIndex] || [],
+        }));
       }
     } else if (removedIndex !== undefined) {
-      // Handle image removal
       setPageImages((prev) => {
         const currentImages = prev[pageIndex] || [];
         const updatedImages = currentImages.filter(
-          (_, index) => index !== removedIndex
+          (_, idx) => idx !== removedIndex
         );
-        return {
-          ...prev,
-          [pageIndex]: updatedImages,
-        };
+        return { ...prev, [pageIndex]: updatedImages };
+      });
+      setPreviewImages((prev) => {
+        const currentPreviews = prev[pageIndex] || [];
+        const updatedPreviews = currentPreviews.filter(
+          (_, idx) => idx !== removedIndex
+        );
+        return { ...prev, [pageIndex]: updatedPreviews };
       });
     }
   };
@@ -131,6 +141,14 @@ export default function AppAlbumClient() {
   const handleRefresh = () => {
     window.location.reload();
   };
+
+  useEffect(() => {
+    return () => {
+      Object.values(previewImages).forEach((page) =>
+        page.forEach((url) => URL.revokeObjectURL(url))
+      );
+    };
+  }, [previewImages]);
 
   return (
     <div className="relative w-full flex flex-col justify-center items-center">
@@ -159,13 +177,11 @@ export default function AppAlbumClient() {
         onSave={handleSaveConfig}
       />
       {loading && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
-          <div className="w-full h-screen bg-black bg-opacity-50 flex flex-col gap-10 justify-center items-center">
-            <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
-              <ImageProcessing />
-              <div className="text-balck font-medium">
-                Hình ảnh đang được xử lí...
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
+            <ImageProcessing />
+            <div className="text-black font-medium">
+              Hình ảnh đang được xử lí...
             </div>
           </div>
         </div>
@@ -177,13 +193,7 @@ export default function AppAlbumClient() {
               <ChevronLeft color="black" />
             </Link>
             <div className="flex flex-row justify-center items-center gap-3 ml-12">
-              <RefreshCcw
-                color="black"
-                onClick={() => {
-                  handleRefresh();
-                  setRefresh(!refresh);
-                }}
-              />
+              <RefreshCcw color="black" onClick={handleRefresh} />
             </div>
             <div className="bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl text-white font-medium text-sm px-3 py-2 rounded-lg">
               Tiếp tục
@@ -201,7 +211,7 @@ export default function AppAlbumClient() {
                       handleImageUpload(index, files, removedIndex)
                     }
                     albumSize={albumConfig.size}
-                    newImages={pageImages[index] || []}
+                    newImages={previewImages[index] || pageImages[index] || []}
                     pageIndex={index}
                   />
                 </div>
