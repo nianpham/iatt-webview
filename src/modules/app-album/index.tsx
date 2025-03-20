@@ -91,6 +91,8 @@ export default function AppAlbumClient() {
 
         const uploadResults = await UploadService.uploadToCloudinary(fileArray);
 
+        console.log("check upload: ", uploadResults);
+
         if (uploadResults === false) {
           throw new Error("Upload failed");
         }

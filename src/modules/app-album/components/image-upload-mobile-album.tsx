@@ -41,15 +41,34 @@ const ImageUploadMobileAlbum = ({
     if (!files) return;
 
     const fileArray = Array.from(files);
+    const totalImages = newImages.length + fileArray.length;
 
-    if (fileArray.length < MIN_IMAGES || fileArray.length > MAX_IMAGES) {
+    if (totalImages > MAX_IMAGES) {
       toast({
         title: "",
-        description: `Vui lòng chọn từ ${MIN_IMAGES} đến ${MAX_IMAGES} hình ảnh`,
+        description: `Tổng số ảnh không được vượt quá ${MAX_IMAGES}. Hiện tại có ${newImages.length} ảnh, bạn đang cố thêm ${fileArray.length} ảnh.`,
         variant: "destructive",
       });
       return;
     }
+
+    if (fileArray.length < MIN_IMAGES && newImages.length === 0) {
+      toast({
+        title: "",
+        description: `Vui lòng chọn ít nhất ${MIN_IMAGES} hình ảnh khi album trống`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // if (fileArray.length < MIN_IMAGES || fileArray.length > MAX_IMAGES) {
+    //   toast({
+    //     title: "",
+    //     description: `Vui lòng chọn từ ${MIN_IMAGES} đến ${MAX_IMAGES} hình ảnh`,
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
     for (const file of fileArray) {
       if (file.size > MAX_FILE_SIZE) {
@@ -87,6 +106,9 @@ const ImageUploadMobileAlbum = ({
   };
 
   const handleClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     fileInputRef.current?.click();
   };
 

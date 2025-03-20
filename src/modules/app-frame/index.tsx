@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  Ban,
-  ChevronLeft,
-  Plus,
-  RefreshCcw,
-  Undo2,
-  Upload,
-} from "lucide-react";
+import { Ban, ChevronLeft, RefreshCcw, Undo2 } from "lucide-react";
 import React from "react";
 import NavigationBar from "./components/navigation-bar";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ImageUploadMobile from "./components/image-upload-mobile";
 import { toast } from "@/hooks/use-toast";
 import { UploadService } from "@/services/upload";
@@ -21,10 +14,12 @@ import ImageProcessing from "./components/image-processing";
 import ImageComposer from "./components/compile-image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";
+import UploadBackground from "./components/upload-background";
 
 export default function AppFrameClient() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("function");
+  const router = useRouter();
 
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
@@ -41,6 +36,9 @@ export default function AppFrameClient() {
   const [selectedStyle, setSelectedStyle] = React.useState<string>("original");
   const [loading, setLoading] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
+  const [customBackgrounds, setCustomBackgrounds] = React.useState<
+    { id: number; url: string }[]
+  >([]);
   const [removeBackground, setRemoveBackground] = React.useState(false);
   const [selectedBackground, setSelectedBackground] = React.useState<
     string | null
@@ -127,6 +125,14 @@ export default function AppFrameClient() {
     }
   };
 
+  const addCustomBackground = (newBackgroundUrl: string) => {
+    setCustomBackgrounds((prev) => [
+      ...prev,
+      { id: Date.now(), url: newBackgroundUrl },
+    ]);
+    setSelectedBackground(newBackgroundUrl);
+  };
+
   const handleBackgroundSelect = (backgroundUrl: string | null) => {
     if (!removeBackground) {
       toast({
@@ -161,7 +167,7 @@ export default function AppFrameClient() {
       ]);
 
       let response;
-      if (tab === null) {
+      if (tab === "md") {
         response = await MobileService.smoothSkin(upload[0].secure_url);
       } else if (tab === "cl") {
         response = await MobileService.increaseQuality(upload[0].secure_url);
@@ -205,6 +211,33 @@ export default function AppFrameClient() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleContinue = () => {
+    const hasResult =
+      currentImage || responseImage1 || responseImage2 || responseImage3;
+
+    if (hasResult) {
+      let resultImage = currentImage;
+      if (selectedStyle === "face2paint" && responseImage1)
+        resultImage = responseImage1;
+      else if (selectedStyle === "paprika" && responseImage2)
+        resultImage = responseImage2;
+      else if (selectedStyle === "webtoon" && responseImage3)
+        resultImage = responseImage3;
+
+      router.push(
+        `https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
+          resultImage ?? ""
+        )}`
+      );
+    } else {
+      toast({
+        title: "",
+        description: "Vui lòng tạo kết quả trước khi tiếp tục!",
+        variant: "destructive",
+      });
     }
   };
 
@@ -257,7 +290,10 @@ export default function AppFrameClient() {
               />
               <Undo2 className="scale-x-[-1] text-[#4B5563] z-0" />
             </div>
-            <div className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg">
+            <div
+              onClick={handleContinue}
+              className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg"
+            >
               Tiếp tục
             </div>
           </div>
@@ -326,9 +362,9 @@ export default function AppFrameClient() {
                 />
               )}
             </div>
-            <div className="flex flex-row gap-4 py-4">
+            <div className="flex flex-row gap-4 py-4 overflow-x-auto">
               <div
-                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                className={`flex justify-center items-center mx-auto px-5 w-16 h-[90px] object-cover rounded-lg border-2 ${
                   selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
@@ -337,19 +373,22 @@ export default function AppFrameClient() {
               >
                 <Ban />
               </div>
-              <div className="h-2/4 w-0.5 bg-indigo-300 my-auto"></div>
+              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div
-                className={`bg-indigo-50 flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${
                   selectedBackground === null ? "border-white" : "border-white"
                 } cursor-pointer`}
-                onClick={() => handleBackgroundSelect(null)}
               >
-                <Upload />
+                <UploadBackground
+                  onBackgroundAdd={addCustomBackground}
+                  // result={removeBackground}
+                />
               </div>
+
               {DATA.BACKGROUND.map((item) => (
                 <div
                   key={item.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer flex-shrink-0"
                   onClick={() => handleBackgroundSelect(item.url)}
                 >
                   <Image
@@ -357,7 +396,26 @@ export default function AppFrameClient() {
                     alt=""
                     width={1000}
                     height={1000}
-                    className={`w-20 h-[90px] object-cover rounded-lg border-2 ${
+                    className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
+                      selectedBackground === item.url
+                        ? "border-[#645bff]"
+                        : "border-white"
+                    }`}
+                  />
+                </div>
+              ))}
+              {customBackgrounds.map((item) => (
+                <div
+                  key={item.id}
+                  className="cursor-pointer flex-shrink-0"
+                  onClick={() => handleBackgroundSelect(item.url)}
+                >
+                  <Image
+                    src={item.url}
+                    alt=""
+                    width={1000}
+                    height={1000}
+                    className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
                       selectedBackground === item.url
                         ? "border-[#645bff]"
                         : "border-white"
