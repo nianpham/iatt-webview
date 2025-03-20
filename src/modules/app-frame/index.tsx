@@ -308,6 +308,39 @@ export default function AppFrameClient() {
                 newImage={currentImage ?? undefined}
               />
             </div>
+            <div className="flex flex-row gap-4 py-4">
+              <div
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
+                    ? "border-[#645bff]"
+                    : "border-white"
+                } cursor-pointer`}
+                onClick={() => handleBackgroundSelect(null)}
+              >
+                <Ban size={25} />
+              </div>
+              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
+              <div className="flex flex-row gap-4">
+                {DATA.AI_STYLE.map((item: any, index: number) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleStyleSelect(item?.style)}
+                  >
+                    <Image
+                      src={item.url}
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className={`w-16 h-[90px] rounded-lg border-2 ${
+                        selectedStyle === item?.style
+                          ? "border-[#645bff]"
+                          : "border-white"
+                      } cursor-pointer`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
             <div
               onClick={handleSubmit}
               className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
@@ -330,6 +363,39 @@ export default function AppFrameClient() {
                 title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
                 newImage={currentImage ?? undefined}
               />
+            </div>
+            <div className="flex flex-row gap-4 py-4">
+              <div
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
+                    ? "border-[#645bff]"
+                    : "border-white"
+                } cursor-pointer`}
+                onClick={() => handleBackgroundSelect(null)}
+              >
+                <Ban size={25} />
+              </div>
+              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
+              <div className="flex flex-row gap-4">
+                {DATA.AI_STYLE.map((item: any, index: number) => (
+                  <div
+                    key={item.id}
+                    // onClick={() => handleStyleSelect(item?.style)}
+                  >
+                    <Image
+                      src={item.url}
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className={`w-16 h-[90px] rounded-lg border-2 ${
+                        selectedStyle === item?.style
+                          ? "border-[#645bff]"
+                          : "border-white"
+                      } cursor-pointer`}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <div
               onClick={handleSubmit}
@@ -365,7 +431,7 @@ export default function AppFrameClient() {
             <div className="flex flex-row gap-4 py-4 overflow-x-auto scroll-bar-style">
               <div className="flex flex-row gap-4">
                 <div
-                  className={`flex justify-center items-center mx-auto w-[66px] h-[90px] object-cover rounded-lg border-2 ${
+                  className={`flex justify-center items-center mx-auto w-[64px] h-[90px] object-cover rounded-lg border-2 ${
                     selectedBackground === null
                       ? "border-[#645bff]"
                       : "border-white"
@@ -457,7 +523,7 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-20 h-full object-cover rounded-lg border-2 ${
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
                   selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
@@ -467,24 +533,26 @@ export default function AppFrameClient() {
                 <Ban size={25} />
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
-              {DATA.AI_STYLE.map((item: any, index: number) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleStyleSelect(item?.style)}
-                >
-                  <Image
-                    src={item.url}
-                    alt=""
-                    width={1000}
-                    height={1000}
-                    className={`w-20 h-[90px] rounded-lg border-2 ${
-                      selectedStyle === item?.style
-                        ? "border-[#645bff]"
-                        : "border-white"
-                    } cursor-pointer`}
-                  />
-                </div>
-              ))}
+              <div className="flex flex-row gap-4">
+                {DATA.AI_STYLE.map((item: any, index: number) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleStyleSelect(item?.style)}
+                  >
+                    <Image
+                      src={item.url}
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className={`w-16 h-[90px] rounded-lg border-2 ${
+                        selectedStyle === item?.style
+                          ? "border-[#645bff]"
+                          : "border-white"
+                      } cursor-pointer`}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <div
               onClick={handleSubmit}
