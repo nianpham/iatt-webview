@@ -78,18 +78,18 @@ const AI_STYLE = [
 const SMOOTH_SKIN = [
   {
     id: 1,
-    style: "face2paint",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119428/iatt/face2paint_jelau3.avif",
+    style: "trang",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742543745/iatt/da-trang_kjhtbq.webp",
   },
   {
     id: 2,
-    style: "paprika",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119526/iatt/parika_rfkktv.jpg",
+    style: "sach-mun",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742543766/iatt/da-lan-min_lforvm.jpg",
   },
   {
     id: 3,
-    style: "webtoon",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119464/iatt/webtoon_yw6j3k.png",
+    style: "bong",
+    url: "https://res.cloudinary.com/farmcode/image/upload/v1742543783/iatt/da-cang-bong_iwl5yr.webp",
   },
 ];
 const QUALITY = [

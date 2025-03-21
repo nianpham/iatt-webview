@@ -149,27 +149,29 @@ export default function AppFrameClient() {
     setSelectedBackground(backgroundUrl);
   };
 
-  const handleSmoothSkin = (smoothSkinUrl: string | null) => {
-    if (!removeBackground) {
-      toast({
-        title: "",
-        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleSmoothSkin: (smoothSkinUrl: string | null) => void = (
+    smoothSkinUrl
+  ) => {
+    // if (!removeBackground) {
+    //   toast({
+    //     title: "",
+    //     description: "Vui lòng làm mịn da trước khi chọn kiểu làm mịn!",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     setSelectedSmoothSkin(smoothSkinUrl);
   };
 
   const handleQualitySelect = (qualityUrl: string | null) => {
-    if (!removeBackground) {
-      toast({
-        title: "",
-        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
-        variant: "destructive",
-      });
-      return;
-    }
+    // if (!removeBackground) {
+    //   toast({
+    //     title: "",
+    //     description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     setSelectedQuality(qualityUrl);
   };
 
@@ -272,7 +274,7 @@ export default function AppFrameClient() {
   return (
     <div
       className="relative w-full h-screen flex flex-col justify-center items-center"
-      // style={{ height: deviceHeight }}
+      style={{ height: deviceHeight }}
     >
       {/* PROCESSING  */}
       {loading && (
@@ -300,7 +302,7 @@ export default function AppFrameClient() {
       />
       <div
         className="w-full h-full flex flex-col z-10"
-        // style={{ height: deviceHeight }}
+        style={{ height: deviceHeight }}
       >
         <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
@@ -339,11 +341,11 @@ export default function AppFrameClient() {
             <div className="flex flex-row gap-4 py-4">
               <div
                 className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
-                  selectedBackground === null
+                  selectedSmoothSkin === null
                     ? "border-[#645bff]"
                     : "border-white"
                 } cursor-pointer`}
-                // onClick={() => handleSmoothSkin(null)}
+                onClick={() => handleSmoothSkin(null)}
               >
                 <Ban size={25} />
               </div>
@@ -352,7 +354,7 @@ export default function AppFrameClient() {
                 {DATA.SMOOTH_SKIN.map((item: any, index: number) => (
                   <div
                     key={item.id}
-                    // onClick={() => handleSmoothSkin(item?.style)}
+                    onClick={() => handleSmoothSkin(item?.style)}
                   >
                     <Image
                       src={item.url}
@@ -360,10 +362,10 @@ export default function AppFrameClient() {
                       width={1000}
                       height={1000}
                       className={`w-16 h-[90px] rounded-lg border-2 ${
-                        selectedStyle === item?.style
+                        selectedSmoothSkin === item?.style
                           ? "border-[#645bff]"
                           : "border-white"
-                      } cursor-pointer`}
+                      } cursor-pointer object-cover`}
                     />
                   </div>
                 ))}
@@ -395,11 +397,9 @@ export default function AppFrameClient() {
             <div className="flex flex-row gap-4 py-4">
               <div
                 className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
-                  selectedBackground === null
-                    ? "border-[#645bff]"
-                    : "border-white"
+                  selectedQuality === null ? "border-[#645bff]" : "border-white"
                 } cursor-pointer`}
-                // onClick={() => handleQualitySelect(null)}
+                onClick={() => handleQualitySelect(null)}
               >
                 <Ban size={25} />
               </div>
@@ -408,7 +408,7 @@ export default function AppFrameClient() {
                 {DATA.QUALITY.map((item: any, index: number) => (
                   <div
                     key={item.id}
-                    // onClick={() => handleQualitySelect(item?.style)}
+                    onClick={() => handleQualitySelect(item?.style)}
                   >
                     <Image
                       src={item.url}
@@ -416,7 +416,7 @@ export default function AppFrameClient() {
                       width={1000}
                       height={1000}
                       className={`w-16 h-[90px] rounded-lg border-2 ${
-                        selectedStyle === item?.style
+                        selectedQuality === item?.style
                           ? "border-[#645bff]"
                           : "border-white"
                       } cursor-pointer`}
