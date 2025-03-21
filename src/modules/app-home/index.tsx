@@ -18,22 +18,22 @@ import Link from "next/link";
 export default function AppHome() {
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
-  React.useEffect(() => {
-    const updateHeight = () => {
-      setDeviceHeight(`${window.innerHeight}px`);
-    };
+  // React.useEffect(() => {
+  //   const updateHeight = () => {
+  //     setDeviceHeight(`${window.innerHeight}px`);
+  //   };
 
-    updateHeight();
+  //   updateHeight();
 
-    window.addEventListener("resize", updateHeight);
+  //   window.addEventListener("resize", updateHeight);
 
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
+  //   return () => window.removeEventListener("resize", updateHeight);
+  // }, []);
 
   return (
     <div
-      className="relative w-full flex flex-col justify-center items-center gap-2"
-      style={{ height: deviceHeight }}
+      className="relative w-full h-screen flex flex-col justify-center items-center gap-2"
+      // style={{ height: deviceHeight }}
     >
       {/* <Image
         src={IMAGES.BACKGROUND_MOBILE}
@@ -43,8 +43,8 @@ export default function AppHome() {
         className="object-cover opacity-50 z-0"
       /> */}
       <div
-        className="w-full flex flex-col justify-center items-center gap-3 z-10"
-        style={{ height: deviceHeight }}
+        className="w-full h-full flex flex-col justify-center items-center gap-3 z-10"
+        // style={{ height: deviceHeight }}
       >
         <div className="w-full flex flex-col justify-center items-center gap-1">
           <Image
@@ -95,9 +95,7 @@ export default function AppHome() {
             </div>
             <DialogFooter className="">
               <DialogClose asChild>
-                <Button
-                  className="!px-10 !text-[16px] mt-3 bg-indigo-100 text-gray-700"
-                >
+                <Button className="!px-10 !text-[16px] mt-3 bg-indigo-100 text-gray-700">
                   Quay lại sau
                 </Button>
               </DialogClose>

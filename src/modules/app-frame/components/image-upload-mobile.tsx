@@ -21,18 +21,18 @@ const ImageUploadMobile = ({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [deviceHeight, setDeviceHeight] = React.useState("410px");
 
-  React.useEffect(() => {
-    const updateHeight = () => {
-      const height = window.innerHeight;
-      setDeviceHeight(height < 720 ? "325px" : "410px");
-    };
+  // React.useEffect(() => {
+  //   const updateHeight = () => {
+  //     const height = window.innerHeight;
+  //     setDeviceHeight(height < 720 ? "325px" : "410px");
+  //   };
 
-    updateHeight();
+  //   updateHeight();
 
-    window.addEventListener("resize", updateHeight);
+  //   window.addEventListener("resize", updateHeight);
 
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
+  //   return () => window.removeEventListener("resize", updateHeight);
+  // }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -68,7 +68,7 @@ const ImageUploadMobile = ({
   return (
     <div
       className={cn(
-        "flex justify-center lg:!justify-start lg:items-start",
+        "flex justify-center lg:!justify-start lg:items-start h-full",
         className
       )}
     >
@@ -80,11 +80,11 @@ const ImageUploadMobile = ({
         className="hidden"
       />
       {!preview ? (
-        <div className="flex justify-center !w-full">
+        <div className="flex justify-center !w-full h-full">
           <div
             onClick={handleClick}
             className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 mb-0 rounded-lg"
-            style={{ height: deviceHeight }}
+            // style={{ height: deviceHeight }}
           >
             <div className="text-gray-700 flex flex-col items-center">
               <div className="flex flex-row justify-center items-center gap-2">
@@ -96,11 +96,14 @@ const ImageUploadMobile = ({
           </div>
         </div>
       ) : (
-        <div className="relative group w-full" style={{ height: deviceHeight }}>
+        <div
+          className="relative group w-full h-full"
+          // style={{ height: deviceHeight }}
+        >
           <div className={cn("relative w-full overflow-hidden rounded-xl")}>
             <div
               className={`relative !w-full`}
-              style={{ height: deviceHeight }}
+              // style={{ height: deviceHeight }}
             />
             {newImage ? (
               <Image
@@ -110,7 +113,6 @@ const ImageUploadMobile = ({
                 height={1000}
                 priority
                 className="absolute top-0 left-0 !w-full object-cover border-2 border-[#645bff] rounded-xl"
-                style={{ height: deviceHeight }}
               />
             ) : (
               <Image

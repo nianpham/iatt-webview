@@ -43,6 +43,12 @@ export default function AppFrameClient() {
   const [selectedBackground, setSelectedBackground] = React.useState<
     string | null
   >(null);
+  const [selectedSmoothSkin, setSelectedSmoothSkin] = React.useState<
+    string | null
+  >(null);
+  const [selectedQuality, setSelectedQuality] = React.useState<string | null>(
+    null
+  );
 
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
@@ -84,14 +90,12 @@ export default function AppFrameClient() {
   };
 
   const handleStyleSelect = (style: string) => {
-    // Allow switching to original anytime
     if (style === "original") {
       setSelectedStyle(style);
       setCurrentImage(originalImage);
       return;
     }
 
-    // Check if the selected style has a result
     let hasResult = false;
     switch (style) {
       case "face2paint":
@@ -134,15 +138,39 @@ export default function AppFrameClient() {
   };
 
   const handleBackgroundSelect = (backgroundUrl: string | null) => {
-    // if (!removeBackground) {
-    //   toast({
-    //     title: "",
-    //     description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+    if (!removeBackground) {
+      toast({
+        title: "",
+        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+        variant: "destructive",
+      });
+      return;
+    }
     setSelectedBackground(backgroundUrl);
+  };
+
+  const handleSmoothSkin = (smoothSkinUrl: string | null) => {
+    if (!removeBackground) {
+      toast({
+        title: "",
+        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedSmoothSkin(smoothSkinUrl);
+  };
+
+  const handleQualitySelect = (qualityUrl: string | null) => {
+    if (!removeBackground) {
+      toast({
+        title: "",
+        description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedQuality(qualityUrl);
   };
 
   const validateForm = () => {
@@ -243,8 +271,8 @@ export default function AppFrameClient() {
 
   return (
     <div
-      className="relative w-full flex flex-col justify-center items-center"
-      style={{ height: deviceHeight }}
+      className="relative w-full h-screen flex flex-col justify-center items-center"
+      // style={{ height: deviceHeight }}
     >
       {/* PROCESSING  */}
       {loading && (
@@ -271,8 +299,8 @@ export default function AppFrameClient() {
         className="opacity-50 absolute top-0 left-0 z-0"
       />
       <div
-        className="w-full flex flex-col z-10"
-        style={{ height: deviceHeight }}
+        className="w-full h-full flex flex-col z-10"
+        // style={{ height: deviceHeight }}
       >
         <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
@@ -315,16 +343,16 @@ export default function AppFrameClient() {
                     ? "border-[#645bff]"
                     : "border-white"
                 } cursor-pointer`}
-                onClick={() => handleBackgroundSelect(null)}
+                // onClick={() => handleSmoothSkin(null)}
               >
                 <Ban size={25} />
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
-                {DATA.AI_STYLE.map((item: any, index: number) => (
+                {DATA.SMOOTH_SKIN.map((item: any, index: number) => (
                   <div
                     key={item.id}
-                    onClick={() => handleStyleSelect(item?.style)}
+                    // onClick={() => handleSmoothSkin(item?.style)}
                   >
                     <Image
                       src={item.url}
@@ -349,9 +377,9 @@ export default function AppFrameClient() {
             >
               {loading ? "Đang xử lý..." : "Bắt đầu làm mịn"}
             </div>
-            <footer className="w-full text-white text-center shrink-0">
+            <div className="w-full text-white text-center shrink-0">
               <NavigationBar action={tab} />
-            </footer>
+            </div>
           </main>
         )}
         {/* CHAT LUONG  */}
@@ -371,16 +399,16 @@ export default function AppFrameClient() {
                     ? "border-[#645bff]"
                     : "border-white"
                 } cursor-pointer`}
-                onClick={() => handleBackgroundSelect(null)}
+                // onClick={() => handleQualitySelect(null)}
               >
                 <Ban size={25} />
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
-                {DATA.AI_STYLE.map((item: any, index: number) => (
+                {DATA.QUALITY.map((item: any, index: number) => (
                   <div
                     key={item.id}
-                    // onClick={() => handleStyleSelect(item?.style)}
+                    // onClick={() => handleQualitySelect(item?.style)}
                   >
                     <Image
                       src={item.url}
@@ -405,9 +433,9 @@ export default function AppFrameClient() {
             >
               {loading ? "Đang xử lý..." : "Tăng chất lượng"}
             </div>
-            <footer className="w-full text-white text-center shrink-0">
+            <div className="w-full text-white text-center shrink-0">
               <NavigationBar action={tab} />
-            </footer>
+            </div>
           </main>
         )}
         {/* XOA PHONG  */}
@@ -506,9 +534,9 @@ export default function AppFrameClient() {
             >
               {loading ? "Đang xử lý..." : "Bắt đầu xử lý"}
             </div>
-            <footer className="w-full text-white text-center shrink-0">
+            <div className="w-full text-white text-center shrink-0">
               <NavigationBar action={tab} />
-            </footer>
+            </div>
           </main>
         )}
         {/* AI  */}
@@ -562,9 +590,9 @@ export default function AppFrameClient() {
             >
               {loading ? "Đang xử lý..." : "Tạo ảnh AI"}
             </div>
-            <footer className="w-full text-white text-center shrink-0">
+            <div className="w-full text-white text-center shrink-0">
               <NavigationBar action={tab} />
-            </footer>
+            </div>
           </main>
         )}
       </div>
