@@ -17,7 +17,7 @@ export default function AppAlbumClient() {
     pages: 0,
   });
 
-  const [pageImages, setPageImages] = useState<{ [key: number]: string[] }>({}); // Cloudinary URLs
+  const [pageImages, setPageImages] = useState<{ [key: number]: string[] }>({});
   const [previewImages, setPreviewImages] = useState<{
     [key: number]: string[];
   }>({});
@@ -64,15 +64,16 @@ export default function AppAlbumClient() {
   const handleImageUpload = async (
     pageIndex: number,
     files: FileList | null,
-    removedIndex?: number
+    removedIndex?: number,
+    croppedIndex?: number,
+    croppedFile?: File
   ) => {
-    if (files) {
+    if (files && removedIndex === undefined && croppedIndex === undefined) {
       const fileArray = Array.from(files);
       const currentImages = pageImages[pageIndex] || [];
 
       if (!validateFiles(fileArray, currentImages)) return;
 
-      // Generate local preview URLs and append to existing previews
       const newPreviewUrls = fileArray.map((file) => URL.createObjectURL(file));
       setPreviewImages((prev) => ({
         ...prev,
@@ -90,18 +91,16 @@ export default function AppAlbumClient() {
           (result: any) => result.secure_url
         );
 
-        // Append new Cloudinary URLs to existing pageImages
         setPageImages((prev) => ({
           ...prev,
           [pageIndex]: [...(prev[pageIndex] || []), ...secureUrls],
         }));
 
-        // Update previewImages with the full list (existing + new Cloudinary URLs)
         setPreviewImages((prev) => {
           const existingPreviews = (prev[pageIndex] || []).filter(
             (url) => !newPreviewUrls.includes(url)
-          ); // Keep only non-temporary URLs
-          existingPreviews.forEach((url) => URL.revokeObjectURL(url)); // Clean up old temporary URLs
+          );
+          existingPreviews.forEach((url) => URL.revokeObjectURL(url));
           return {
             ...prev,
             [pageIndex]: [...(pageImages[pageIndex] || []), ...secureUrls],
@@ -114,7 +113,6 @@ export default function AppAlbumClient() {
         setError("Failed to upload images to Cloudinary");
         console.error(error);
         setLoading(false);
-        // Optionally revert previewImages on failure
         setPreviewImages((prev) => ({
           ...prev,
           [pageIndex]: pageImages[pageIndex] || [],
@@ -135,6 +133,39 @@ export default function AppAlbumClient() {
         );
         return { ...prev, [pageIndex]: updatedPreviews };
       });
+    } else if (croppedIndex !== undefined && croppedFile) {
+      try {
+        setLoading(true);
+        const uploadResult = await UploadService.uploadToCloudinary([
+          croppedFile,
+        ]);
+        if (uploadResult === false) {
+          throw new Error("Upload failed");
+        }
+
+        const secureUrl = uploadResult[0].secure_url;
+
+        setPageImages((prev) => {
+          const currentImages = prev[pageIndex] || [];
+          const updatedImages = [...currentImages];
+          updatedImages[croppedIndex] = secureUrl;
+          return { ...prev, [pageIndex]: updatedImages };
+        });
+
+        setPreviewImages((prev) => {
+          const currentPreviews = prev[pageIndex] || [];
+          const updatedPreviews = [...currentPreviews];
+          updatedPreviews[croppedIndex] = secureUrl;
+          return { ...prev, [pageIndex]: updatedPreviews };
+        });
+
+        setLoading(false);
+        setError(null);
+      } catch (error) {
+        setError("Failed to upload cropped image to Cloudinary");
+        console.error(error);
+        setLoading(false);
+      }
     }
   };
 
@@ -207,8 +238,19 @@ export default function AppAlbumClient() {
                 <div className="mb-2">Trang {index + 1}</div>
                 <div className="w-full flex justify-center items-center">
                   <ImageUploadMobileAlbum
-                    onImageChange={(files, removedIndex) =>
-                      handleImageUpload(index, files, removedIndex)
+                    onImageChange={(
+                      files,
+                      removedIndex,
+                      croppedIndex,
+                      croppedFile
+                    ) =>
+                      handleImageUpload(
+                        index,
+                        files,
+                        removedIndex,
+                        croppedIndex,
+                        croppedFile
+                      )
                     }
                     albumSize={albumConfig.size}
                     newImages={previewImages[index] || pageImages[index] || []}
