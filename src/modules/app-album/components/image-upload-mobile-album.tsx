@@ -55,74 +55,6 @@ const ImageUploadMobileAlbum = ({
     4: [{ id: "4-1", name: "Layout 1", cols: 2, rows: 2 }],
   };
 
-  // const renderImageLayout = () => {
-  //   const dimensions = getImageDimensions(selectedLayout, 0);
-  //   const smallDimensions = selectedLayout.includes("3")
-  //     ? getImageDimensions(selectedLayout, 1)
-  //     : dimensions;
-
-  //   switch (selectedLayout) {
-  //     case "2-1":
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : "h-[250px]"
-  //           }`}
-  //         >
-  //           <div>Layout 2-1</div>
-  //         </div>
-  //       );
-  //     case "2-2":
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-rows-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : "h-[250px]"
-  //           }`}
-  //         >
-  //           <div>Layout 2-2</div>
-  //         </div>
-  //       );
-  //     case "3-1":
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : "h-[250px]"
-  //           }`}
-  //         >
-  //           <div>Layout 3-1</div>
-  //         </div>
-  //       );
-  //     case "3-2":
-  //       return (
-  //         <div
-  //           className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-  //             albumSize === "25x25"
-  //               ? "h-[300px]"
-  //               : albumSize === "30x20"
-  //               ? "h-[200px]"
-  //               : "h-[250px]"
-  //           }`}
-  //         >
-  //           <div>Layout 3-2</div>
-  //         </div>
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
-
   const renderLayoutPreview = (option: {
     id: string;
     cols: number;
@@ -418,7 +350,7 @@ const ImageUploadMobileAlbum = ({
                 alt={`Image ${index + 1}`}
                 width={1000}
                 height={1000}
-                className={`w-full h-[${dimensions.height}px] object-cover rounded-lg`}
+                className={`w-full h-full object-cover rounded-lg`}
               />
             ))}
           </div>
@@ -462,7 +394,13 @@ const ImageUploadMobileAlbum = ({
               alt="Image 1"
               width={1000}
               height={1000}
-              className={`w-full h-[${dimensions.height}px] object-cover rounded-lg`}
+              className={`w-full ${
+                albumSize === "25x25"
+                  ? "h-[273px]"
+                  : albumSize === "30x20"
+                  ? "h-full"
+                  : "h-[222px]"
+              } object-cover rounded-lg`}
             />
             <div className="grid grid-rows-2 gap-2">
               {localImages.slice(1).map((img, index) => (
@@ -472,7 +410,13 @@ const ImageUploadMobileAlbum = ({
                   alt={`Image ${index + 2}`}
                   width={1000}
                   height={1000}
-                  className={`w-full h-[${smallDimensions.height}px] object-cover rounded-lg`}
+                  className={`w-full ${
+                    albumSize === "25x25"
+                      ? "h-[132px]"
+                      : albumSize === "30x20"
+                      ? "h-[81px]"
+                      : "h-[107px]"
+                  } object-cover rounded-lg`}
                 />
               ))}
             </div>
@@ -497,7 +441,13 @@ const ImageUploadMobileAlbum = ({
                   alt={`Image ${index + 2}`}
                   width={1000}
                   height={1000}
-                  className={`w-full h-[${smallDimensions.height}px] object-cover rounded-lg`}
+                  className={`w-full ${
+                    albumSize === "25x25"
+                      ? "h-[132px]"
+                      : albumSize === "30x20"
+                      ? "h-[81px]"
+                      : "h-[107px]"
+                  } object-cover rounded-lg`}
                 />
               ))}
             </div>
@@ -506,7 +456,13 @@ const ImageUploadMobileAlbum = ({
               alt="Image 1"
               width={1000}
               height={1000}
-              className={`w-full h-[${dimensions.height}px] object-cover rounded-lg`}
+              className={`w-full ${
+                albumSize === "25x25"
+                  ? "h-[273px]"
+                  : albumSize === "30x20"
+                  ? "h-full"
+                  : "h-[222px]"
+              } object-cover rounded-lg`}
             />
           </div>
         );
@@ -529,7 +485,13 @@ const ImageUploadMobileAlbum = ({
                 alt={`Image ${index + 1}`}
                 width={1000}
                 height={1000}
-                className={`w-full h-[${dimensions.height}px] object-cover rounded-lg`}
+                className={`w-full ${
+                  albumSize === "25x25"
+                    ? "h-[132px]"
+                    : albumSize === "30x20"
+                    ? "h-[81px]"
+                    : "h-[107px]"
+                } object-cover rounded-lg`}
               />
             ))}
           </div>
