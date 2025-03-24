@@ -19,11 +19,11 @@ import { useDrag, useDrop } from "react-dnd";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import {
-  MultiBackend,
-  TouchTransition,
-  MouseTransition,
-} from "react-dnd-multi-backend";
+// import {
+//   MultiBackend,
+//   TouchTransition,
+//   MouseTransition,
+// } from "react-dnd-multi-backend";
 
 interface ImageUploadProps {
   onImageChange: (
@@ -31,17 +31,15 @@ interface ImageUploadProps {
     removedIndex?: number,
     croppedIndex?: number,
     croppedFile?: File,
-    originalFile?: File,
-    reorderedImages?: string[]
+    originalFile?: File
   ) => void;
   albumSize?: string;
   newImages?: string[];
-  originalFiles?: File[];
   className?: string;
   pageIndex?: number;
 }
 
-interface DivProps {
+interface divProps {
   src: string;
   title?: string;
   id: string;
@@ -51,88 +49,92 @@ interface DivProps {
   imageHeight: string;
 }
 
-const DND_BACKEND = {
-  backends: [
-    { id: "html5", backend: HTML5Backend, transition: MouseTransition },
-    {
-      id: "touch",
-      backend: TouchBackend,
-      options: { enableMouseEvents: true },
-      transition: TouchTransition,
-    },
-  ],
-};
+// Configure MultiBackend to switch between Touch and HTML5 backends
+// const DND_BACKEND = {
+//   backends: [
+//     {
+//       id: "html5",
+//       backend: HTML5Backend,
+//       transition: MouseTransition,
+//     },
+//     {
+//       id: "touch",
+//       backend: TouchBackend,
+//       options: { enableMouseEvents: true }, // Allows mouse events as fallback
+//       transition: TouchTransition,
+//     },
+//   ],
+// };
 
-const Div: React.FC<DivProps> = ({
-  src,
-  title,
-  id,
-  index,
-  moveImage,
-  albumSize,
-  imageHeight,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
+// const div: React.FC<divProps> = ({
+//   src,
+//   title,
+//   id,
+//   index,
+//   moveImage,
+//   albumSize,
+//   imageHeight,
+// }) => {
+//   const ref = useRef<HTMLDivElement>(null);
 
-  const [, drop] = useDrop({
-    accept: "image",
-    hover: (item: { id: string; index: number }, monitor) => {
-      if (!ref.current) return;
-      const dragIndex = item.index;
-      const hoverIndex = index;
+//   // const [, drop] = useDrop({
+//   //   accept: "image",
+//   //   hover: (item: { id: string; index: number }, monitor) => {
+//   //     if (!ref.current) return;
+//   //     const dragIndex = item.index;
+//   //     const hoverIndex = index;
 
-      if (dragIndex === hoverIndex) return;
+//   //     if (dragIndex === hoverIndex) return;
 
-      const hoverBoundingRect = ref.current.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+//   //     const hoverBoundingRect = ref.current.getBoundingClientRect();
+//   //     const hoverMiddleY =
+//   //       (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+//   //     const clientOffset = monitor.getClientOffset();
+//   //     const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
 
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
+//   //     if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
+//   //     if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
 
-      moveImage(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
+//   //     moveImage(dragIndex, hoverIndex);
+//   //     item.index = hoverIndex;
+//   //   },
+//   // });
 
-  const [{ isDragging }, drag] = useDrag({
-    type: "image",
-    item: () => ({ id, index }),
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
+//   // const [{ isDragging }, drag] = useDrag({
+//   //   type: "image",
+//   //   item: () => ({ id, index }),
+//   //   collect: (monitor) => ({
+//   //     isDragging: monitor.isDragging(),
+//   //   }),
+//   // });
 
-  drag(drop(ref));
+//   // drag(drop(ref));
 
-  return (
-    <div
-      ref={ref}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        transform: isDragging ? "scale(1.05)" : "scale(1)",
-        transition: "transform 0.2s ease",
-      }}
-      className={`relative w-full ${imageHeight} mb-0 cursor-move touch-none`}
-    >
-      <Image
-        src={src}
-        alt={title || `Image ${index + 1}`}
-        width={1000}
-        height={1000}
-        className={`w-full h-full object-cover rounded-lg`}
-      />
-    </div>
-  );
-};
+//   return (
+//     <div
+//       ref={ref}
+//       style={{
+//         opacity: isDragging ? 0.5 : 1,
+//         transform: isDragging ? "scale(1.05)" : "scale(1)", // Slight scale for feedback
+//         transition: "transform 0.2s ease",
+//       }}
+//       className={`relative w-full ${imageHeight} mb-4 cursor-move touch-none`} // Responsive height
+//     >
+//       <Image
+//         src={src}
+//         alt={title || `Image ${index + 1}`}
+//         width={1000}
+//         height={1000}
+//         className={`w-full h-full object-cover rounded-lg`}
+//       />
+//     </div>
+//   );
+// };
 
 const ImageUploadMobileAlbum = ({
   onImageChange,
   albumSize,
   newImages = [],
-  originalFiles = [],
   className,
   pageIndex,
 }: ImageUploadProps) => {
@@ -151,9 +153,7 @@ const ImageUploadMobileAlbum = ({
       title: `Image ${index + 1}`,
     }))
   );
-
-  const [originalImageFiles, setOriginalImageFiles] =
-    useState<File[]>(originalFiles);
+  const [originalImageFiles, setOriginalImageFiles] = useState<File[]>([]);
   const [selectedLayout, setSelectedLayout] = useState<string>(
     newImages.length === 2
       ? "2-1"
@@ -168,43 +168,15 @@ const ImageUploadMobileAlbum = ({
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
-  const [isReordered, setIsReordered] = useState(false);
 
   const moveImage = useCallback((dragIndex: number, hoverIndex: number) => {
     setLocalImages((prev) => {
       const clonedImages = [...prev];
       const [movedImage] = clonedImages.splice(dragIndex, 1);
       clonedImages.splice(hoverIndex, 0, movedImage);
-
-      setOriginalImageFiles((prevFiles) => {
-        const clonedFiles = [...prevFiles];
-        const [movedFile] = clonedFiles.splice(dragIndex, 1);
-        clonedFiles.splice(hoverIndex, 0, movedFile);
-        return clonedFiles;
-      });
-
-      setIsReordered(true);
       return clonedImages;
     });
   }, []);
-
-  const handleSaveReorderedImages = useCallback(() => {
-    const reorderedImageSources = localImages.map((img) => img.src);
-    onImageChange(
-      null,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      reorderedImageSources
-    );
-    setIsReordered(false);
-    toast({
-      title: "Thành công",
-      description: "Vị trí hình ảnh đã được lưu.",
-      className: "bg-green-500 text-white border-green-600",
-    });
-  }, [localImages, onImageChange]);
 
   useEffect(() => {
     setLocalImages(
@@ -214,9 +186,7 @@ const ImageUploadMobileAlbum = ({
         title: `Image ${index + 1}`,
       }))
     );
-    setOriginalImageFiles(originalFiles);
-    setIsReordered(false);
-  }, [newImages, originalFiles]);
+  }, [newImages]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -314,20 +284,6 @@ const ImageUploadMobileAlbum = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
       fileInputRef.current.click();
-    }
-  };
-
-  const handleCropButtonClick = (index: number) => {
-    if (isReordered) {
-      toast({
-        title: "Cảnh báo",
-        description: "Vui lòng lưu vị trí hình ảnh mới trước khi cắt ảnh.",
-        variant: "destructive",
-      });
-    } else {
-      console.log("check index", index);
-
-      setCropImageIndex(index);
     }
   };
 
@@ -544,262 +500,142 @@ const ImageUploadMobileAlbum = ({
   };
 
   const renderImageGridManage = () => {
-    const imageHeight2 = "h-full";
-    const imageHeight3 =
-      albumSize === "25x25"
-        ? "h-[132px]"
-        : albumSize === "30x20"
-        ? "h-[81px]"
-        : "h-[107px]";
-    const imageHeight4 =
-      albumSize === "25x25"
-        ? "h-[132px]"
-        : albumSize === "30x20"
-        ? "h-[81px]"
-        : "h-[107px]";
-
     return (
-      <DndProvider backend={MultiBackend} options={DND_BACKEND}>
-        <div className="w-full">
-          {selectedLayout === "2-1" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[200px]"
-                  : "h-[250px]"
-              }`}
-            >
-              {localImages.map((img, index) => (
-                <div key={img.id} className="relative">
-                  <Div
-                    src={img.src}
-                    title={img.title}
-                    id={img.id}
-                    index={index}
-                    moveImage={moveImage}
-                    albumSize={albumSize || "25x25"}
-                    imageHeight={imageHeight2}
-                  />
-                  <button
-                    onClick={() => handleCropButtonClick(index)}
-                    className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
-                  >
-                    <Crop size={15} color="black" />
-                  </button>
-                  <button
-                    onClick={() => handleCropButtonClick(index)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {selectedLayout === "2-2" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-rows-2 p-3 gap-2 !w-full rounded-lg ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[200px]"
-                  : "h-[250px]"
-              }`}
-            >
-              {localImages.map((img, index) => (
-                <div key={img.id} className="relative">
-                  <Div
-                    src={img.src}
-                    title={img.title}
-                    id={img.id}
-                    index={index}
-                    moveImage={moveImage}
-                    albumSize={albumSize || "25x25"}
-                    imageHeight={imageHeight2}
-                  />
-                  <button
-                    onClick={() => handleCropButtonClick(index)}
-                    className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
-                  >
-                    <Crop size={15} color="black" />
-                  </button>
-                  <button
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {selectedLayout === "3-1" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[200px]"
-                  : "h-[250px]"
-              }`}
-            >
-              <div className="relative">
-                <Div
-                  src={localImages[0].src}
-                  title={localImages[0].title}
-                  id={localImages[0].id}
-                  index={0}
-                  moveImage={moveImage}
-                  albumSize={albumSize || "25x25"}
-                  imageHeight={
-                    albumSize === "25x25"
-                      ? "h-[273px]"
-                      : albumSize === "30x20"
-                      ? "h-full"
-                      : "h-[222px]"
-                  }
+      <div className="w-full">
+        {selectedLayout === "2-1" && (
+          <div
+            className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
+              albumSize === "25x25"
+                ? "h-[300px]"
+                : albumSize === "30x20"
+                ? "h-[200px]"
+                : "h-[250px]"
+            }`}
+          >
+            {localImages.map((img, index) => (
+              <div key={img.id} className="relative">
+                <Image
+                  key={img.id}
+                  src={img.src}
+                  alt={img.title || `Image`}
+                  width={1000}
+                  height={1000}
+                  className="w-full h-full object-cover rounded-lg"
                 />
                 <button
-                  onClick={() => handleCropButtonClick(0)}
+                  onClick={() => setCropImageIndex(index)}
                   className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
                 >
                   <Crop size={15} color="black" />
                 </button>
                 <button
-                  onClick={() => handleRemoveImage(0)}
+                  onClick={() => handleRemoveImage(index)}
                   className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
                 >
                   <X size={12} />
                 </button>
               </div>
-              <div className="grid grid-rows-2 gap-2">
-                {localImages.slice(1).map((img, idx) => (
-                  <div key={img.id} className="relative">
-                    <Div
-                      src={img.src}
-                      title={img.title}
-                      id={img.id}
-                      index={idx + 1}
-                      moveImage={moveImage}
-                      albumSize={albumSize || "25x25"}
-                      imageHeight={imageHeight3}
-                    />
-                    <button
-                      onClick={() => handleCropButtonClick(idx + 1)}
-                      className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
-                    >
-                      <Crop size={15} color="black" />
-                    </button>
-                    <button
-                      onClick={() => handleRemoveImage(idx + 1)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {selectedLayout === "3-2" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[200px]"
-                  : "h-[250px]"
-              }`}
-            >
-              <div className="grid grid-rows-2 gap-2">
-                {localImages.slice(1).map((img, idx) => (
-                  <div key={img.id} className="relative">
-                    <Div
-                      src={img.src}
-                      title={img.title}
-                      id={img.id}
-                      index={idx + 1}
-                      moveImage={moveImage}
-                      albumSize={albumSize || "25x25"}
-                      imageHeight={imageHeight3}
-                    />
-                    <button
-                      onClick={() => handleCropButtonClick(idx + 1)}
-                      className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
-                    >
-                      <Crop size={15} color="black" />
-                    </button>
-                    <button
-                      onClick={() => handleRemoveImage(idx + 1)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="relative">
-                <Div
-                  src={localImages[0].src}
-                  title={localImages[0].title}
-                  id={localImages[0].id}
-                  index={0}
-                  moveImage={moveImage}
-                  albumSize={albumSize || "25x25"}
-                  imageHeight={
-                    albumSize === "25x25"
-                      ? "h-[273px]"
-                      : albumSize === "30x20"
-                      ? "h-full"
-                      : "h-[222px]"
-                  }
+            ))}
+          </div>
+        )}
+        {selectedLayout === "2-2" && (
+          <div
+            className={`border-2 border-gray-300 grid grid-rows-2 p-3 gap-2 !w-full rounded-lg ${
+              albumSize === "25x25"
+                ? "h-[300px]"
+                : albumSize === "30x20"
+                ? "h-[200px]"
+                : "h-[250px]"
+            }`}
+          >
+            {localImages.map((img, index) => (
+              <div key={img.id} className="relative">
+                <Image
+                  key={img.id}
+                  src={img.src}
+                  alt={img.title || `Image`}
+                  width={1000}
+                  height={1000}
+                  className="w-full h-full object-cover rounded-lg"
                 />
                 <button
-                  onClick={() => handleCropButtonClick(0)}
+                  onClick={() => setCropImageIndex(index)}
                   className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
                 >
                   <Crop size={15} color="black" />
                 </button>
                 <button
-                  onClick={() => handleRemoveImage(0)}
+                  onClick={() => handleRemoveImage(index)}
                   className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
                 >
                   <X size={12} />
                 </button>
               </div>
+            ))}
+          </div>
+        )}
+        {selectedLayout === "3-1" && (
+          <div
+            className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
+              albumSize === "25x25"
+                ? "h-[300px]"
+                : albumSize === "30x20"
+                ? "h-[200px]"
+                : "h-[250px]"
+            }`}
+          >
+            <div className="relative">
+              <Image
+                src={localImages[0].src}
+                alt={localImages[0].title || "Image 1"}
+                width={1000}
+                height={1000}
+                className={`w-full ${
+                  albumSize === "25x25"
+                    ? "h-[273px]"
+                    : albumSize === "30x20"
+                    ? "h-full"
+                    : "h-[222px]"
+                } object-cover rounded-lg`}
+              />
+              <button
+                onClick={() => setCropImageIndex(0)}
+                className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
+              >
+                <Crop size={15} color="black" />
+              </button>
+              <button
+                onClick={() => handleRemoveImage(0)}
+                className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+              >
+                <X size={12} />
+              </button>
             </div>
-          )}
-          {selectedLayout === "4-1" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-3 gap-2 !w-full rounded-lg ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[200px]"
-                  : "h-[250px]"
-              }`}
-            >
-              {localImages.map((img, index) => (
+            <div className="grid grid-rows-2 gap-2">
+              {localImages.slice(1).map((img, idx) => (
                 <div key={img.id} className="relative">
-                  <Div
+                  <Image
+                    key={img.id}
                     src={img.src}
-                    title={img.title}
-                    id={img.id}
-                    index={index}
-                    moveImage={moveImage}
-                    albumSize={albumSize || "25x25"}
-                    imageHeight={imageHeight4}
+                    alt={img.title || `Image`}
+                    width={1000}
+                    height={1000}
+                    className={`w-full ${
+                      albumSize === "25x25"
+                        ? "h-[132px]"
+                        : albumSize === "30x20"
+                        ? "h-[81px]"
+                        : "h-[107px]"
+                    } object-cover rounded-lg`}
                   />
                   <button
-                    onClick={() => handleCropButtonClick(index)}
+                    onClick={() => setCropImageIndex(idx + 1)}
                     className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
                   >
                     <Crop size={15} color="black" />
                   </button>
                   <button
-                    onClick={() => handleRemoveImage(index)}
+                    onClick={() => handleRemoveImage(idx + 1)}
                     className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
                   >
                     <X size={12} />
@@ -807,9 +643,122 @@ const ImageUploadMobileAlbum = ({
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      </DndProvider>
+          </div>
+        )}
+        {selectedLayout === "3-2" && (
+          <div
+            className={`border-2 border-gray-300 grid grid-cols-2 p-3 gap-2 !w-full rounded-lg ${
+              albumSize === "25x25"
+                ? "h-[300px]"
+                : albumSize === "30x20"
+                ? "h-[200px]"
+                : "h-[250px]"
+            }`}
+          >
+            <div className="grid grid-rows-2 gap-2">
+              {localImages.slice(1).map((img, idx) => (
+                <div key={img.id} className="relative">
+                  <Image
+                    key={img.id}
+                    src={img.src}
+                    alt={img.title || `Image`}
+                    width={1000}
+                    height={1000}
+                    className={`w-full ${
+                      albumSize === "25x25"
+                        ? "h-[132px]"
+                        : albumSize === "30x20"
+                        ? "h-[81px]"
+                        : "h-[107px]"
+                    } object-cover rounded-lg`}
+                  />
+                  <button
+                    onClick={() => setCropImageIndex(idx + 1)}
+                    className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
+                  >
+                    <Crop size={15} color="black" />
+                  </button>
+                  <button
+                    onClick={() => handleRemoveImage(idx + 1)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="relative">
+              <Image
+                src={localImages[0].src}
+                alt={localImages[0].title || `Image`}
+                width={1000}
+                height={1000}
+                className={`w-full ${
+                  albumSize === "25x25"
+                    ? "h-[273px]"
+                    : albumSize === "30x20"
+                    ? "h-full"
+                    : "h-[222px]"
+                } object-cover rounded-lg`}
+              />
+              <button
+                onClick={() => setCropImageIndex(0)}
+                className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
+              >
+                <Crop size={15} color="black" />
+              </button>
+              <button
+                onClick={() => handleRemoveImage(0)}
+                className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+              >
+                <X size={12} />
+              </button>
+            </div>
+          </div>
+        )}
+        {selectedLayout === "4-1" && (
+          <div
+            className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-3 gap-2 !w-full rounded-lg ${
+              albumSize === "25x25"
+                ? "h-[300px]"
+                : albumSize === "30x20"
+                ? "h-[200px]"
+                : "h-[250px]"
+            }`}
+          >
+            {localImages.map((img, index) => (
+              <div key={img.id} className="relative">
+                <Image
+                  key={img.id}
+                  src={img.src}
+                  alt={img.title || `Image`}
+                  width={1000}
+                  height={1000}
+                  className={`w-full ${
+                    albumSize === "25x25"
+                      ? "h-[132px]"
+                      : albumSize === "30x20"
+                      ? "h-[81px]"
+                      : "h-[107px]"
+                  } object-cover rounded-lg`}
+                />
+                <button
+                  onClick={() => setCropImageIndex(index)}
+                  className="absolute -bottom-2 -left-2 bg-green-100 text-white p-1 rounded-full"
+                >
+                  <Crop size={15} color="black" />
+                </button>
+                <button
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -886,12 +835,6 @@ const ImageUploadMobileAlbum = ({
           src: croppedImageUrl,
         };
         return updated;
-      });
-
-      setOriginalImageFiles((prev) => {
-        const updatedFiles = [...prev];
-        updatedFiles[cropImageIndex] = croppedFile;
-        return updatedFiles;
       });
 
       const dataTransfer = new DataTransfer();
@@ -1070,7 +1013,9 @@ const ImageUploadMobileAlbum = ({
   };
 
   return (
-    <div>
+    <div
+    // backend={MultiBackend} options={DND_BACKEND}
+    >
       <div
         className={cn(
           "flex justify-center lg:!justify-start lg:items-start !w-full",
@@ -1108,6 +1053,7 @@ const ImageUploadMobileAlbum = ({
                     </DialogDescription>
                   </DialogHeader>
                   <div className="flex flex-col gap-3">
+                    {/* THAY DOI LAYOUT */}
                     <Dialog>
                       <DialogTrigger asChild>
                         <div className="bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l text-white text-center py-2 rounded-lg">
@@ -1154,6 +1100,7 @@ const ImageUploadMobileAlbum = ({
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
+                    {/* QUAN LI HINH ANH */}
                     <Dialog>
                       <DialogTrigger asChild>
                         <div className="bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl text-white text-center py-2 rounded-lg">
@@ -1172,14 +1119,15 @@ const ImageUploadMobileAlbum = ({
                           {renderImageGridManage()}
                         </div>
                         <DialogFooter className="px-2">
-                          <Button
-                            variant="secondary"
-                            className="!px-10 !text-[16px] mt-3"
-                            onClick={handleSaveReorderedImages}
-                            disabled={!isReordered}
-                          >
-                            Lưu vị trí hình ảnh
-                          </Button>
+                          <DialogClose asChild>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              className="!px-10 !text-[16px] mt-3"
+                            >
+                              Huỷ
+                            </Button>
+                          </DialogClose>
                           <button
                             onClick={handleClick}
                             className="flex justify-center items-center gap-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md text-sm !px-10 !text-[16px] py-2.5"

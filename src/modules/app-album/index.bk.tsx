@@ -21,9 +21,6 @@ export default function AppAlbumClient() {
   const [previewImages, setPreviewImages] = useState<{
     [key: number]: string[];
   }>({});
-  const [originalFiles, setOriginalFiles] = useState<{ [key: number]: File[] }>(
-    {}
-  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +61,126 @@ export default function AppAlbumClient() {
     return true;
   };
 
+  // const handleImageUpload = async (
+  //   pageIndex: number,
+  //   files: FileList | null,
+  //   removedIndex?: number,
+  //   croppedIndex?: number,
+  //   croppedFile?: File
+  // ) => {
+  //   if (files && removedIndex === undefined && croppedIndex === undefined) {
+  //     // Existing code for adding new images...
+  //     const fileArray = Array.from(files);
+  //     const currentImages = pageImages[pageIndex] || [];
+
+  //     if (!validateFiles(fileArray, currentImages)) return;
+
+  //     const newPreviewUrls = fileArray.map((file) => URL.createObjectURL(file));
+  //     setPreviewImages((prev) => ({
+  //       ...prev,
+  //       [pageIndex]: [...(prev[pageIndex] || []), ...newPreviewUrls],
+  //     }));
+
+  //     try {
+  //       setLoading(true);
+  //       const uploadResults = await UploadService.uploadToCloudinary(fileArray);
+  //       if (uploadResults === false) {
+  //         throw new Error("Upload failed");
+  //       }
+
+  //       const secureUrls = uploadResults.map(
+  //         (result: any) => result.secure_url
+  //       );
+
+  //       setPageImages((prev) => ({
+  //         ...prev,
+  //         [pageIndex]: [...(prev[pageIndex] || []), ...secureUrls],
+  //       }));
+
+  //       setPreviewImages((prev) => {
+  //         const existingPreviews = (prev[pageIndex] || []).filter(
+  //           (url) => !newPreviewUrls.includes(url)
+  //         );
+  //         existingPreviews.forEach((url) => URL.revokeObjectURL(url));
+  //         return {
+  //           ...prev,
+  //           [pageIndex]: [...(pageImages[pageIndex] || []), ...secureUrls],
+  //         };
+  //       });
+
+  //       setLoading(false);
+  //       setError(null);
+  //     } catch (error) {
+  //       setError("Failed to upload images to Cloudinary");
+  //       console.error(error);
+  //       setLoading(false);
+  //       setPreviewImages((prev) => ({
+  //         ...prev,
+  //         [pageIndex]: pageImages[pageIndex] || [],
+  //       }));
+  //     }
+  //   } else if (removedIndex !== undefined) {
+  //     // Existing code for removing images...
+  //     setPageImages((prev) => {
+  //       const currentImages = prev[pageIndex] || [];
+  //       const updatedImages = currentImages.filter(
+  //         (_, idx) => idx !== removedIndex
+  //       );
+  //       return { ...prev, [pageIndex]: updatedImages };
+  //     });
+  //     setPreviewImages((prev) => {
+  //       const currentPreviews = prev[pageIndex] || [];
+  //       const updatedPreviews = currentPreviews.filter(
+  //         (_, idx) => idx !== removedIndex
+  //       );
+  //       updatedPreviews.forEach((url) => {
+  //         if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+  //       });
+  //       return { ...prev, [pageIndex]: updatedPreviews };
+  //     });
+  //   } else if (croppedIndex !== undefined && croppedFile) {
+  //     try {
+  //       setLoading(true);
+  //       const uploadResult = await UploadService.uploadToCloudinary([
+  //         croppedFile,
+  //       ]);
+  //       if (uploadResult === false) {
+  //         throw new Error("Upload failed");
+  //       }
+
+  //       const secureUrl = uploadResult[0].secure_url;
+
+  //       setPageImages((prev) => {
+  //         const currentImages = prev[pageIndex] || [];
+  //         const updatedImages = [...currentImages];
+  //         updatedImages[croppedIndex] = secureUrl;
+  //         return { ...prev, [pageIndex]: updatedImages };
+  //       });
+
+  //       setPreviewImages((prev) => {
+  //         const currentPreviews = prev[pageIndex] || [];
+  //         const updatedPreviews = [...currentPreviews];
+  //         // Revoke old blob URL if it exists
+  //         if (
+  //           updatedPreviews[croppedIndex] &&
+  //           updatedPreviews[croppedIndex].startsWith("blob:")
+  //         ) {
+  //           URL.revokeObjectURL(updatedPreviews[croppedIndex]);
+  //         }
+  //         updatedPreviews[croppedIndex] = secureUrl;
+  //         return { ...prev, [pageIndex]: updatedPreviews };
+  //       });
+
+  //       setLoading(false);
+  //       setError(null);
+  //     } catch (error) {
+  //       setError("Failed to upload cropped image to Cloudinary");
+  //       console.error(error);
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
+
   const handleImageUpload = async (
     pageIndex: number,
     files: FileList | null,
@@ -71,9 +188,10 @@ export default function AppAlbumClient() {
     croppedIndex?: number,
     croppedFile?: File,
     originalFile?: File,
-    reorderedImages?: string[]
+    reorderedImages?: string[] // Added to handle reordering
   ) => {
     if (reorderedImages) {
+      // Handle reordering
       setPageImages((prev) => ({
         ...prev,
         [pageIndex]: reorderedImages,
@@ -82,21 +200,12 @@ export default function AppAlbumClient() {
         ...prev,
         [pageIndex]: reorderedImages,
       }));
-      setOriginalFiles((prev) => {
-        const currentFiles = prev[pageIndex] || [];
-        const reorderedFiles = reorderedImages.map((src) => {
-          const index = pageImages[pageIndex]?.indexOf(src);
-          return index !== undefined && index !== -1
-            ? currentFiles[index]
-            : currentFiles[0];
-        });
-        return { ...prev, [pageIndex]: reorderedFiles };
-      });
     } else if (
       files &&
       removedIndex === undefined &&
       croppedIndex === undefined
     ) {
+      // Existing code for adding new images...
       const fileArray = Array.from(files);
       const currentImages = pageImages[pageIndex] || [];
 
@@ -123,10 +232,6 @@ export default function AppAlbumClient() {
           ...prev,
           [pageIndex]: [...(prev[pageIndex] || []), ...secureUrls],
         }));
-        setOriginalFiles((prev) => ({
-          ...prev,
-          [pageIndex]: [...(prev[pageIndex] || []), ...fileArray],
-        }));
 
         setPreviewImages((prev) => {
           const existingPreviews = (prev[pageIndex] || []).filter(
@@ -151,6 +256,7 @@ export default function AppAlbumClient() {
         }));
       }
     } else if (removedIndex !== undefined) {
+      // Existing code for removing images...
       setPageImages((prev) => {
         const currentImages = prev[pageIndex] || [];
         const updatedImages = currentImages.filter(
@@ -168,14 +274,8 @@ export default function AppAlbumClient() {
         });
         return { ...prev, [pageIndex]: updatedPreviews };
       });
-      setOriginalFiles((prev) => {
-        const currentFiles = prev[pageIndex] || [];
-        const updatedFiles = currentFiles.filter(
-          (_, idx) => idx !== removedIndex
-        );
-        return { ...prev, [pageIndex]: updatedFiles };
-      });
     } else if (croppedIndex !== undefined && croppedFile) {
+      // Existing code for cropping images...
       try {
         setLoading(true);
         const uploadResult = await UploadService.uploadToCloudinary([
@@ -193,20 +293,18 @@ export default function AppAlbumClient() {
           updatedImages[croppedIndex] = secureUrl;
           return { ...prev, [pageIndex]: updatedImages };
         });
+
         setPreviewImages((prev) => {
           const currentPreviews = prev[pageIndex] || [];
           const updatedPreviews = [...currentPreviews];
-          if (updatedPreviews[croppedIndex]?.startsWith("blob:")) {
+          if (
+            updatedPreviews[croppedIndex] &&
+            updatedPreviews[croppedIndex].startsWith("blob:")
+          ) {
             URL.revokeObjectURL(updatedPreviews[croppedIndex]);
           }
           updatedPreviews[croppedIndex] = secureUrl;
           return { ...prev, [pageIndex]: updatedPreviews };
-        });
-        setOriginalFiles((prev) => {
-          const currentFiles = prev[pageIndex] || [];
-          const updatedFiles = [...currentFiles];
-          updatedFiles[croppedIndex] = croppedFile;
-          return { ...prev, [pageIndex]: updatedFiles };
         });
 
         setLoading(false);
@@ -292,23 +390,18 @@ export default function AppAlbumClient() {
                       files,
                       removedIndex,
                       croppedIndex,
-                      croppedFile,
-                      originalFile,
-                      reorderedImages
+                      croppedFile
                     ) =>
                       handleImageUpload(
                         index,
                         files,
                         removedIndex,
                         croppedIndex,
-                        croppedFile,
-                        originalFile,
-                        reorderedImages
+                        croppedFile
                       )
                     }
                     albumSize={albumConfig.size}
                     newImages={previewImages[index] || pageImages[index] || []}
-                    originalFiles={originalFiles[index] || []} // Pass original files
                     pageIndex={index}
                   />
                 </div>
