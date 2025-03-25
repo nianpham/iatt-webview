@@ -32,21 +32,14 @@ export default function AppHome() {
 
   return (
     <div
-      className="relative w-full h-screen flex flex-col justify-center items-center gap-2"
+      className="relative w-full min-h-screen flex flex-col justify-center items-center gap-2"
       // style={{ height: deviceHeight }}
     >
-      {/* <Image
-        src={IMAGES.BACKGROUND_MOBILE}
-        alt=""
-        fill
-        priority
-        className="object-cover opacity-50 z-0"
-      /> */}
       <div
         className="w-full h-full flex flex-col justify-center items-center gap-3 z-10"
         // style={{ height: deviceHeight }}
       >
-        <div className="w-full flex flex-col justify-center items-center gap-1">
+        <div className="flex-1 w-full flex flex-col justify-center items-center gap-1">
           <Image
             src={IMAGES.LOGO}
             alt="alt"
@@ -62,7 +55,7 @@ export default function AppHome() {
             className="w-2/3 h-full mb-10"
           />
         </div>
-        <div className="w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg z-10">
+        <div className="flex-2 w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg z-10">
           <Link
             href="/app-frame?function=md"
             className="w-full flex justify-center items-center gap-3 text-white font-medium text-[16px] py-4 text-center"
@@ -83,9 +76,9 @@ export default function AppHome() {
           </button>
         </div>
       </div>
-      <footer className="pb-2 text-gray-400 text-[14px]">
+      <div className="absolute bottom-2 pb-2 text-gray-400 text-[14px]">
         www.inanhtructuyen.com
-      </footer>
+      </div>
     </div>
   );
 }

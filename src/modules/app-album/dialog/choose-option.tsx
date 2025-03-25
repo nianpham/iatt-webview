@@ -22,7 +22,7 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
 
   const sizes = ["25x25", "30x20", "35x25"];
   // const pageOptions = [10, 15, 20];
-  const pageOptions = [2, 3, 4];
+  const pageOptions = [1, 2, 3];
 
   const validateForm = () => {
     if (!selectedPages) {

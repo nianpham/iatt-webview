@@ -27,12 +27,12 @@ import {
 
 interface ImageUploadProps {
   onImageChange: (
-    pageIndex: number,
     files: FileList | null,
     removedIndex?: number,
     croppedIndex?: number,
     croppedFile?: File,
-    reorderedFiles?: File[]
+    originalFile?: File,
+    reorderedImages?: string[]
   ) => void;
   albumSize?: string;
   newImages?: string[];
@@ -134,7 +134,7 @@ const ImageUploadMobileAlbum = ({
   newImages = [],
   originalFiles = [],
   className,
-  pageIndex = 0,
+  pageIndex,
 }: ImageUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mainDialogCloseRef = useRef<HTMLButtonElement>(null);
@@ -142,8 +142,18 @@ const ImageUploadMobileAlbum = ({
   const MIN_IMAGES = 2;
   const MAX_IMAGES = 4;
 
-  const [localFiles, setLocalFiles] = useState<File[]>(originalFiles);
-  const [localPreviews, setLocalPreviews] = useState<string[]>(newImages);
+  const [localImages, setLocalImages] = useState<
+    { id: string; src: string; title?: string }[]
+  >(
+    newImages.map((src, index) => ({
+      id: `${index}-${Date.now()}`,
+      src,
+      title: `Image ${index + 1}`,
+    }))
+  );
+
+  const [originalImageFiles, setOriginalImageFiles] =
+    useState<File[]>(originalFiles);
   const [selectedLayout, setSelectedLayout] = useState<string>(
     newImages.length === 2
       ? "2-1"
@@ -160,47 +170,60 @@ const ImageUploadMobileAlbum = ({
   const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
   const [isReordered, setIsReordered] = useState(false);
 
-  useEffect(() => {
-    setLocalFiles(originalFiles);
-    setLocalPreviews(newImages);
-    setIsReordered(false);
-  }, [originalFiles, newImages]);
+  const moveImage = useCallback((dragIndex: number, hoverIndex: number) => {
+    setLocalImages((prev) => {
+      const clonedImages = [...prev];
+      const [movedImage] = clonedImages.splice(dragIndex, 1);
+      clonedImages.splice(hoverIndex, 0, movedImage);
 
-  const moveImage = useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      setLocalFiles((prev) => {
-        const clonedFiles = [...prev];
+      setOriginalImageFiles((prevFiles) => {
+        const clonedFiles = [...prevFiles];
         const [movedFile] = clonedFiles.splice(dragIndex, 1);
         clonedFiles.splice(hoverIndex, 0, movedFile);
-
-        const clonedPreviews = [...localPreviews];
-        const [movedPreview] = clonedPreviews.splice(dragIndex, 1);
-        clonedPreviews.splice(hoverIndex, 0, movedPreview);
-
-        setLocalPreviews(clonedPreviews);
-        setIsReordered(true);
         return clonedFiles;
       });
-    },
-    [localPreviews]
-  );
+
+      setIsReordered(true);
+      return clonedImages;
+    });
+  }, []);
 
   const handleSaveReorderedImages = useCallback(() => {
-    onImageChange(pageIndex, null, undefined, undefined, undefined, localFiles);
+    const reorderedImageSources = localImages.map((img) => img.src);
+    onImageChange(
+      null,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      reorderedImageSources
+    );
     setIsReordered(false);
     toast({
       title: "Thành công",
       description: "Vị trí hình ảnh đã được lưu.",
       className: "bg-green-500 text-white border-green-600",
     });
-  }, [localFiles, onImageChange, pageIndex]);
+  }, [localImages, onImageChange]);
+
+  useEffect(() => {
+    setLocalImages(
+      newImages.map((src, index) => ({
+        id: `${index}-${Date.now()}`,
+        src,
+        title: `Image ${index + 1}`,
+      }))
+    );
+    setOriginalImageFiles(originalFiles);
+    setIsReordered(false);
+  }, [newImages, originalFiles]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
     const fileArray = Array.from(files);
-    const totalImages = localFiles.length + fileArray.length;
+    const totalImages = localImages.length + fileArray.length;
 
     if (totalImages > MAX_IMAGES) {
       toast({
@@ -211,7 +234,7 @@ const ImageUploadMobileAlbum = ({
       return;
     }
 
-    if (localFiles.length === 0 && fileArray.length < MIN_IMAGES) {
+    if (localImages.length === 0 && fileArray.length < MIN_IMAGES) {
       toast({
         title: "Lỗi",
         description: `Hãy chọn ít nhất ${MIN_IMAGES} ảnh khi album đang trống.`,
@@ -239,12 +262,17 @@ const ImageUploadMobileAlbum = ({
       }
     }
 
-    const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
-    setLocalFiles((prev) => [...prev, ...fileArray]);
-    setLocalPreviews((prev) => [...prev, ...newPreviews]);
-    onImageChange(pageIndex, files);
+    const newLocalImages = fileArray.map((file, index) => ({
+      id: `${localImages.length + index}-${Date.now()}`,
+      src: URL.createObjectURL(file),
+      title: `Image ${localImages.length + index + 1}`,
+    }));
 
-    const newImageCount = localFiles.length + fileArray.length;
+    setLocalImages((prev) => [...prev, ...newLocalImages]);
+    setOriginalImageFiles((prev) => [...prev, ...fileArray]);
+    onImageChange(files);
+
+    const newImageCount = localImages.length + fileArray.length;
     setSelectedLayout(
       newImageCount === 2
         ? "2-1"
@@ -257,7 +285,7 @@ const ImageUploadMobileAlbum = ({
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    if (localFiles.length <= MIN_IMAGES) {
+    if (localImages.length <= MIN_IMAGES) {
       toast({
         title: "Lỗi",
         description: `Không thể xóa ảnh. Cần ít nhất ${MIN_IMAGES} ảnh.`,
@@ -266,16 +294,11 @@ const ImageUploadMobileAlbum = ({
       return;
     }
 
-    const removedUrl = localPreviews[indexToRemove];
-    if (removedUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(removedUrl);
-    }
+    setLocalImages((prev) => prev.filter((_, i) => i !== indexToRemove));
+    setOriginalImageFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
+    onImageChange(null, indexToRemove);
 
-    setLocalFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
-    setLocalPreviews((prev) => prev.filter((_, i) => i !== indexToRemove));
-    onImageChange(pageIndex, null, indexToRemove);
-
-    const newCount = localFiles.length - 1;
+    const newCount = localImages.length - 1;
     setSelectedLayout(
       newCount === 2
         ? "2-1"
@@ -302,6 +325,8 @@ const ImageUploadMobileAlbum = ({
         variant: "destructive",
       });
     } else {
+      console.log("check index", index);
+
       setCropImageIndex(index);
     }
   };
@@ -349,8 +374,6 @@ const ImageUploadMobileAlbum = ({
   };
 
   const renderImageGrid = () => {
-    const images = localFiles.map((file) => URL.createObjectURL(file));
-
     switch (selectedLayout) {
       case "2-1":
         return (
@@ -364,11 +387,11 @@ const ImageUploadMobileAlbum = ({
                 : "h-[250px]"
             }`}
           >
-            {images.map((src, index) => (
+            {localImages.map((img) => (
               <img
-                key={`img-${index}-${Date.now()}`} // Unique key based on index and timestamp
-                src={src}
-                alt={`Image ${index + 1}`}
+                key={img.id}
+                src={img.src}
+                alt={img.title || `Image`}
                 className={`w-full ${
                   albumSize === "25x25"
                     ? "h-[273px]"
@@ -393,11 +416,11 @@ const ImageUploadMobileAlbum = ({
                 : "h-[250px]"
             }`}
           >
-            {images.map((src, index) => (
+            {localImages.map((img) => (
               <img
-                key={`img-${index}-${Date.now()}`}
-                src={src}
-                alt={`Image ${index + 1}`}
+                key={img.id}
+                src={img.src}
+                alt={img.title || `Image`}
                 className="w-full h-full object-cover rounded-lg"
                 crossOrigin="anonymous"
               />
@@ -417,8 +440,8 @@ const ImageUploadMobileAlbum = ({
             }`}
           >
             <img
-              src={images[0]}
-              alt="Image 1"
+              src={localImages[0].src}
+              alt={localImages[0].title || "Image 1"}
               className={`w-full ${
                 albumSize === "25x25"
                   ? "h-[273px]"
@@ -429,11 +452,11 @@ const ImageUploadMobileAlbum = ({
               crossOrigin="anonymous"
             />
             <div className="grid grid-rows-2 gap-2">
-              {images.slice(1).map((src, index) => (
+              {localImages.slice(1).map((img) => (
                 <img
-                  key={`img-${index + 1}-${Date.now()}`}
-                  src={src}
-                  alt={`Image ${index + 2}`}
+                  key={img.id}
+                  src={img.src}
+                  alt={img.title || `Image`}
                   className={`w-full ${
                     albumSize === "25x25"
                       ? "h-[132px]"
@@ -460,11 +483,11 @@ const ImageUploadMobileAlbum = ({
             }`}
           >
             <div className="grid grid-rows-2 gap-2">
-              {images.slice(1).map((src, index) => (
+              {localImages.slice(1).map((img) => (
                 <img
-                  key={`img-${index + 1}-${Date.now()}`}
-                  src={src}
-                  alt={`Image ${index + 2}`}
+                  key={img.id}
+                  src={img.src}
+                  alt={img.title || `Image`}
                   className={`w-full ${
                     albumSize === "25x25"
                       ? "h-[132px]"
@@ -477,8 +500,8 @@ const ImageUploadMobileAlbum = ({
               ))}
             </div>
             <img
-              src={images[0]}
-              alt="Image 1"
+              src={localImages[0].src}
+              alt={localImages[0].title || "Image 1"}
               className={`w-full ${
                 albumSize === "25x25"
                   ? "h-[273px]"
@@ -502,11 +525,11 @@ const ImageUploadMobileAlbum = ({
                 : "h-[250px]"
             }`}
           >
-            {images.map((src, index) => (
+            {localImages.map((img) => (
               <img
-                key={`img-${index}-${Date.now()}`}
-                src={src}
-                alt={`Image ${index + 1}`}
+                key={img.id}
+                src={img.src}
+                alt={img.title || `Image`}
                 className={`w-full ${
                   albumSize === "25x25"
                     ? "h-[132px]"
@@ -564,12 +587,12 @@ const ImageUploadMobileAlbum = ({
                   : "h-[222px]"
               }`}
             >
-              {localFiles.map((file, index) => (
-                <div key={`${index}-${Date.now()}`} className="relative">
+              {localImages.map((img, index) => (
+                <div key={img.id} className="relative">
                   <Div
-                    src={URL.createObjectURL(file)}
-                    title={`Image ${index + 1}`}
-                    id={`${index}-${Date.now()}`}
+                    src={img.src}
+                    title={img.title}
+                    id={img.id}
                     index={index}
                     moveImage={moveImage}
                     albumSize={albumSize || "25x25"}
@@ -582,7 +605,7 @@ const ImageUploadMobileAlbum = ({
                     <Crop size={15} color="black" />
                   </button>
                   <button
-                    onClick={() => handleRemoveImage(index)}
+                    onClick={() => handleCropButtonClick(index)}
                     className="absolute -top-2 -right-1.5 bg-red-500 text-white p-1 rounded-full"
                   >
                     <X size={12} />
@@ -601,12 +624,12 @@ const ImageUploadMobileAlbum = ({
                   : "h-[250px]"
               }`}
             >
-              {localFiles.map((file, index) => (
-                <div key={`${index}-${Date.now()}`} className="relative">
+              {localImages.map((img, index) => (
+                <div key={img.id} className="relative">
                   <Div
-                    src={URL.createObjectURL(file)}
-                    title={`Image ${index + 1}`}
-                    id={`${index}-${Date.now()}`}
+                    src={img.src}
+                    title={img.title}
+                    id={img.id}
                     index={index}
                     moveImage={moveImage}
                     albumSize={albumSize || "25x25"}
@@ -640,9 +663,9 @@ const ImageUploadMobileAlbum = ({
             >
               <div className="relative">
                 <Div
-                  src={URL.createObjectURL(localFiles[0])}
-                  title="Image 1"
-                  id={`0-${Date.now()}`}
+                  src={localImages[0].src}
+                  title={localImages[0].title}
+                  id={localImages[0].id}
                   index={0}
                   moveImage={moveImage}
                   albumSize={albumSize || "25x25"}
@@ -668,12 +691,12 @@ const ImageUploadMobileAlbum = ({
                 </button>
               </div>
               <div className="grid grid-rows-2 gap-2">
-                {localFiles.slice(1).map((file, idx) => (
-                  <div key={`${idx + 1}-${Date.now()}`} className="relative">
+                {localImages.slice(1).map((img, idx) => (
+                  <div key={img.id} className="relative">
                     <Div
-                      src={URL.createObjectURL(file)}
-                      title={`Image ${idx + 2}`}
-                      id={`${idx + 1}-${Date.now()}`}
+                      src={img.src}
+                      title={img.title}
+                      id={img.id}
                       index={idx + 1}
                       moveImage={moveImage}
                       albumSize={albumSize || "25x25"}
@@ -707,12 +730,12 @@ const ImageUploadMobileAlbum = ({
               }`}
             >
               <div className="grid grid-rows-2 gap-2">
-                {localFiles.slice(1).map((file, idx) => (
-                  <div key={`${idx + 1}-${Date.now()}`} className="relative">
+                {localImages.slice(1).map((img, idx) => (
+                  <div key={img.id} className="relative">
                     <Div
-                      src={URL.createObjectURL(file)}
-                      title={`Image ${idx + 2}`}
-                      id={`${idx + 1}-${Date.now()}`}
+                      src={img.src}
+                      title={img.title}
+                      id={img.id}
                       index={idx + 1}
                       moveImage={moveImage}
                       albumSize={albumSize || "25x25"}
@@ -735,9 +758,9 @@ const ImageUploadMobileAlbum = ({
               </div>
               <div className="relative">
                 <Div
-                  src={URL.createObjectURL(localFiles[0])}
-                  title="Image 1"
-                  id={`0-${Date.now()}`}
+                  src={localImages[0].src}
+                  title={localImages[0].title}
+                  id={localImages[0].id}
                   index={0}
                   moveImage={moveImage}
                   albumSize={albumSize || "25x25"}
@@ -774,12 +797,12 @@ const ImageUploadMobileAlbum = ({
                   : "h-[208px]"
               }`}
             >
-              {localFiles.map((file, index) => (
-                <div key={`${index}-${Date.now()}`} className="relative">
+              {localImages.map((img, index) => (
+                <div key={img.id} className="relative">
                   <Div
-                    src={URL.createObjectURL(file)}
-                    title={`Image ${index + 1}`}
-                    id={`${index}-${Date.now()}`}
+                    src={img.src}
+                    title={img.title}
+                    id={img.id}
                     index={index}
                     moveImage={moveImage}
                     albumSize={albumSize || "25x25"}
@@ -814,66 +837,129 @@ const ImageUploadMobileAlbum = ({
   );
 
   const handleCropSave = useCallback(async () => {
-    if (!croppedAreaPixels || cropImageIndex === null) return;
+    if (!croppedAreaPixels || cropImageIndex === null) {
+      toast({
+        title: "Lỗi",
+        description: "Không có vùng cắt được chọn.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    const image = new window.Image();
-    image.src = URL.createObjectURL(localFiles[cropImageIndex]);
-    await new Promise((resolve) => (image.onload = resolve));
+    try {
+      let imageUrl: string;
+      if (originalImageFiles[cropImageIndex]) {
+        imageUrl = URL.createObjectURL(originalImageFiles[cropImageIndex]);
+      } else {
+        const response = await fetch(localImages[cropImageIndex].src, {
+          mode: "cors",
+        });
+        if (!response.ok) throw new Error("Không thể tải hình ảnh từ nguồn.");
+        const blob = await response.blob();
+        imageUrl = URL.createObjectURL(blob);
+      }
 
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
-    canvas.width = croppedAreaPixels.width;
-    canvas.height = croppedAreaPixels.height;
+      const image = new window.Image();
+      image.src = imageUrl;
 
-    ctx.drawImage(
-      image,
-      croppedAreaPixels.x,
-      croppedAreaPixels.y,
-      croppedAreaPixels.width,
-      croppedAreaPixels.height,
-      0,
-      0,
-      croppedAreaPixels.width,
-      croppedAreaPixels.height
-    );
+      await new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = () => reject(new Error("Không thể tải hình ảnh."));
+      });
 
-    const croppedUrl = canvas.toDataURL("image/jpeg");
-    const croppedBlob = dataURLtoBlob(croppedUrl);
-    const croppedFile = new File(
-      [croppedBlob],
-      `cropped-image-${cropImageIndex}.jpg`,
-      { type: "image/jpeg" }
-    );
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
-    setLocalFiles((prev) => {
-      const updated = [...prev];
-      updated[cropImageIndex] = croppedFile;
-      return updated;
-    });
-    setLocalPreviews((prev) => {
-      const updated = [...prev];
-      URL.revokeObjectURL(updated[cropImageIndex]);
-      updated[cropImageIndex] = croppedUrl;
-      return updated;
-    });
+      if (!ctx) throw new Error("Không thể tạo context canvas.");
 
-    onImageChange(pageIndex, null, undefined, cropImageIndex, croppedFile);
-    setCropImageIndex(null);
-    setCroppedAreaPixels(null);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setIsMainDialogOpen(false);
+      canvas.width = croppedAreaPixels.width;
+      canvas.height = croppedAreaPixels.height;
 
-    toast({
-      title: "Thành công",
-      description: "Ảnh đã được cắt thành công.",
-      className: "bg-green-500 text-white border-green-600",
-    });
-  }, [croppedAreaPixels, cropImageIndex, localFiles, onImageChange, pageIndex]);
+      ctx.drawImage(
+        image,
+        croppedAreaPixels.x,
+        croppedAreaPixels.y,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height,
+        0,
+        0,
+        croppedAreaPixels.width,
+        croppedAreaPixels.height
+      );
+
+      const croppedImageUrl = canvas.toDataURL("image/jpeg");
+      const croppedBlob = dataURLtoBlob(croppedImageUrl);
+      const croppedFile = new File(
+        [croppedBlob],
+        `cropped-image-${cropImageIndex}.jpg`,
+        { type: "image/jpeg" }
+      );
+
+      setLocalImages((prev) => {
+        const updated = [...prev];
+        updated[cropImageIndex] = {
+          ...updated[cropImageIndex],
+          src: croppedImageUrl,
+        };
+        return updated;
+      });
+
+      setOriginalImageFiles((prev) => {
+        const updatedFiles = [...prev];
+        updatedFiles[cropImageIndex] = croppedFile;
+        return updatedFiles;
+      });
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(croppedFile);
+      const fileList = dataTransfer.files;
+
+      onImageChange(
+        fileList,
+        undefined,
+        cropImageIndex,
+        croppedFile,
+        originalImageFiles[cropImageIndex]
+      );
+
+      setCropImageIndex(null);
+      setCroppedAreaPixels(null);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+
+      setIsMainDialogOpen(false);
+      if (mainDialogCloseRef.current) {
+        mainDialogCloseRef.current.click();
+      }
+
+      toast({
+        title: "Thành công",
+        description: "Ảnh đã được cắt thành công.",
+        className: "bg-green-500 text-white border-green-600",
+      });
+    } catch (error) {
+      console.error("Error cropping image:", error);
+      toast({
+        title: "Lỗi",
+        description:
+          error instanceof Error ? error.message : "Không thể xử lý hình ảnh.",
+        variant: "destructive",
+      });
+    }
+  }, [
+    croppedAreaPixels,
+    cropImageIndex,
+    localImages,
+    originalImageFiles,
+    onImageChange,
+  ]);
 
   const handleLayoutChange = useCallback((layoutId: string) => {
     setSelectedLayout(layoutId);
     setIsMainDialogOpen(false);
+    if (mainDialogCloseRef.current) {
+      mainDialogCloseRef.current.click();
+    }
     toast({
       title: "Thành công",
       description: "Layout đã được thay đổi.",
@@ -887,7 +973,9 @@ const ImageUploadMobileAlbum = ({
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
     return new Blob([u8arr], { type: mime });
   };
 
@@ -1014,7 +1102,7 @@ const ImageUploadMobileAlbum = ({
           className="hidden"
         />
         <div className="relative group w-full h-full">
-          {localFiles.length > 0 && (
+          {localImages.length > 0 && (
             <>
               <Dialog
                 open={isMainDialogOpen}
@@ -1046,12 +1134,12 @@ const ImageUploadMobileAlbum = ({
                         <DialogHeader>
                           <DialogTitle>Thay đổi layout</DialogTitle>
                           <DialogDescription>
-                            Chọn layout cho {localFiles.length} ảnh
+                            Chọn layout cho {localImages.length} ảnh
                           </DialogDescription>
                         </DialogHeader>
                         <div className="flex-1 overflow-y-auto pt-3 px-0">
                           {layoutOptions[
-                            localFiles.length as keyof typeof layoutOptions
+                            localImages.length as keyof typeof layoutOptions
                           ]?.map((option) => (
                             <div
                               key={option.id}
@@ -1135,7 +1223,13 @@ const ImageUploadMobileAlbum = ({
                     </DialogHeader>
                     <div className="relative w-full h-[60vh]">
                       <Cropper
-                        image={URL.createObjectURL(localFiles[cropImageIndex])}
+                        image={
+                          originalImageFiles[cropImageIndex]
+                            ? URL.createObjectURL(
+                                originalImageFiles[cropImageIndex]
+                              )
+                            : localImages[cropImageIndex].src
+                        }
                         crop={crop}
                         zoom={zoom}
                         aspect={getAspectRatio(selectedLayout, cropImageIndex)}
@@ -1168,7 +1262,7 @@ const ImageUploadMobileAlbum = ({
               </div>
             </>
           )}
-          {localFiles.length === 0 && (
+          {localImages.length === 0 && (
             <div
               onClick={handleClick}
               className={`flex ${

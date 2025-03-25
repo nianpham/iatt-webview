@@ -25,13 +25,10 @@ export default function AppAlbumClient() {
     pages: 0,
   });
 
-  const [pageImages, setPageImages] = useState<{ [key: number]: string[] }>({});
-  const [previewImages, setPreviewImages] = useState<{
-    [key: number]: string[];
-  }>({});
-  const [originalFiles, setOriginalFiles] = useState<{ [key: number]: File[] }>(
+  const [pageFiles, setPageFiles] = useState<{ [key: number]: File[] }>({}); // Store File objects instead of URLs
+  const [previewUrls, setPreviewUrls] = useState<{ [key: number]: string[] }>(
     {}
-  );
+  ); // Store blob URLs for preview
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -44,20 +41,20 @@ export default function AppAlbumClient() {
     setAlbumConfig({ size, pages });
   };
 
-  const validateFiles = (files: File[], currentImages: string[]): boolean => {
-    const totalImages = currentImages.length + files.length;
+  const validateFiles = (files: File[], currentFiles: File[]): boolean => {
+    const totalImages = currentFiles.length + files.length;
     if (totalImages > MAX_IMAGES) {
       toast({
-        title: "Lỗi",
-        description: `Tổng số ảnh không vượt quá ${MAX_IMAGES}. Hiện tại có ${currentImages.length} ảnh, Vui lòng thêm ${files.length} ảnh.`,
+        title: "Error",
+        description: `Total images cannot exceed ${MAX_IMAGES}. Currently ${currentFiles.length} images, trying to add ${files.length}.`,
         variant: "destructive",
       });
       return false;
     }
-    if (currentImages.length === 0 && files.length < MIN_IMAGES) {
+    if (currentFiles.length === 0 && files.length < MIN_IMAGES) {
       toast({
-        title: "Lỗi",
-        description: `Vui lòng tải lên tối thiểu ${MIN_IMAGES} ảnh khi album đang trống.`,
+        title: "Error",
+        description: `Please upload at least ${MIN_IMAGES} images when album is empty.`,
         variant: "destructive",
       });
       return false;
@@ -65,8 +62,8 @@ export default function AppAlbumClient() {
     const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
     if (oversizedFiles.length > 0) {
       toast({
-        title: "Lỗi",
-        description: `Tất cả ảnh không vượt quá 5MB.`,
+        title: "Error",
+        description: `All images must be under 5MB.`,
         variant: "destructive",
       });
       return false;
@@ -76,8 +73,8 @@ export default function AppAlbumClient() {
     );
     if (nonImageFiles.length > 0) {
       toast({
-        title: "Lỗi",
-        description: `Vui lòng tải lên tệp hình ảnh.`,
+        title: "Error",
+        description: `Please upload image files only.`,
         variant: "destructive",
       });
       return false;
@@ -91,152 +88,70 @@ export default function AppAlbumClient() {
     removedIndex?: number,
     croppedIndex?: number,
     croppedFile?: File,
-    originalFile?: File,
-    reorderedImages?: string[]
+    reorderedFiles?: File[]
   ) => {
-    if (reorderedImages) {
-      setPageImages((prev) => ({
+    const currentFiles = pageFiles[pageIndex] || [];
+
+    if (reorderedFiles) {
+      setPageFiles((prev) => ({
         ...prev,
-        [pageIndex]: reorderedImages,
+        [pageIndex]: reorderedFiles,
       }));
-      setPreviewImages((prev) => ({
+      setPreviewUrls((prev) => ({
         ...prev,
-        [pageIndex]: reorderedImages,
+        [pageIndex]: reorderedFiles.map((file) => URL.createObjectURL(file)),
       }));
-      setOriginalFiles((prev) => {
-        const currentFiles = prev[pageIndex] || [];
-        const reorderedFiles = reorderedImages.map((src) => {
-          const index = pageImages[pageIndex]?.indexOf(src);
-          return index !== undefined && index !== -1
-            ? currentFiles[index]
-            : currentFiles[0];
-        });
-        return { ...prev, [pageIndex]: reorderedFiles };
-      });
     } else if (
       files &&
       removedIndex === undefined &&
       croppedIndex === undefined
     ) {
       const fileArray = Array.from(files);
-      const currentImages = pageImages[pageIndex] || [];
-
-      if (!validateFiles(fileArray, currentImages)) return;
+      if (!validateFiles(fileArray, currentFiles)) return;
 
       const newPreviewUrls = fileArray.map((file) => URL.createObjectURL(file));
-      setPreviewImages((prev) => ({
+      setPreviewUrls((prev) => ({
         ...prev,
         [pageIndex]: [...(prev[pageIndex] || []), ...newPreviewUrls],
       }));
-
-      try {
-        setLoading(true);
-        const uploadResults = await UploadService.uploadToCloudinary(fileArray);
-        if (uploadResults === false) {
-          throw new Error("Upload failed");
-        }
-
-        const secureUrls = uploadResults.map(
-          (result: any) => result.secure_url
-        );
-
-        setPageImages((prev) => ({
-          ...prev,
-          [pageIndex]: [...(prev[pageIndex] || []), ...secureUrls],
-        }));
-        setOriginalFiles((prev) => ({
-          ...prev,
-          [pageIndex]: [...(prev[pageIndex] || []), ...fileArray],
-        }));
-
-        setPreviewImages((prev) => {
-          const existingPreviews = (prev[pageIndex] || []).filter(
-            (url) => !newPreviewUrls.includes(url)
-          );
-          existingPreviews.forEach((url) => URL.revokeObjectURL(url));
-          return {
-            ...prev,
-            [pageIndex]: [...(pageImages[pageIndex] || []), ...secureUrls],
-          };
-        });
-
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        setError("Failed to upload images to Cloudinary");
-        console.error(error);
-        setLoading(false);
-        setPreviewImages((prev) => ({
-          ...prev,
-          [pageIndex]: pageImages[pageIndex] || [],
-        }));
-      }
+      setPageFiles((prev) => ({
+        ...prev,
+        [pageIndex]: [...currentFiles, ...fileArray],
+      }));
     } else if (removedIndex !== undefined) {
-      setPageImages((prev) => {
-        const currentImages = prev[pageIndex] || [];
-        const updatedImages = currentImages.filter(
-          (_, idx) => idx !== removedIndex
-        );
-        return { ...prev, [pageIndex]: updatedImages };
-      });
-      setPreviewImages((prev) => {
-        const currentPreviews = prev[pageIndex] || [];
-        const updatedPreviews = currentPreviews.filter(
-          (_, idx) => idx !== removedIndex
-        );
-        updatedPreviews.forEach((url) => {
-          if (url.startsWith("blob:")) URL.revokeObjectURL(url);
-        });
-        return { ...prev, [pageIndex]: updatedPreviews };
-      });
-      setOriginalFiles((prev) => {
-        const currentFiles = prev[pageIndex] || [];
-        const updatedFiles = currentFiles.filter(
-          (_, idx) => idx !== removedIndex
-        );
-        return { ...prev, [pageIndex]: updatedFiles };
-      });
+      const updatedFiles = currentFiles.filter(
+        (_, idx) => idx !== removedIndex
+      );
+      const updatedUrls = (previewUrls[pageIndex] || []).filter(
+        (_, idx) => idx !== removedIndex
+      );
+
+      setPageFiles((prev) => ({
+        ...prev,
+        [pageIndex]: updatedFiles,
+      }));
+      setPreviewUrls((prev) => ({
+        ...prev,
+        [pageIndex]: updatedUrls,
+      }));
     } else if (croppedIndex !== undefined && croppedFile) {
-      try {
-        setLoading(true);
-        const uploadResult = await UploadService.uploadToCloudinary([
-          croppedFile,
-        ]);
-        if (uploadResult === false) {
-          throw new Error("Upload failed");
-        }
+      const updatedFiles = [...currentFiles];
+      updatedFiles[croppedIndex] = croppedFile;
 
-        const secureUrl = uploadResult[0].secure_url;
-
-        setPageImages((prev) => {
-          const currentImages = prev[pageIndex] || [];
-          const updatedImages = [...currentImages];
-          updatedImages[croppedIndex] = secureUrl;
-          return { ...prev, [pageIndex]: updatedImages };
-        });
-        setPreviewImages((prev) => {
-          const currentPreviews = prev[pageIndex] || [];
-          const updatedPreviews = [...currentPreviews];
-          if (updatedPreviews[croppedIndex]?.startsWith("blob:")) {
-            URL.revokeObjectURL(updatedPreviews[croppedIndex]);
-          }
-          updatedPreviews[croppedIndex] = secureUrl;
-          return { ...prev, [pageIndex]: updatedPreviews };
-        });
-        setOriginalFiles((prev) => {
-          const currentFiles = prev[pageIndex] || [];
-          const updatedFiles = [...currentFiles];
-          updatedFiles[croppedIndex] = croppedFile;
-          return { ...prev, [pageIndex]: updatedFiles };
-        });
-
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        setError("Failed to upload cropped image to Cloudinary");
-        console.error(error);
-        setLoading(false);
+      const updatedUrls = [...(previewUrls[pageIndex] || [])];
+      if (updatedUrls[croppedIndex]?.startsWith("blob:")) {
+        URL.revokeObjectURL(updatedUrls[croppedIndex]);
       }
+      updatedUrls[croppedIndex] = URL.createObjectURL(croppedFile);
+
+      setPageFiles((prev) => ({
+        ...prev,
+        [pageIndex]: updatedFiles,
+      }));
+      setPreviewUrls((prev) => ({
+        ...prev,
+        [pageIndex]: updatedUrls,
+      }));
     }
   };
 
@@ -244,12 +159,12 @@ export default function AppAlbumClient() {
     window.location.reload();
   };
 
-  const preloadImages = (urls: string[]): Promise<HTMLImageElement[]> => {
+  const preloadImages = (files: File[]): Promise<HTMLImageElement[]> => {
+    const urls = files.map((file) => URL.createObjectURL(file));
     const promises = urls.map((url) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new window.Image();
         img.src = url;
-        img.crossOrigin = "anonymous";
         img.onload = () => resolve(img);
         img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
       });
@@ -338,18 +253,17 @@ export default function AppAlbumClient() {
   };
 
   const validateImageDimensions = async (
-    images: string[],
+    files: File[],
     layout: string,
     albumSize: string
   ): Promise<boolean> => {
-    const loadedImages = await preloadImages(images);
+    const loadedImages = await preloadImages(files);
     for (let idx = 0; idx < loadedImages.length; idx++) {
       const img = loadedImages[idx];
       const expected = getImageDimensions(albumSize, layout, idx);
       const actualAspectRatio = img.width / img.height;
       const expectedAspectRatio = expected.width / expected.height;
 
-      // Allow a small tolerance (e.g., 5%) for aspect ratio comparison
       const tolerance = 0.05;
       if (
         Math.abs(actualAspectRatio - expectedAspectRatio) /
@@ -363,20 +277,15 @@ export default function AppAlbumClient() {
   };
 
   const renderToCanvas = async (
-    images: string[],
+    files: File[],
     layout: string,
     albumSize: string
   ): Promise<string> => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to create canvas context");
-    }
+    if (!ctx) throw new Error("Failed to create canvas context");
 
-    // Get layout dimensions
     const dims = getLayoutDimensions(albumSize, layout);
-    const padding = 12; // 3px padding on each side (p-3) * 2
-    const border = 4; // 2px border on each side
     const baseHeight =
       albumSize === "25x25" ? 300 : albumSize === "30x20" ? 200 : 250;
     const baseWidth =
@@ -384,285 +293,91 @@ export default function AppAlbumClient() {
     const totalWidth = baseWidth;
     const totalHeight = baseHeight;
 
-    // Set canvas dimensions with quality scaling
-    const QUALITY_SCALE = 2; // Define QUALITY_SCALE here or pass it as a parameter
     canvas.width = totalWidth * QUALITY_SCALE;
     canvas.height = totalHeight * QUALITY_SCALE;
     ctx.scale(QUALITY_SCALE, QUALITY_SCALE);
 
-    // Draw background and border
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, totalWidth, totalHeight);
-    ctx.strokeStyle = "#d1d5db"; // gray-300
+    ctx.strokeStyle = "#d1d5db";
     ctx.lineWidth = 2;
     ctx.strokeRect(0, 0, totalWidth, totalHeight);
 
-    // Preload images
-    const loadedImages = await preloadImages(images);
+    const loadedImages = await preloadImages(files);
 
-    // Helper function to check if dims has width and height directly
     const hasWidthHeight = (
       dims: LayoutDimensions
     ): dims is { width: number; height: number } => {
       return "width" in dims && "height" in dims;
     };
 
-    // Draw images based on layout
     switch (layout) {
       case "2-1":
-        if (!hasWidthHeight(dims)) {
-          throw new Error("Expected width and height for layout 2-1");
-        }
+        if (!hasWidthHeight(dims))
+          throw new Error("Invalid dimensions for 2-1");
         loadedImages.forEach((img, idx) => {
-          const x = idx * (dims.width + 2); // 2px gap
+          const x = idx * (dims.width + 2);
           ctx.drawImage(img, x, 0, dims.width, dims.height);
-          // Draw rounded corners (clipping path)
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(x + 8, 0);
-          ctx.lineTo(x + dims.width - 8, 0);
-          ctx.quadraticCurveTo(x + dims.width, 0, x + dims.width, 8);
-          ctx.lineTo(x + dims.width, dims.height - 8);
-          ctx.quadraticCurveTo(
-            x + dims.width,
-            dims.height,
-            x + dims.width - 8,
-            dims.height
-          );
-          ctx.lineTo(x + 8, dims.height);
-          ctx.quadraticCurveTo(x, dims.height, x, dims.height - 8);
-          ctx.lineTo(x, 8);
-          ctx.quadraticCurveTo(x, 0, x + 8, 0);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, x, 0, dims.width, dims.height);
-          ctx.restore();
         });
         break;
-
       case "2-2":
-        if (!hasWidthHeight(dims)) {
-          throw new Error("Expected width and height for layout 2-2");
-        }
+        if (!hasWidthHeight(dims))
+          throw new Error("Invalid dimensions for 2-2");
         loadedImages.forEach((img, idx) => {
-          const y = idx * (dims.height / 2 + 2); // 2px gap
-          ctx.drawImage(img, 0, y, dims.width * 2, dims.height / 2);
-          // Draw rounded corners
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(0 + 8, y);
-          ctx.lineTo(dims.width * 2 - 8, y);
-          ctx.quadraticCurveTo(dims.width * 2, y, dims.width * 2, y + 8);
-          ctx.lineTo(dims.width * 2, y + dims.height / 2 - 8);
-          ctx.quadraticCurveTo(
-            dims.width * 2,
-            y + dims.height / 2,
-            dims.width * 2 - 8,
-            y + dims.height / 2
-          );
-          ctx.lineTo(8, y + dims.height / 2);
-          ctx.quadraticCurveTo(
-            0,
-            y + dims.height / 2,
-            0,
-            y + dims.height / 2 - 8
-          );
-          ctx.lineTo(0, y + 8);
-          ctx.quadraticCurveTo(0, y, 8, y);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, 0, y, dims.width * 2, dims.height / 2);
-          ctx.restore();
+          const y = idx * (dims.height / 2 + 2);
+          ctx.drawImage(img, 0, y, totalWidth, dims.height / 2);
         });
         break;
-
       case "3-1":
-        if (hasWidthHeight(dims)) {
-          throw new Error("Expected large and small dimensions for layout 3-1");
+        if ("large" in dims) {
+          ctx.drawImage(
+            loadedImages[0],
+            0,
+            0,
+            dims.large.width,
+            dims.large.height
+          );
+          loadedImages.slice(1).forEach((img, idx) => {
+            const y = idx * (dims.small.height + 2);
+            ctx.drawImage(
+              img,
+              dims.large.width + 2,
+              y,
+              dims.small.width,
+              dims.small.height
+            );
+          });
         }
-        // Large image on the left
-        ctx.drawImage(
-          loadedImages[0],
-          0,
-          0,
-          dims.large.width,
-          dims.large.height
-        );
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(8, 0);
-        ctx.lineTo(dims.large.width - 8, 0);
-        ctx.quadraticCurveTo(dims.large.width, 0, dims.large.width, 8);
-        ctx.lineTo(dims.large.width, dims.large.height - 8);
-        ctx.quadraticCurveTo(
-          dims.large.width,
-          dims.large.height,
-          dims.large.width - 8,
-          dims.large.height
-        );
-        ctx.lineTo(8, dims.large.height);
-        ctx.quadraticCurveTo(0, dims.large.height, 0, dims.large.height - 8);
-        ctx.lineTo(0, 8);
-        ctx.quadraticCurveTo(0, 0, 8, 0);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(
-          loadedImages[0],
-          0,
-          0,
-          dims.large.width,
-          dims.large.height
-        );
-        ctx.restore();
-
-        // Two small images on the right
-        loadedImages.slice(1).forEach((img, idx) => {
-          const y = idx * (dims.small.height + 2); // 2px gap
-          const x = dims.large.width + 2; // 2px gap
-          ctx.drawImage(img, x, y, dims.small.width, dims.small.height);
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(x + 8, y);
-          ctx.lineTo(x + dims.small.width - 8, y);
-          ctx.quadraticCurveTo(
-            x + dims.small.width,
-            y,
-            x + dims.small.width,
-            y + 8
-          );
-          ctx.lineTo(x + dims.small.width, y + dims.small.height - 8);
-          ctx.quadraticCurveTo(
-            x + dims.small.width,
-            y + dims.small.height,
-            x + dims.small.width - 8,
-            y + dims.small.height
-          );
-          ctx.lineTo(x + 8, y + dims.small.height);
-          ctx.quadraticCurveTo(
-            x,
-            y + dims.small.height,
-            x,
-            y + dims.small.height - 8
-          );
-          ctx.lineTo(x, y + 8);
-          ctx.quadraticCurveTo(x, y, x + 8, y);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, x, y, dims.small.width, dims.small.height);
-          ctx.restore();
-        });
         break;
-
       case "3-2":
-        if (hasWidthHeight(dims)) {
-          throw new Error("Expected large and small dimensions for layout 3-2");
+        if ("large" in dims) {
+          ctx.drawImage(
+            loadedImages[0],
+            dims.large.width + 2,
+            0,
+            dims.large.width,
+            dims.large.height
+          );
+          loadedImages.slice(1).forEach((img, idx) => {
+            const y = idx * (dims.small.height + 2);
+            ctx.drawImage(img, 0, y, dims.small.width, dims.small.height);
+          });
         }
-        // Two small images on the left
-        loadedImages.slice(1).forEach((img, idx) => {
-          const y = idx * (dims.small.height + 2); // 2px gap
-          ctx.drawImage(img, 0, y, dims.small.width, dims.small.height);
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(8, y);
-          ctx.lineTo(dims.small.width - 8, y);
-          ctx.quadraticCurveTo(dims.small.width, y, dims.small.width, y + 8);
-          ctx.lineTo(dims.small.width, y + dims.small.height - 8);
-          ctx.quadraticCurveTo(
-            dims.small.width,
-            y + dims.small.height,
-            dims.small.width - 8,
-            y + dims.small.height
-          );
-          ctx.lineTo(8, y + dims.small.height);
-          ctx.quadraticCurveTo(
-            0,
-            y + dims.small.height,
-            0,
-            y + dims.small.height - 8
-          );
-          ctx.lineTo(0, y + 8);
-          ctx.quadraticCurveTo(0, y, 8, y);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, 0, y, dims.small.width, dims.small.height);
-          ctx.restore();
-        });
-
-        // Large image on the right
-        ctx.drawImage(
-          loadedImages[0],
-          dims.small.width + 2,
-          0,
-          dims.large.width,
-          dims.large.height
-        );
-        ctx.save();
-        ctx.beginPath();
-        const x = dims.small.width + 2;
-        ctx.moveTo(x + 8, 0);
-        ctx.lineTo(x + dims.large.width - 8, 0);
-        ctx.quadraticCurveTo(x + dims.large.width, 0, x + dims.large.width, 8);
-        ctx.lineTo(x + dims.large.width, dims.large.height - 8);
-        ctx.quadraticCurveTo(
-          x + dims.large.width,
-          dims.large.height,
-          x + dims.large.width - 8,
-          dims.large.height
-        );
-        ctx.lineTo(x + 8, dims.large.height);
-        ctx.quadraticCurveTo(x, dims.large.height, x, dims.large.height - 8);
-        ctx.lineTo(x, 8);
-        ctx.quadraticCurveTo(x, 0, x + 8, 0);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(
-          loadedImages[0],
-          dims.small.width + 2,
-          0,
-          dims.large.width,
-          dims.large.height
-        );
-        ctx.restore();
         break;
-
       case "4-1":
-        if (!hasWidthHeight(dims)) {
-          throw new Error("Expected width and height for layout 4-1");
+        if (hasWidthHeight(dims)) {
+          loadedImages.forEach((img, idx) => {
+            const x = (idx % 2) * (dims.width + 2);
+            const y = Math.floor(idx / 2) * (dims.height + 2);
+            ctx.drawImage(img, x, y, dims.width, dims.height);
+          });
         }
-        loadedImages.forEach((img, idx) => {
-          const row = Math.floor(idx / 2);
-          const col = idx % 2;
-          const x = col * (dims.width + 2); // 2px gap
-          const y = row * (dims.height + 2); // 2px gap
-          ctx.drawImage(img, x, y, dims.width, dims.height);
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(x + 8, y);
-          ctx.lineTo(x + dims.width - 8, y);
-          ctx.quadraticCurveTo(x + dims.width, y, x + dims.width, y + 8);
-          ctx.lineTo(x + dims.width, y + dims.height - 8);
-          ctx.quadraticCurveTo(
-            x + dims.width,
-            y + dims.height,
-            x + dims.width - 8,
-            y + dims.height
-          );
-          ctx.lineTo(x + 8, y + dims.height);
-          ctx.quadraticCurveTo(x, y + dims.height, x, y + dims.height - 8);
-          ctx.lineTo(x, y + 8);
-          ctx.quadraticCurveTo(x, y, x + 8, y);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, x, y, dims.width, dims.height);
-          ctx.restore();
-        });
         break;
-
       default:
         throw new Error(`Unsupported layout: ${layout}`);
     }
 
-    return canvas.toDataURL("image/png", 1.0); // Maximum quality
+    return canvas.toDataURL("image/png", 1.0);
   };
 
   const getLayoutForPage = (imageCount: number, pageIndex: number): string => {
@@ -671,55 +386,66 @@ export default function AppAlbumClient() {
     );
     if (!node) return "";
     const classList = node.className;
+
     if (imageCount === 2) {
-      return classList.includes("grid-cols-2") ? "2-1" : "2-2";
+      if (classList.includes("grid-cols-2")) return "2-1";
+      if (classList.includes("grid-rows-2")) return "2-2";
     } else if (imageCount === 3) {
-      return classList.includes("grid-cols-2") ? "3-1" : "3-2";
+      if (classList.includes("grid-cols-2")) {
+        // Differentiate 3-1 and 3-2 by checking child structure
+        const firstChild = node.querySelector(":first-child");
+        const hasNestedGrid = firstChild?.querySelector(".grid-rows-2");
+        if (hasNestedGrid) return "3-2"; // 3-2 has grid-rows-2 as first child
+        return "3-1"; // 3-1 has a single image as first child
+      }
     } else if (imageCount === 4) {
-      return "4-1";
+      if (
+        classList.includes("grid-cols-2") &&
+        classList.includes("grid-rows-2")
+      ) {
+        return "4-1";
+      }
     }
     return "";
   };
 
   const validatePages = async (): Promise<boolean> => {
-    // Validate that each page has at least MIN_IMAGES
     for (let index = 0; index < albumConfig.pages; index++) {
-      const images = pageImages[index] || previewImages[index] || [];
-      if (images.length < MIN_IMAGES) {
+      const files = pageFiles[index] || [];
+      if (files.length < MIN_IMAGES) {
         toast({
-          title: "Lỗi",
-          description: `Trang ${
+          title: "Error",
+          description: `Page ${
             index + 1
-          } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại có ${
-            images.length
-          } ảnh.`,
+          } should have at least ${MIN_IMAGES} images. Currently has ${
+            files.length
+          }.`,
           variant: "destructive",
         });
         return false;
       }
 
-      // Validate that each image is cropped to fit the grid
-      const layout = getLayoutForPage(images.length, index);
+      const layout = getLayoutForPage(files.length, index);
       if (!layout) {
         toast({
-          title: "Lỗi",
-          description: `Không thể xác định layout cho trang ${index + 1}`,
+          title: "Error",
+          description: `Could not determine layout for page ${index + 1}`,
           variant: "destructive",
         });
         return false;
       }
 
       const isValid = await validateImageDimensions(
-        images,
+        files,
         layout,
         albumConfig.size
       );
       if (!isValid) {
         toast({
-          title: "Lỗi",
-          description: `Một số ảnh trên trang ${
+          title: "Error",
+          description: `Some images on page ${
             index + 1
-          } chưa được cắt vừa vào layout (${layout}). Vui lòng cắt ảnh.`,
+          } don't fit the layout (${layout}). Please crop them.`,
           variant: "destructive",
         });
         return false;
@@ -731,70 +457,61 @@ export default function AppAlbumClient() {
   const handleSubmit = async () => {
     if (albumConfig.pages === 0) {
       toast({
-        title: "Lỗi",
-        description: `Không tìm thấy cấu hình album`,
+        title: "Error",
+        description: `No album configuration found`,
         variant: "destructive",
       });
       return false;
     }
 
-    // Validate pages and image cropping
     const isValid = await validatePages();
-    if (!isValid) {
-      return;
-    }
+    if (!isValid) return;
 
     setLoading(true);
     const albumSubmission = [];
 
     try {
       for (let index = 0; index < albumConfig.pages; index++) {
-        const images = pageImages[index] || previewImages[index] || [];
-        if (images.length === 0) {
+        const files = pageFiles[index] || [];
+        if (files.length === 0) {
           toast({
-            title: "Lỗi",
-            description: `Không có hình ảnh ở trang ${index + 1}`,
+            title: "Error",
+            description: `No images found for page ${index + 1}`,
             variant: "destructive",
           });
           return false;
-          // throw new Error(`No images found for page ${index + 1}`);
         }
 
-        const layout = getLayoutForPage(images.length, index);
+        const layout = getLayoutForPage(files.length, index);
         if (!layout) {
           toast({
-            title: "Lỗi",
-            description: `Không thể xác định layout cho trang ${index + 1}`,
+            title: "Error",
+            description: `Could not determine layout for page ${index + 1}`,
             variant: "destructive",
           });
           return false;
-          // throw new Error(`Could not determine layout for page ${index + 1}`);
         }
 
-        // Render the images to a canvas
-        const dataUrl = await renderToCanvas(images, layout, albumConfig.size);
-
+        const dataUrl = await renderToCanvas(files, layout, albumConfig.size);
         const blob = dataURLtoBlob(dataUrl);
         const file = new File([blob], `album-page-${index + 1}.png`, {
           type: "image/png",
         });
 
-        // Upload to Cloudinary
+        // Only upload to Cloudinary during submission
         const uploadResult = await UploadService.uploadToCloudinary([file]);
         if (uploadResult === false) {
           toast({
-            title: "Lỗi",
-            description: `Tải ảnh thất bại trên trang ${index + 1}`,
+            title: "Error",
+            description: `Upload failed for page ${index + 1}`,
             variant: "destructive",
           });
           return false;
-          // throw new Error(`Upload failed for page ${index + 1}`);
         }
 
-        const secureUrl = uploadResult[0].secure_url;
         albumSubmission.push({
           page: index + 1,
-          url: secureUrl,
+          url: uploadResult[0].secure_url,
         });
       }
 
@@ -826,11 +543,11 @@ export default function AppAlbumClient() {
 
   useEffect(() => {
     return () => {
-      Object.values(previewImages).forEach((page) =>
-        page.forEach((url) => URL.revokeObjectURL(url))
+      Object.values(previewUrls).forEach((urls) =>
+        urls.forEach((url) => URL.revokeObjectURL(url))
       );
     };
-  }, [previewImages]);
+  }, [previewUrls]);
 
   return (
     <div className="relative w-full flex flex-col justify-center items-center">
@@ -885,34 +602,17 @@ export default function AppAlbumClient() {
             </button>
           </div>
         </header>
-        <main className="w-full flex-grow p-4 overflow-auto flex flex-col gap-4">
+        <main className="w-full flex-grow mt-4 p-4 overflow-auto flex flex-col gap-4">
           {albumConfig.pages > 0 &&
             Array.from({ length: albumConfig.pages }).map((_, index) => (
               <div key={index} className={`album-page-${index}`}>
-                <div className="mb-2">Trang {index + 1}</div>
+                <div className="mb-2">Page {index + 1}</div>
                 <div className="w-full items-center">
                   <ImageUploadMobileAlbum
-                    onImageChange={(
-                      files,
-                      removedIndex,
-                      croppedIndex,
-                      croppedFile,
-                      originalFile,
-                      reorderedImages
-                    ) =>
-                      handleImageUpload(
-                        index,
-                        files,
-                        removedIndex,
-                        croppedIndex,
-                        croppedFile,
-                        originalFile,
-                        reorderedImages
-                      )
-                    }
+                    onImageChange={handleImageUpload}
                     albumSize={albumConfig.size}
-                    newImages={previewImages[index] || pageImages[index] || []}
-                    originalFiles={originalFiles[index] || []}
+                    newImages={previewUrls[index] || []}
+                    originalFiles={pageFiles[index] || []}
                     pageIndex={index}
                   />
                 </div>
