@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
+    "dom-to-image": "^2.6.0",
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.4.2",
     "iatt": "file:",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
+    "@types/dom-to-image": "^2.6.7",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ChooseOption } from "./dialog/choose-option";
-import ImageUploadMobileAlbum from "./components/image-upload-mobile-album";
+import { ChooseOption } from "../../modules/app-album/dialog/choose-option";
+import ImageUploadMobileAlbum from "../../modules/app-album/components/image-upload-mobile-album";
 import { UploadService } from "@/services/upload";
-import ImageProcessing from "../app-frame/components/image-processing";
+import ImageProcessing from "../../modules/app-frame/components/image-processing";
 import Image from "next/image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";

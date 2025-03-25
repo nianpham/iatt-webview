@@ -44,6 +44,9 @@ importers:
       crypto-js:
         specifier: ^4.2.0
         version: 4.2.0
+      dom-to-image:
+        specifier: ^2.6.0
+        version: 2.6.0
       embla-carousel-react:
         specifier: ^8.5.1
         version: 8.5.1(react@18.3.1)
@@ -52,7 +55,7 @@ importers:
         version: 12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       iatt:
         specifier: 'file:'
-        version: file:(@heroui/system@2.4.7(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@heroui/theme@2.4.6(tailwindcss@3.4.9))(@types/node@20.14.15)(@types/react-dom@18.3.0)(@types/react@18.3.3)(tailwindcss@3.4.9)
+        version: file:(@heroui/system@2.4.7(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@heroui/theme@2.4.6(tailwindcss@3.4.9))(@types/node@20.14.15)(@types/react-dom@18.3.0)(@types/react@18.3.3)(dnd-core@16.0.1)(tailwindcss@3.4.9)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -108,6 +111,9 @@ importers:
       '@types/crypto-js':
         specifier: ^4.2.2
         version: 4.2.2
+      '@types/dom-to-image':
+        specifier: ^2.6.7
+        version: 2.6.7
       '@types/js-cookie':
         specifier: ^3.0.6
         version: 3.0.6
@@ -1072,6 +1078,9 @@ packages:
   '@types/crypto-js@4.2.2':
     resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
 
+  '@types/dom-to-image@2.6.7':
+    resolution: {integrity: sha512-me5VbCv+fcXozblWwG13krNBvuEOm6kA5xoa4RrjDJCNFOZSWR3/QLtOXimBHk1Fisq69Gx3JtOoXtg1N1tijg==}
+
   '@types/history@4.7.11':
     resolution: {integrity: sha512-qjDJRrmvBMiTx+jyLxvLfJU7UznFuokDv4f3WRuriHKERccVpFU+8XMQUAbDzoiJCsmexxRExQeMwwCdamSKDA==}
 
@@ -1442,6 +1451,9 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  dom-to-image@2.6.0:
+    resolution: {integrity: sha512-Dt0QdaHmLpjURjU7Tnu3AgYSF2LuOmksSGsUcE6ItvJoCWTBEmiMXcqBdNSAm9+QbbwD7JMoVsuuKX6ZVQv1qA==}
 
   dompurify@2.5.6:
     resolution: {integrity: sha512-zUTaUBO8pY4+iJMPE1B9XlO2tXVYIcEA4SNGtvDELzTSCQO7RzH+j7S180BmhmJId78lqGU2z19vgVx2Sxs/PQ==}
@@ -3869,6 +3881,8 @@ snapshots:
 
   '@types/crypto-js@4.2.2': {}
 
+  '@types/dom-to-image@2.6.7': {}
+
   '@types/history@4.7.11': {}
 
   '@types/js-cookie@3.0.6': {}
@@ -4286,6 +4300,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  dom-to-image@2.6.0: {}
 
   dompurify@2.5.6:
     optional: true
@@ -4801,7 +4817,7 @@ snapshots:
       text-segmentation: 1.0.3
     optional: true
 
-  iatt@file:(@heroui/system@2.4.7(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@heroui/theme@2.4.6(tailwindcss@3.4.9))(@types/node@20.14.15)(@types/react-dom@18.3.0)(@types/react@18.3.3)(tailwindcss@3.4.9):
+  iatt@file:(@heroui/system@2.4.7(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@heroui/theme@2.4.6(tailwindcss@3.4.9))(@types/node@20.14.15)(@types/react-dom@18.3.0)(@types/react@18.3.3)(dnd-core@16.0.1)(tailwindcss@3.4.9):
     dependencies:
       '@heroui/dropdown': 2.3.10(@heroui/system@2.4.7(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@heroui/theme@2.4.6(tailwindcss@3.4.9))(framer-motion@12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dialog': 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4815,6 +4831,7 @@ snapshots:
       class-variance-authority: 0.7.0
       clsx: 2.1.1
       crypto-js: 4.2.0
+      dom-to-image: 2.6.0
       embla-carousel-react: 8.5.1(react@18.3.1)
       framer-motion: 12.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       js-cookie: 3.0.5
@@ -4824,6 +4841,8 @@ snapshots:
       react: 18.3.1
       react-dnd: 16.0.1(@types/node@20.14.15)(@types/react@18.3.3)(react@18.3.1)
       react-dnd-html5-backend: 16.0.1
+      react-dnd-multi-backend: 9.0.0(dnd-core@16.0.1)(react-dnd@16.0.1(@types/node@20.14.15)(@types/react@18.3.3)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-dnd-touch-backend: 16.0.1
       react-dom: 18.3.1(react@18.3.1)
       react-easy-crop: 5.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-image-crop: 11.0.7(react@18.3.1)
@@ -4844,6 +4863,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
       - babel-plugin-macros
+      - dnd-core
       - sass
       - tailwindcss
 
