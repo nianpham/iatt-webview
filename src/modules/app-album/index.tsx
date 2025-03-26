@@ -12,11 +12,11 @@ import { ChevronLeft, RefreshCcw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 type LayoutDimensions =
-  | { width: number; height: number } // For layouts "2-1", "2-2", "4-1"
+  | { width: number; height: number }
   | {
       large: { width: number; height: number };
       small: { width: number; height: number };
-    }; // For layouts "3-1", "3-2"
+    };
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
@@ -25,10 +25,10 @@ export default function AppAlbumClient() {
     pages: 0,
   });
 
-  const [pageFiles, setPageFiles] = useState<{ [key: number]: File[] }>({}); // Store File objects instead of URLs
+  const [pageFiles, setPageFiles] = useState<{ [key: number]: File[] }>({});
   const [previewUrls, setPreviewUrls] = useState<{ [key: number]: string[] }>(
     {}
-  ); // Store blob URLs for preview
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -377,7 +377,7 @@ export default function AppAlbumClient() {
         throw new Error(`Unsupported layout: ${layout}`);
     }
 
-    return canvas.toDataURL("image/png", 1.0);
+    return canvas.toDataURL("image/jpeg", 0.95);
   };
 
   const getLayoutForPage = (imageCount: number, pageIndex: number): string => {
@@ -494,11 +494,10 @@ export default function AppAlbumClient() {
 
         const dataUrl = await renderToCanvas(files, layout, albumConfig.size);
         const blob = dataURLtoBlob(dataUrl);
-        const file = new File([blob], `album-page-${index + 1}.png`, {
-          type: "image/png",
+        const file = new File([blob], `album-page-${index + 1}.jpg`, {
+          type: "image/jpeg",
         });
 
-        // Only upload to Cloudinary during submission
         const uploadResult = await UploadService.uploadToCloudinary([file]);
         if (uploadResult === false) {
           toast({
@@ -510,7 +509,7 @@ export default function AppAlbumClient() {
         }
 
         albumSubmission.push({
-          page: index + 1,
+          // page: index + 1,
           url: uploadResult[0].secure_url,
         });
       }

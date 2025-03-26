@@ -366,7 +366,7 @@ const ImageUploadMobileAlbum = ({
           >
             {images.map((src, index) => (
               <img
-                key={`img-${index}-${Date.now()}`} // Unique key based on index and timestamp
+                key={`img-${index}-${Date.now()}`}
                 src={src}
                 alt={`Image ${index + 1}`}
                 className={`w-full ${
@@ -1146,7 +1146,7 @@ const ImageUploadMobileAlbum = ({
                     </div>
                     <DialogFooter className="flex flex-col gap-3">
                       <Button
-                        className="bg-indigo-600 hover:bg-indigo-700"
+                        className="bg-indigo-600"
                         onClick={handleCropSave}
                       >
                         Lưu
