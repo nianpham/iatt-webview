@@ -10,6 +10,7 @@ import { IMAGES } from "@/utils/image";
 import Link from "next/link";
 import { ChevronLeft, RefreshCcw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { OrderService } from "@/services/order";
 
 type LayoutDimensions =
   | { width: number; height: number }
@@ -176,8 +177,8 @@ export default function AppAlbumClient() {
     albumSize: string,
     layout: string
   ): LayoutDimensions => {
-    const padding = 12; // 3px padding on each side (p-3) * 2
-    const border = 4; // 2px border on each side
+    const padding = 12;
+    const border = 4;
     const baseHeight =
       albumSize === "25x25" ? 300 : albumSize === "30x20" ? 200 : 250;
     const baseWidth =
@@ -193,10 +194,10 @@ export default function AppAlbumClient() {
       case "3-2":
         return {
           large: { width: totalWidth / 2, height: totalHeight },
-          small: { width: totalWidth / 2, height: totalHeight / 2 - 2 }, // 2px gap
+          small: { width: totalWidth / 2, height: totalHeight / 2 - 2 },
         };
       case "4-1":
-        return { width: totalWidth / 2 - 2, height: totalHeight / 2 - 2 }; // 2px gap
+        return { width: totalWidth / 2 - 2, height: totalHeight / 2 - 2 };
       default:
         return { width: totalWidth / 2, height: totalHeight };
     }
@@ -392,11 +393,10 @@ export default function AppAlbumClient() {
       if (classList.includes("grid-rows-2")) return "2-2";
     } else if (imageCount === 3) {
       if (classList.includes("grid-cols-2")) {
-        // Differentiate 3-1 and 3-2 by checking child structure
         const firstChild = node.querySelector(":first-child");
         const hasNestedGrid = firstChild?.querySelector(".grid-rows-2");
-        if (hasNestedGrid) return "3-2"; // 3-2 has grid-rows-2 as first child
-        return "3-1"; // 3-1 has a single image as first child
+        if (hasNestedGrid) return "3-2";
+        return "3-1";
       }
     } else if (imageCount === 4) {
       if (
@@ -508,13 +508,29 @@ export default function AppAlbumClient() {
           return false;
         }
 
-        albumSubmission.push({
-          // page: index + 1,
-          url: uploadResult[0].secure_url,
-        });
+        albumSubmission.push(uploadResult[0].secure_url);
       }
 
-      console.log("Submitted Album List:", albumSubmission);
+      const payload = {
+        pages: albumConfig.pages,
+        size: albumConfig.size,
+        album_data: albumSubmission,
+      };
+
+      const response = await OrderService.createOrderAlbum(payload);
+      if (response === false) {
+        toast({
+          title: "Loi",
+          description: `Tao don that bai`,
+          variant: "destructive",
+        });
+      } else {
+        window.open(
+          `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`,
+          "_blank"
+        );
+      }
+
       setError(null);
     } catch (error) {
       setError(
