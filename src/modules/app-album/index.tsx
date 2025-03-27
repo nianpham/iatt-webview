@@ -530,11 +530,11 @@ export default function AppAlbumClient() {
         if (newWindow) {
           newWindow.focus();
         } else {
-          toast({
-            title: "Thông báo",
-            description: "Vui lòng cho phép mở tab mới để xem đơn hàng.",
-            variant: "default",
-          });
+          // toast({
+          //   title: "Thông báo",
+          //   description: "Vui lòng cho phép mở tab mới để xem đơn hàng.",
+          //   variant: "default",
+          // });
           window.location.href = newTabUrl;
         }
       }
