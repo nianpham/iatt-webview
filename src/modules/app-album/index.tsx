@@ -525,10 +525,18 @@ export default function AppAlbumClient() {
           variant: "destructive",
         });
       } else {
-        window.open(
-          `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`,
-          "_blank"
-        );
+        const newTabUrl = `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`;
+        const newWindow = window.open(newTabUrl, "_blank");
+        if (newWindow) {
+          newWindow.focus();
+        } else {
+          toast({
+            title: "Thông báo",
+            description: "Vui lòng cho phép mở tab mới để xem đơn hàng.",
+            variant: "default",
+          });
+          window.location.href = newTabUrl;
+        }
       }
 
       setError(null);
