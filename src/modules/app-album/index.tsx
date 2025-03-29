@@ -46,16 +46,16 @@ export default function AppAlbumClient() {
     const totalImages = currentFiles.length + files.length;
     if (totalImages > MAX_IMAGES) {
       toast({
-        title: "Error",
-        description: `Total images cannot exceed ${MAX_IMAGES}. Currently ${currentFiles.length} images, trying to add ${files.length}.`,
+        title: "Lỗi",
+        description: `Tổng số ảnh không được quá ${MAX_IMAGES} ảnh. Hiện tại có ${currentFiles.length} ảnh, vui lòng chỉ thêm ${files.length} ảnh.`,
         variant: "destructive",
       });
       return false;
     }
     if (currentFiles.length === 0 && files.length < MIN_IMAGES) {
       toast({
-        title: "Error",
-        description: `Please upload at least ${MIN_IMAGES} images when album is empty.`,
+        title: "Lỗi",
+        description: `Vui lòng tải lên ít nhất ${MIN_IMAGES} ảnh khi album trống.`,
         variant: "destructive",
       });
       return false;
@@ -63,8 +63,8 @@ export default function AppAlbumClient() {
     const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
     if (oversizedFiles.length > 0) {
       toast({
-        title: "Error",
-        description: `All images must be under 5MB.`,
+        title: "Lỗi",
+        description: `Tất cả hình phải dưới 5MB.`,
         variant: "destructive",
       });
       return false;
@@ -74,8 +74,8 @@ export default function AppAlbumClient() {
     );
     if (nonImageFiles.length > 0) {
       toast({
-        title: "Error",
-        description: `Please upload image files only.`,
+        title: "Lỗi",
+        description: `Chỉ nhận file hình ảnh.`,
         variant: "destructive",
       });
       return false;
@@ -180,9 +180,9 @@ export default function AppAlbumClient() {
     const padding = 12;
     const border = 4;
     const baseHeight =
-      albumSize === "25x25" ? 300 : albumSize === "30x20" ? 200 : 250;
+      albumSize === "25x25" ? 327 : albumSize === "30x20" ? 230 : 250;
     const baseWidth =
-      albumSize === "25x25" ? 370 : albumSize === "30x20" ? 270 : 320;
+      albumSize === "25x25" ? 370 : albumSize === "30x20" ? 315 : 320;
     const totalWidth = baseWidth;
     const totalHeight = baseHeight;
 
@@ -221,60 +221,27 @@ export default function AppAlbumClient() {
           : { width: 135, height: 130 };
       case "30x20":
         return layoutId === "2-1"
-          ? { width: 90, height: 170 }
+          ? { width: 90, height: 120 }
           : layoutId === "2-2"
-          ? { width: 170, height: 85 }
+          ? { width: 170, height: 50 }
           : layoutId.includes("3") && index === 0
-          ? { width: 90, height: 170 }
+          ? { width: 90, height: 120 }
           : layoutId.includes("3")
-          ? { width: 90, height: 80 }
-          : { width: 90, height: 80 };
+          ? { width: 90, height: 55 }
+          : { width: 90, height: 55 };
       case "35x25":
         return layoutId === "2-1"
-          ? { width: 110, height: 220 }
+          ? { width: 110, height: 173 }
           : layoutId === "2-2"
-          ? { width: 220, height: 110 }
+          ? { width: 220, height: 93 }
           : layoutId.includes("3") && index === 0
-          ? { width: 110, height: 220 }
+          ? { width: 110, height: 160 }
           : layoutId.includes("3")
-          ? { width: 110, height: 105 }
-          : { width: 110, height: 105 };
+          ? { width: 110, height: 75 }
+          : { width: 110, height: 75 };
       default:
         return { width: 100, height: 100 };
     }
-  };
-
-  const getAspectRatio = (
-    layoutId: string,
-    index: number,
-    albumSize: string
-  ) => {
-    const { width, height } = getImageDimensions(albumSize, layoutId, index);
-    return width / height;
-  };
-
-  const validateImageDimensions = async (
-    files: File[],
-    layout: string,
-    albumSize: string
-  ): Promise<boolean> => {
-    const loadedImages = await preloadImages(files);
-    for (let idx = 0; idx < loadedImages.length; idx++) {
-      const img = loadedImages[idx];
-      const expected = getImageDimensions(albumSize, layout, idx);
-      const actualAspectRatio = img.width / img.height;
-      const expectedAspectRatio = expected.width / expected.height;
-
-      const tolerance = 0.05;
-      if (
-        Math.abs(actualAspectRatio - expectedAspectRatio) /
-          expectedAspectRatio >
-        tolerance
-      ) {
-        return false;
-      }
-    }
-    return true;
   };
 
   const renderToCanvas = async (
@@ -288,9 +255,9 @@ export default function AppAlbumClient() {
 
     const dims = getLayoutDimensions(albumSize, layout);
     const baseHeight =
-      albumSize === "25x25" ? 300 : albumSize === "30x20" ? 200 : 250;
+      albumSize === "25x25" ? 327 : albumSize === "30x20" ? 230 : 250;
     const baseWidth =
-      albumSize === "25x25" ? 370 : albumSize === "30x20" ? 270 : 320;
+      albumSize === "25x25" ? 370 : albumSize === "30x20" ? 315 : 320;
     const totalWidth = baseWidth;
     const totalHeight = baseHeight;
 
@@ -381,6 +348,39 @@ export default function AppAlbumClient() {
     return canvas.toDataURL("image/jpeg", 0.95);
   };
 
+  const getAspectRatio = (
+    layoutId: string,
+    index: number,
+    albumSize: string
+  ) => {
+    const { width, height } = getImageDimensions(albumSize, layoutId, index);
+    return width / height;
+  };
+
+  const validateImageDimensions = async (
+    files: File[],
+    layout: string,
+    albumSize: string
+  ): Promise<boolean> => {
+    const loadedImages = await preloadImages(files);
+    for (let idx = 0; idx < loadedImages.length; idx++) {
+      const img = loadedImages[idx];
+      const expected = getImageDimensions(albumSize, layout, idx);
+      const actualAspectRatio = img.width / img.height;
+      const expectedAspectRatio = expected.width / expected.height;
+
+      const tolerance = 0.05;
+      if (
+        Math.abs(actualAspectRatio - expectedAspectRatio) /
+          expectedAspectRatio >
+        tolerance
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const getLayoutForPage = (imageCount: number, pageIndex: number): string => {
     const node = document.querySelector(
       `.album-page-${pageIndex} [data-screenshot="true"]`
@@ -414,12 +414,12 @@ export default function AppAlbumClient() {
       const files = pageFiles[index] || [];
       if (files.length < MIN_IMAGES) {
         toast({
-          title: "Error",
-          description: `Page ${
+          title: "Lỗi",
+          description: `Trang ${
             index + 1
-          } should have at least ${MIN_IMAGES} images. Currently has ${
+          } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại đang có ${
             files.length
-          }.`,
+          } ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -428,8 +428,8 @@ export default function AppAlbumClient() {
       const layout = getLayoutForPage(files.length, index);
       if (!layout) {
         toast({
-          title: "Error",
-          description: `Could not determine layout for page ${index + 1}`,
+          title: "Lỗi",
+          description: `Không thể nhận layout cho trang số ${index + 1}`,
           variant: "destructive",
         });
         return false;
@@ -442,10 +442,10 @@ export default function AppAlbumClient() {
       );
       if (!isValid) {
         toast({
-          title: "Error",
-          description: `Some images on page ${
+          title: "Lỗi",
+          description: `Vài ảnh ở trang ${
             index + 1
-          } don't fit the layout (${layout}). Please crop them.`,
+          } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -457,8 +457,8 @@ export default function AppAlbumClient() {
   const handleSubmit = async () => {
     if (albumConfig.pages === 0) {
       toast({
-        title: "Error",
-        description: `No album configuration found`,
+        title: "Lỗi",
+        description: `Không tìm thấy album. Vui lòng chọn lại.`,
         variant: "destructive",
       });
       return false;
@@ -475,8 +475,8 @@ export default function AppAlbumClient() {
         const files = pageFiles[index] || [];
         if (files.length === 0) {
           toast({
-            title: "Error",
-            description: `No images found for page ${index + 1}`,
+            title: "Lỗi",
+            description: `Không tìm thấy hình ở trang ${index + 1}`,
             variant: "destructive",
           });
           return false;
@@ -485,8 +485,8 @@ export default function AppAlbumClient() {
         const layout = getLayoutForPage(files.length, index);
         if (!layout) {
           toast({
-            title: "Error",
-            description: `Could not determine layout for page ${index + 1}`,
+            title: "Lỗi",
+            description: `Không thể nhận layout cho trang ${index + 1}.`,
             variant: "destructive",
           });
           return false;
@@ -501,8 +501,8 @@ export default function AppAlbumClient() {
         const uploadResult = await UploadService.uploadToCloudinary([file]);
         if (uploadResult === false) {
           toast({
-            title: "Error",
-            description: `Upload failed for page ${index + 1}`,
+            title: "Lỗi",
+            description: `Không thể up hình ở trang ${index + 1}`,
             variant: "destructive",
           });
           return false;
@@ -520,8 +520,8 @@ export default function AppAlbumClient() {
       const response = await OrderService.createOrderAlbum(payload);
       if (response === false) {
         toast({
-          title: "Loi",
-          description: `Tao don that bai`,
+          title: "Lỗi",
+          description: `Tạo đơn thất bại.`,
           variant: "destructive",
         });
       } else {
@@ -530,15 +530,14 @@ export default function AppAlbumClient() {
         if (newWindow) {
           newWindow.focus();
         } else {
-          // toast({
-          //   title: "Thông báo",
-          //   description: "Vui lòng cho phép mở tab mới để xem đơn hàng.",
-          //   variant: "default",
-          // });
+          toast({
+            title: "Thông báo",
+            description: "Đang chuyển hướng trang. Vui lòng đợi.",
+            variant: "default",
+          });
           window.location.href = newTabUrl;
         }
       }
-
       setError(null);
     } catch (error) {
       setError(
@@ -629,7 +628,7 @@ export default function AppAlbumClient() {
           {albumConfig.pages > 0 &&
             Array.from({ length: albumConfig.pages }).map((_, index) => (
               <div key={index} className={`album-page-${index}`}>
-                <div className="mb-2">Page {index + 1}</div>
+                <div className="mb-2">Trang {index + 1}</div>
                 <div className="w-full items-center">
                   <ImageUploadMobileAlbum
                     onImageChange={handleImageUpload}
