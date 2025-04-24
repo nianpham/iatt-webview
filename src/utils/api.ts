@@ -28,9 +28,9 @@ const ORDER = {
   GET_ORDER_BY_ID: `${BASE_URL}/inanhtructuyen/order/get-all`,
   UPDATE_ORDER: `${BASE_URL}/inanhtructuyen/order`,
   CREATE: `${BASE_URL}/inanhtructuyen/order/`,
-  CREATE_ALBUM: `${BASE_URL}/inanhtructuyen/temp-order-album/`,
+  CREATE_ALBUM: `${BASE_URL}/inanhtructuyen/temp-order-album`,
   CREATE_NO_LOGIN: `${BASE_URL}/inanhtructuyen/order/no-login`,
-  DISCOUNT_CHECK: `${BASE_URL}/inanhtructuyen/discount/`,
+  DISCOUNT_CHECK: `${BASE_URL}/inanhtructuyen/discount`,
 };
 
 const MOBILE = {
