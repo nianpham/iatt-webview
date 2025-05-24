@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ChevronLeft, RefreshCcw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { OrderService } from "@/services/order";
+import { ROUTES } from "@/utils/route";
 
 type LayoutDimensions =
   | { width: number; height: number }
@@ -525,18 +526,18 @@ export default function AppAlbumClient() {
           variant: "destructive",
         });
       } else {
-        const newTabUrl = `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`;
-        const newWindow = window.open(newTabUrl, "_blank");
-        if (newWindow) {
-          newWindow.focus();
-        } else {
-          toast({
-            title: "Thông báo",
-            description: "Đang chuyển hướng trang. Vui lòng đợi.",
-            variant: "default",
-          });
-          window.location.href = newTabUrl;
-        }
+        // const newTabUrl = `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`;
+        // const newWindow = window.open(newTabUrl, "_blank");
+        // if (newWindow) {
+        //   newWindow.focus();
+        // } else {
+        //   toast({
+        //     title: "Thông báo",
+        //     description: "Đang chuyển hướng trang. Vui lòng đợi.",
+        //     variant: "default",
+        //   });
+        //   window.location.href = newTabUrl;
+        // }
       }
       setError(null);
     } catch (error) {
@@ -610,7 +611,7 @@ export default function AppAlbumClient() {
       <div className="w-full h-full flex flex-col z-10">
         <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
-            <Link href="/app-home">
+            <Link href={ROUTES.HOME}>
               <ChevronLeft color="black" />
             </Link>
             <div className="flex flex-row justify-center items-center gap-3 ml-12">

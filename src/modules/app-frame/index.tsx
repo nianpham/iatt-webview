@@ -15,6 +15,7 @@ import ImageComposer from "./components/compile-image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";
 import UploadBackground from "./components/upload-background";
+import { ROUTES } from "@/utils/route";
 
 export default function AppFrameClient() {
   const searchParams = useSearchParams();
@@ -306,7 +307,7 @@ export default function AppFrameClient() {
       >
         <header className="w-full text-white pt-3 p-2 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
-            <Link href="/app-home" className="ml-1">
+            <Link href={ROUTES.HOME} className="ml-1">
               <ChevronLeft className="text-[#4B5563]" />
             </Link>
             <div className="flex flex-row justify-center items-center gap-8 ml-8">
@@ -320,12 +321,15 @@ export default function AppFrameClient() {
               />
               <Undo2 className="scale-x-[-1] text-[#4B5563] z-0" />
             </div>
-            <div
-              onClick={handleContinue}
+            <a
+              href={`https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
+                currentImage ?? ""
+              )}`}
+              target="_blank"
               className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg"
             >
               Tiếp tục
-            </div>
+            </a>
           </div>
         </header>
         {/* MIN DA  */}
@@ -334,17 +338,16 @@ export default function AppFrameClient() {
             <div className="flex-1">
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
-                title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
+                title={"Chọn hình ảnh bạn muốn làm mịn da"}
                 newImage={currentImage ?? undefined}
               />
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
-                  selectedSmoothSkin === null
-                    ? "border-[#645bff]"
-                    : "border-white"
-                } cursor-pointer`}
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${selectedSmoothSkin === null
+                  ? "border-[#645bff]"
+                  : "border-white"
+                  } cursor-pointer`}
                 onClick={() => handleSmoothSkin(null)}
               >
                 <Ban size={25} />
@@ -361,11 +364,10 @@ export default function AppFrameClient() {
                       alt=""
                       width={1000}
                       height={1000}
-                      className={`w-16 h-[90px] rounded-lg border-2 ${
-                        selectedSmoothSkin === item?.style
-                          ? "border-[#645bff]"
-                          : "border-white"
-                      } cursor-pointer object-cover`}
+                      className={`w-16 h-[90px] rounded-lg border-2 ${selectedSmoothSkin === item?.style
+                        ? "border-[#645bff]"
+                        : "border-white"
+                        } cursor-pointer object-cover`}
                     />
                   </div>
                 ))}
@@ -373,9 +375,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu làm mịn"}
             </div>
@@ -396,9 +397,8 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
-                  selectedQuality === null ? "border-[#645bff]" : "border-white"
-                } cursor-pointer`}
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${selectedQuality === null ? "border-[#645bff]" : "border-white"
+                  } cursor-pointer`}
                 onClick={() => handleQualitySelect(null)}
               >
                 <Ban size={25} />
@@ -409,17 +409,17 @@ export default function AppFrameClient() {
                   <div
                     key={item.id}
                     onClick={() => handleQualitySelect(item?.style)}
+                    className={`bg-white w-16 h-[90px] flex justify-center items-center p-2 rounded-lg border-2 ${selectedQuality === item?.style
+                      ? "border-[#645bff]"
+                      : "border-white"
+                      } cursor-pointer`}
                   >
                     <Image
                       src={item.url}
                       alt=""
                       width={1000}
                       height={1000}
-                      className={`w-16 h-[90px] rounded-lg border-2 ${
-                        selectedQuality === item?.style
-                          ? "border-[#645bff]"
-                          : "border-white"
-                      } cursor-pointer`}
+                      className={`w-16 cursor-pointer`}
                     />
                   </div>
                 ))}
@@ -427,9 +427,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Tăng chất lượng"}
             </div>
@@ -459,11 +458,10 @@ export default function AppFrameClient() {
             <div className="flex flex-row gap-4 py-4 overflow-x-auto scroll-bar-style">
               <div className="flex flex-row gap-4">
                 <div
-                  className={`flex justify-center items-center mx-auto w-[64px] h-[90px] object-cover rounded-lg border-2 ${
-                    selectedBackground === null
-                      ? "border-[#645bff]"
-                      : "border-white"
-                  } cursor-pointer`}
+                  className={`flex justify-center items-center mx-auto w-[64px] h-[90px] object-cover rounded-lg border-2 ${selectedBackground === null
+                    ? "border-[#645bff]"
+                    : "border-white"
+                    } cursor-pointer`}
                   onClick={() => handleBackgroundSelect(null)}
                 >
                   <Ban size={25} />
@@ -472,15 +470,14 @@ export default function AppFrameClient() {
               </div>
               <div className="flex flex-row gap-4">
                 <div
-                  className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${
-                    selectedBackground === null
-                      ? "border-white"
-                      : "border-white"
-                  } cursor-pointer`}
+                  className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${selectedBackground === null
+                    ? "border-white"
+                    : "border-white"
+                    } cursor-pointer`}
                 >
                   <UploadBackground
                     onBackgroundAdd={addCustomBackground}
-                    // result={removeBackground}
+                  // result={removeBackground}
                   />
                 </div>
                 {customBackgrounds
@@ -497,11 +494,10 @@ export default function AppFrameClient() {
                         alt=""
                         width={1000}
                         height={1000}
-                        className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
-                          selectedBackground === item.url
-                            ? "border-[#645bff]"
-                            : "border-white"
-                        }`}
+                        className={`w-16 h-[90px] object-cover rounded-lg border-2 ${selectedBackground === item.url
+                          ? "border-[#645bff]"
+                          : "border-white"
+                          }`}
                       />
                     </div>
                   ))}
@@ -516,11 +512,10 @@ export default function AppFrameClient() {
                       alt=""
                       width={1000}
                       height={1000}
-                      className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
-                        selectedBackground === item.url
-                          ? "border-[#645bff]"
-                          : "border-white"
-                      }`}
+                      className={`w-16 h-[90px] object-cover rounded-lg border-2 ${selectedBackground === item.url
+                        ? "border-[#645bff]"
+                        : "border-white"
+                        }`}
                     />
                   </div>
                 ))}
@@ -528,9 +523,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Bắt đầu xử lý"}
             </div>
@@ -551,11 +545,10 @@ export default function AppFrameClient() {
             </div>
             <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
-                  selectedBackground === null
-                    ? "border-[#645bff]"
-                    : "border-white"
-                } cursor-pointer`}
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${selectedBackground === null
+                  ? "border-[#645bff]"
+                  : "border-white"
+                  } cursor-pointer`}
                 onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban size={25} />
@@ -566,17 +559,17 @@ export default function AppFrameClient() {
                   <div
                     key={item.id}
                     onClick={() => handleStyleSelect(item?.style)}
+                    className={`bg-white w-16 h-[90px] flex justify-center items-center p-2 rounded-lg border-2 ${selectedStyle === item?.style
+                      ? "border-[#645bff]"
+                      : "border-white"
+                      } cursor-pointer`}
                   >
                     <Image
                       src={item.url}
                       alt=""
                       width={1000}
                       height={1000}
-                      className={`w-16 h-[90px] rounded-lg border-2 ${
-                        selectedStyle === item?.style
-                          ? "border-[#645bff]"
-                          : "border-white"
-                      } cursor-pointer`}
+                      className={`w-16 cursor-pointer`}
                     />
                   </div>
                 ))}
@@ -584,9 +577,8 @@ export default function AppFrameClient() {
             </div>
             <div
               onClick={handleSubmit}
-              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${
-                loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`bg-[#645bff] rounded-lg py-3 text-center text-white mb-[4.5rem] ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
             >
               {loading ? "Đang xử lý..." : "Tạo ảnh AI"}
             </div>

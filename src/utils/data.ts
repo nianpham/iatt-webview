@@ -1,60 +1,13 @@
-const CATEGORIES = [
-  {
-    id: 0,
-    tag: "all",
-    name: "Tất Cả",
-  },
-  {
-    id: 1,
-    tag: "Plastic",
-    name: "In Ấn",
-  },
-  {
-    id: 2,
-    tag: "Frame",
-    name: "Khung Ảnh",
-  },
-  {
-    id: 3,
-    tag: "Album",
-    name: "Album",
-  },
-];
-
-const REVIEWS = [
-  {
-    id: 1,
-    name: "Chị Mai",
-    review:
-      "Sản phẩm chất lượng, an toàn cho bé. Giao hàng nhanh chóng, rất hài lòng!",
-    role: "Người Tiêu Dùng",
-  },
-  {
-    id: 2,
-    name: "Anh Tuấn",
-    review:
-      "Dịch vụ chăm sóc khách hàng tốt, sản phẩm đúng mô tả. Tôi sẽ tiếp tục mua sắm tại đây.",
-    role: "Người Tiêu Dùng",
-  },
-  {
-    id: 3,
-    name: "Cô Lan",
-    review:
-      "Giá cả hợp lý, phù hợp với túi tiền. Hàng được đóng gói cẩn thận, chất lượng tuyệt vời!",
-    role: "Người Tiêu Dùng",
-  },
-];
-
 const BACKGROUND = [
   {
     id: 1,
     name: "Fuji",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1741887045/iatt/fuji-five-lakes-66c1c9_yufmzt.webp",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9DFKkGgiroLHpP4mDQ7EHDO2OV6dVWoOYHg&s",
   },
   {
     id: 2,
     name: "Eiffel",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1741882899/iatt/eiffel_dqme1q.png",
+    url: "https://faceinch.vn/upload/elfinder/anh-bai-blog/nen-phong-xanh-anh-the-ngang-3.jpg",
   },
 ];
 
@@ -62,19 +15,20 @@ const AI_STYLE = [
   {
     id: 1,
     style: "face2paint",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119428/iatt/face2paint_jelau3.avif",
+    url: "https://cdn-icons-png.flaticon.com/128/12714/12714005.png",
   },
   {
     id: 2,
     style: "paprika",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119526/iatt/parika_rfkktv.jpg",
+    url: "https://cdn-icons-png.flaticon.com/128/17180/17180313.png",
   },
   {
     id: 3,
     style: "webtoon",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119464/iatt/webtoon_yw6j3k.png",
+    url: "https://cdn-icons-png.flaticon.com/128/6815/6815885.png",
   },
 ];
+
 const SMOOTH_SKIN = [
   {
     id: 1,
@@ -92,26 +46,26 @@ const SMOOTH_SKIN = [
     url: "https://res.cloudinary.com/farmcode/image/upload/v1742543783/iatt/da-cang-bong_iwl5yr.webp",
   },
 ];
+
 const QUALITY = [
   {
     id: 1,
     style: "face2paint",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119428/iatt/face2paint_jelau3.avif",
+    url: "https://cdn-icons-png.flaticon.com/128/867/867871.png",
   },
   {
     id: 2,
     style: "paprika",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119526/iatt/parika_rfkktv.jpg",
+    url: "https://cdn-icons-png.flaticon.com/128/3426/3426127.png",
   },
   {
     id: 3,
     style: "webtoon",
-    url: "https://res.cloudinary.com/farmcode/image/upload/v1742119464/iatt/webtoon_yw6j3k.png",
+    url: "https://cdn-icons-png.flaticon.com/128/8382/8382044.png",
   },
 ];
+
 export const DATA = {
-  REVIEWS,
-  CATEGORIES,
   AI_STYLE,
   SMOOTH_SKIN,
   QUALITY,

@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 
 export default function AppAlbum() {
   return (
-    <Suspense fallback={<div>...</div>}>
+    <Suspense fallback={<div></div>}>
       <AppAlbumClient />
     </Suspense>
   );

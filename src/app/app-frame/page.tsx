@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 
 export default function AppFrame() {
   return (
-    <Suspense fallback={<div>...</div>}>
+    <Suspense fallback={<div></div>}>
       <AppFrameClient />
     </Suspense>
   );
