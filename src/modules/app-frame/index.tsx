@@ -47,9 +47,17 @@ export default function AppFrameClient() {
   const [selectedSmoothSkin, setSelectedSmoothSkin] = React.useState<
     string | null
   >(null);
+  const [isIOS, setIsIOS] = React.useState(false);
   const [selectedQuality, setSelectedQuality] = React.useState<string | null>(
     null
   );
+
+  // Detect iOS device
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isIOSDevice);
+  }, []);
 
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
@@ -89,7 +97,12 @@ export default function AppFrameClient() {
     setSelectedBackground(null);
     setSelectedSmoothSkin(null);
     setSelectedQuality(null);
-  }, [tab]);
+
+    // On iOS, trigger a refresh when tab changes to ensure clean state for new image upload
+    if (isIOS) {
+      window.location.reload();
+    }
+  }, [tab, isIOS]);
 
   const handleRefresh = () => {
     window.location.reload();
