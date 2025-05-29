@@ -68,12 +68,9 @@ export default function AppFrameClient() {
   useEffect(() => {
     // Revoke object URLs to prevent memory leaks
     if (currentImage) {
-      console.log("Revoking currentImage URL:", currentImage);
-
       URL.revokeObjectURL(currentImage);
     }
     if (originalImage) {
-      console.log("Revoking originalImage URL:", originalImage);
       URL.revokeObjectURL(originalImage);
     }
 

@@ -18,7 +18,7 @@ const NavItem: React.FC<NavItemProps> = ({
   path,
 }) => {
   return (
-    <Link href={path} onClick={() => window.location.reload()}>
+    <Link href={path}>
       <div className="flex flex-col items-center justify-center h-full px-2">
         <div className={`mb-1 ${active ? "text-black" : "text-gray-400"}`}>
           {icon}
