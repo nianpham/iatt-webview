@@ -8,9 +8,7 @@ import Link from "next/link";
 
 export default function HomeClient() {
   return (
-    <div
-      className="relative w-full min-h-screen flex flex-col justify-center items-center gap-2"
-    >
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center gap-2">
       <Image
         src={IMAGES.BACKGROUND_MOBILE}
         alt=""
@@ -19,9 +17,7 @@ export default function HomeClient() {
         objectFit="cover"
         className="opacity-50 absolute top-0 left-0 z-0"
       />
-      <div
-        className="w-full h-full flex flex-col justify-center items-center gap-3 z-10"
-      >
+      <div className="w-full h-full flex flex-col justify-center items-center gap-3 z-10">
         <div className="flex-1 w-full flex flex-col justify-center items-center gap-1">
           <Image
             src={IMAGES.LOGO}
@@ -30,7 +26,9 @@ export default function HomeClient() {
             height={200}
             className="w-16 h-16"
           />
-          <h1 className="text-lg text-gray-700 font-bold mb-10 mt-4">In Ảnh Trực Tuyến</h1>
+          <h1 className="text-lg text-gray-700 font-bold mb-10 mt-4">
+            In Ảnh Trực Tuyến
+          </h1>
         </div>
         <div className="flex-2 w-4/5 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l rounded-lg z-10">
           <Link
@@ -38,7 +36,7 @@ export default function HomeClient() {
             className="w-full flex justify-center items-center gap-3 text-white font-medium text-[16px] py-4 text-center"
           >
             <Aperture />
-            Sáng tạo hình ảnh cá nhân
+            Sáng tạo hình ảnh cá nhân kkk
           </Link>
         </div>
 
