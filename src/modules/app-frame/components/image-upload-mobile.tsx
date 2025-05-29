@@ -13,11 +13,10 @@ interface ImageUploadProps {
 
 const ImageUploadMobile = ({
   onImageChange,
-  newImage,
   title,
+  newImage,
   className,
 }: ImageUploadProps) => {
-  const [preview, setPreview] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [deviceHeight, setDeviceHeight] = React.useState("410px");
 
@@ -36,23 +35,32 @@ const ImageUploadMobile = ({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-    if (file.size > 1 * 1024 * 1024) {
-      toast({
-        title: "",
-        description: "File ảnh quá lớn, vui lòng chọn file dưới 1MB",
-        variant: "destructive",
-      });
+    if (!file) {
+      onImageChange(null);
       return;
     }
+
+    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "",
-        description: "Vui lòng chọn file hình ảnh",
+        title: "Lỗi",
+        description: "Vui lòng chọn file hình ảnh (jpg, png, v.v.)!",
         variant: "destructive",
       });
       return;
     }
+
+    // Validate file size (max 10MB)
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSizeInBytes) {
+      toast({
+        title: "Lỗi",
+        description: "Hình ảnh quá lớn. Vui lòng chọn file dưới 10MB!",
+        variant: "destructive",
+      });
+      return;
+    }
+
     onImageChange(file);
   };
 
@@ -72,6 +80,7 @@ const ImageUploadMobile = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="image/*"
+        capture="environment"
         className="hidden"
       />
       {!newImage ? (
@@ -118,6 +127,50 @@ const ImageUploadMobile = ({
         </div>
       )}
     </div>
+
+    // <div className={cn("flex flex-col items-center w-full", className)}>
+    //   {title && (
+    //     <h2 className="text-white text-center text-lg font-medium mb-4">
+    //       {title}
+    //     </h2>
+    //   )}
+    //   <input
+    //     type="file"
+    //     ref={fileInputRef}
+    //     onChange={handleFileChange}
+    //     accept="image/*"
+    //     capture="environment" // Enable camera access on iOS
+    //     className="hidden"
+    //   />
+    //   <div className="relative w-full h-[300px] rounded-xl overflow-hidden border-2 border-gray-600">
+    //     {newImage ? (
+    //       <Image
+    //         src={newImage}
+    //         alt="Preview"
+    //         fill
+    //         priority
+    //         className="object-contain rounded-xl"
+    //       />
+    //     ) : (
+    //       <div
+    //         onClick={handleClick}
+    //         className="cursor-pointer flex flex-col items-center justify-center h-full bg-gray-200 text-gray-700"
+    //       >
+    //         <Upload size={20} />
+    //         <span className="mt-2">Tải hình ảnh lên</span>
+    //         <span className="text-xs mt-1">{title}</span>
+    //       </div>
+    //     )}
+    //   </div>
+    //   {newImage && (
+    //     <button
+    //       onClick={handleClick}
+    //       className="mt-4 bg-[#645bff] text-white font-medium text-sm px-4 py-2 rounded-lg hover:bg-[#5348cc]"
+    //     >
+    //       Thay đổi hình ảnh
+    //     </button>
+    //   )}
+    // </div>
   );
 };
 

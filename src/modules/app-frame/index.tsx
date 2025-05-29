@@ -67,14 +67,14 @@ export default function AppFrameClient() {
 
   useEffect(() => {
     // Revoke object URLs to prevent memory leaks
-    if (currentImage) {
-      URL.revokeObjectURL(currentImage);
-    }
-    if (originalImage) {
-      URL.revokeObjectURL(originalImage);
-    }
+    return () => {
+      if (currentImage) URL.revokeObjectURL(currentImage);
+      if (originalImage) URL.revokeObjectURL(originalImage);
+    };
+  }, [currentImage, originalImage]);
 
-    // Reset all states to initial values
+  useEffect(() => {
+    // Reset states when tab changes
     setUploadedFile(null);
     setCurrentImage(null);
     setOriginalImage(null);
@@ -102,6 +102,10 @@ export default function AppFrameClient() {
       setCurrentImage(originalUrl);
       setOriginalImage(originalUrl);
       setSelectedStyle("original");
+    } else {
+      setUploadedFile(null);
+      setCurrentImage(null);
+      setOriginalImage(null);
     }
   };
 
