@@ -65,15 +65,30 @@ export default function AppFrameClient() {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Revoke object URLs to prevent memory leaks
+    if (currentImage) {
+      URL.revokeObjectURL(currentImage);
+    }
+    if (originalImage) {
+      URL.revokeObjectURL(originalImage);
+    }
+
+    // Reset all states to initial values
     setUploadedFile(null);
     setCurrentImage(null);
     setOriginalImage(null);
     setResponseImage1(null);
     setResponseImage2(null);
     setResponseImage3(null);
+    setSelectedStyle("original");
     setLoading(false);
+    setRefresh(false);
+    setCustomBackgrounds([]);
+    setRemoveBackground(false);
     setSelectedBackground(null);
+    setSelectedSmoothSkin(null);
+    setSelectedQuality(null);
   }, [tab]);
 
   const handleRefresh = () => {
@@ -272,31 +287,6 @@ export default function AppFrameClient() {
     }
   };
 
-  React.useEffect(() => {
-    // Reset states when tab changes
-    setUploadedFile(null);
-    setCurrentImage(null);
-    setOriginalImage(null);
-    setResponseImage1(null);
-    setResponseImage2(null);
-    setResponseImage3(null);
-    setLoading(false);
-    setSelectedBackground(null);
-    setSelectedSmoothSkin(null);
-    setSelectedQuality(null);
-    setSelectedStyle("original");
-    setRemoveBackground(false);
-
-    // Revoke the object URL of the current image to free memory
-    // if (currentImage) {
-    //   URL.revokeObjectURL(currentImage);
-    // }
-  }, [tab]); // Add currentImage as a dependency to ensure cleanup
-
-  // useEffect(() => {
-  //   // Load custom backgrounds from local storage
-  //   console.log("Check currentImage", currentImage);
-  // }, [tab]);
   return (
     <div
       className="relative w-full h-screen flex flex-col justify-center items-center"
