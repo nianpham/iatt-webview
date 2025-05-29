@@ -73,6 +73,7 @@ export default function AppFrameClient() {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
+  // Reset states and handle single reload on tab change for iOS
   useEffect(() => {
     // Revoke object URLs to prevent memory leaks
     if (currentImage) {
@@ -98,13 +99,32 @@ export default function AppFrameClient() {
     setSelectedSmoothSkin(null);
     setSelectedQuality(null);
 
-    // On iOS, trigger a refresh when tab changes to ensure clean state for new image upload
+    // On iOS, reload the page only once per session
     if (isIOS) {
-      window.location.reload();
+      const hasReloaded = sessionStorage.getItem("hasReloaded");
+      if (!hasReloaded) {
+        sessionStorage.setItem("hasReloaded", "true");
+        window.location.reload();
+      }
     }
   }, [tab, isIOS]);
 
   const handleRefresh = () => {
+    setRefresh(true);
+    // Reset image-related states to allow new image upload
+    setUploadedFile(null);
+    setCurrentImage(null);
+    setOriginalImage(null);
+    setResponseImage1(null);
+    setResponseImage2(null);
+    setResponseImage3(null);
+    setSelectedStyle("original");
+    setRemoveBackground(false);
+    setSelectedBackground(null);
+    setSelectedSmoothSkin(null);
+    setSelectedQuality(null);
+    // Clear the reload flag to allow one more reload on manual refresh
+    sessionStorage.removeItem("hasReloaded");
     window.location.reload();
   };
 
