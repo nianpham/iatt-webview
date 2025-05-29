@@ -36,6 +36,7 @@ export default function AppFrameClient() {
   );
   const [selectedStyle, setSelectedStyle] = React.useState<string>("original");
   const [loading, setLoading] = React.useState(false);
+  const [loadingUpload, setLoadingUpload] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [customBackgrounds, setCustomBackgrounds] = React.useState<
     { id: number; url: string }[]
@@ -59,6 +60,7 @@ export default function AppFrameClient() {
     };
 
     updateHeight();
+
     window.addEventListener("resize", updateHeight);
 
     return () => window.removeEventListener("resize", updateHeight);
@@ -94,13 +96,16 @@ export default function AppFrameClient() {
     window.location.reload();
   };
 
-  const handleImageUpload = (file: File | null) => {
+  const handleImageUpload = async (file: File | null) => {
     if (file) {
+      setLoadingUpload(true);
+      const upload: any = await UploadService.uploadToCloudinary([file]);
       setUploadedFile(file);
       const originalUrl = URL.createObjectURL(file);
-      setCurrentImage(originalUrl);
-      setOriginalImage(originalUrl);
+      setCurrentImage(upload[0].secure_url);
+      setOriginalImage(upload[0].secure_url);
       setSelectedStyle("original");
+      setLoadingUpload(false);
     } else {
       setUploadedFile(null);
       setCurrentImage(null);
@@ -168,11 +173,29 @@ export default function AppFrameClient() {
     setSelectedBackground(backgroundUrl);
   };
 
-  const handleSmoothSkin = (smoothSkinUrl: string | null) => {
+  const handleSmoothSkin: (smoothSkinUrl: string | null) => void = (
+    smoothSkinUrl
+  ) => {
+    // if (!removeBackground) {
+    //   toast({
+    //     title: "",
+    //     description: "Vui lòng làm mịn da trước khi chọn kiểu làm mịn!",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     setSelectedSmoothSkin(smoothSkinUrl);
   };
 
   const handleQualitySelect = (qualityUrl: string | null) => {
+    // if (!removeBackground) {
+    //   toast({
+    //     title: "",
+    //     description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     setSelectedQuality(qualityUrl);
   };
 
@@ -194,22 +217,14 @@ export default function AppFrameClient() {
     try {
       setLoading(true);
       const upload: any = await UploadService.uploadToCloudinary([
-        uploadedFile!,
+        uploadedFile,
       ]);
 
       let response;
       if (tab === "md") {
         response = await MobileService.smoothSkin(upload[0].secure_url);
-        if (response.data) {
-          setSelectedSmoothSkin(response.data);
-          setCurrentImage(response.data);
-        }
       } else if (tab === "cl") {
         response = await MobileService.increaseQuality(upload[0].secure_url);
-        if (response.data) {
-          setSelectedQuality(response.data);
-          setCurrentImage(response.data);
-        }
       } else if (tab === "ai") {
         const [res1, res2, res3] = await Promise.all([
           MobileService.imageAI(upload[0].secure_url, "face2paint"),
@@ -218,22 +233,28 @@ export default function AppFrameClient() {
         ]);
         if (res1.data && res2.data && res3.data) {
           response = res1;
-          setResponseImage1(res1.data);
-          setResponseImage2(res2.data);
-          setResponseImage3(res3.data);
-          setCurrentImage(res1.data);
-          setSelectedStyle("face2paint");
         }
+        setResponseImage1(res1.data);
+        setResponseImage2(res2.data);
+        setResponseImage3(res3.data);
+        setCurrentImage(res1.data);
+        setSelectedStyle("face2paint");
       } else if (tab === "xp") {
         response = await MobileService.removeBackground(upload[0].secure_url);
-        if (response.data) {
-          setRemoveBackground(true);
-          setCurrentImage(response.data);
-        }
+        setRemoveBackground(true);
       }
 
-      if (!response || !response.data) {
-        throw new Error("No response data");
+      if (response && response.data) {
+        if (currentImage) {
+          URL.revokeObjectURL(currentImage);
+        }
+        setCurrentImage(response.data);
+      } else {
+        toast({
+          title: "",
+          description: "Đã xảy ra lỗi khi xử lí ảnh, vui lòng thử lại!",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error submitting order:", error);
@@ -279,6 +300,21 @@ export default function AppFrameClient() {
       className="relative w-full h-screen flex flex-col justify-center items-center"
       style={{ height: deviceHeight }}
     >
+      {loadingUpload && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
+          <div
+            className="w-full bg-black bg-opacity-50 flex flex-col gap-10 justify-center items-center"
+            style={{ height: deviceHeight }}
+          >
+            <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
+              <ImageProcessing />
+              <div className="text-black font-medium">Đang tải hình ảnh...</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PROCESSING  */}
       {loading && (
         <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
           <div
@@ -299,7 +335,8 @@ export default function AppFrameClient() {
         alt=""
         fill
         priority
-        className="opacity-50 absolute top-0 left-0 z-0 object-cover"
+        objectFit="cover"
+        className="opacity-50 absolute top-0 left-0 z-0"
       />
       <div
         className="w-full h-full flex flex-col z-10"
@@ -321,26 +358,30 @@ export default function AppFrameClient() {
               />
               <Undo2 className="scale-x-[-1] text-[#4B5563] z-0" />
             </div>
-            <button
-              onClick={handleContinue}
+            <a
+              href={`https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
+                currentImage ?? ""
+              )}`}
+              target="_blank"
               className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg"
             >
               Tiếp tục
-            </button>
+            </a>
           </div>
         </header>
+        {/* MIN DA  */}
         {tab === "md" && (
           <main className="w-full flex flex-col flex-1 p-4">
             <div className="flex-1">
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
-                title="Chọn hình ảnh bạn muốn làm mịn da"
+                title={"Chọn hình ảnh bạn muốn làm mịn da"}
                 newImage={currentImage ?? undefined}
               />
             </div>
-            <div className="flex flex-row gap-4 py-4 overflow-x-auto">
+            <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-[90px] rounded-lg border-2 ${
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
                   selectedSmoothSkin === null
                     ? "border-[#645bff]"
                     : "border-white"
@@ -351,7 +392,7 @@ export default function AppFrameClient() {
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
-                {DATA.SMOOTH_SKIN.map((item: any) => (
+                {DATA.SMOOTH_SKIN.map((item: any, index: number) => (
                   <div
                     key={item.id}
                     onClick={() => handleSmoothSkin(item?.style)}
@@ -359,8 +400,8 @@ export default function AppFrameClient() {
                     <Image
                       src={item.url}
                       alt=""
-                      width={64}
-                      height={90}
+                      width={1000}
+                      height={1000}
                       className={`w-16 h-[90px] rounded-lg border-2 ${
                         selectedSmoothSkin === item?.style
                           ? "border-[#645bff]"
@@ -384,18 +425,19 @@ export default function AppFrameClient() {
             </div>
           </main>
         )}
+        {/* CHAT LUONG  */}
         {tab === "cl" && (
           <main className="w-full flex flex-col flex-1 p-4">
             <div className="flex-1">
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
-                title="Chọn hình ảnh bạn muốn tăng chất lượng"
+                title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
                 newImage={currentImage ?? undefined}
               />
             </div>
-            <div className="flex flex-row gap-4 py-4 overflow-x-auto">
+            <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-[90px] rounded-lg border-2 ${
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
                   selectedQuality === null ? "border-[#645bff]" : "border-white"
                 } cursor-pointer`}
                 onClick={() => handleQualitySelect(null)}
@@ -404,7 +446,7 @@ export default function AppFrameClient() {
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
-                {DATA.QUALITY.map((item: any) => (
+                {DATA.QUALITY.map((item: any, index: number) => (
                   <div
                     key={item.id}
                     onClick={() => handleQualitySelect(item?.style)}
@@ -417,9 +459,9 @@ export default function AppFrameClient() {
                     <Image
                       src={item.url}
                       alt=""
-                      width={64}
-                      height={90}
-                      className="w-16 h-[90px] object-cover rounded-lg"
+                      width={1000}
+                      height={1000}
+                      className={`w-16 cursor-pointer`}
                     />
                   </div>
                 ))}
@@ -438,43 +480,50 @@ export default function AppFrameClient() {
             </div>
           </main>
         )}
+        {/* XOA PHONG  */}
         {tab === "xp" && (
           <main className="w-full flex flex-col flex-1 p-4">
             <div className="flex-1">
-              {removeBackground ? (
+              {removeBackground && (
                 <ImageComposer
                   foregroundImage={currentImage}
                   backgroundImage={selectedBackground}
                 />
-              ) : (
+              )}
+              {!removeBackground && (
                 <ImageUploadMobile
                   onImageChange={handleImageUpload}
-                  title="Chọn hình ảnh bạn muốn xóa phông"
+                  title={"Chọn hình ảnh bạn muốn xóa phông"}
                   newImage={currentImage ?? undefined}
                 />
               )}
             </div>
             <div className="flex flex-row gap-4 py-4 overflow-x-auto scroll-bar-style">
-              <div
-                className={`flex justify-center items-center w-16 h-[90px] rounded-lg border-2 ${
-                  selectedBackground === null
-                    ? "border-[#645bff]"
-                    : "border-white"
-                } cursor-pointer`}
-                onClick={() => handleBackgroundSelect(null)}
-              >
-                <Ban size={25} />
-              </div>
-              <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
                 <div
-                  className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] rounded-lg border-2 ${
+                  className={`flex justify-center items-center mx-auto w-[64px] h-[90px] object-cover rounded-lg border-2 ${
+                    selectedBackground === null
+                      ? "border-[#645bff]"
+                      : "border-white"
+                  } cursor-pointer`}
+                  onClick={() => handleBackgroundSelect(null)}
+                >
+                  <Ban size={25} />
+                </div>
+                <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
+              </div>
+              <div className="flex flex-row gap-4">
+                <div
+                  className={`bg-indigo-50 flex justify-center items-center w-16 h-[90px] object-cover rounded-lg border-2 ${
                     selectedBackground === null
                       ? "border-white"
                       : "border-white"
                   } cursor-pointer`}
                 >
-                  <UploadBackground onBackgroundAdd={addCustomBackground} />
+                  <UploadBackground
+                    onBackgroundAdd={addCustomBackground}
+                    // result={removeBackground}
+                  />
                 </div>
                 {customBackgrounds
                   .slice()
@@ -488,8 +537,8 @@ export default function AppFrameClient() {
                       <Image
                         src={item.url}
                         alt=""
-                        width={64}
-                        height={90}
+                        width={1000}
+                        height={1000}
                         className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
                           selectedBackground === item.url
                             ? "border-[#645bff]"
@@ -507,8 +556,8 @@ export default function AppFrameClient() {
                     <Image
                       src={item.url}
                       alt=""
-                      width={64}
-                      height={90}
+                      width={1000}
+                      height={1000}
                       className={`w-16 h-[90px] object-cover rounded-lg border-2 ${
                         selectedBackground === item.url
                           ? "border-[#645bff]"
@@ -532,29 +581,30 @@ export default function AppFrameClient() {
             </div>
           </main>
         )}
+        {/* AI  */}
         {tab === "ai" && (
           <main className="w-full flex flex-col flex-1 p-4">
             <div className="flex-1">
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
-                title="Chọn hình ảnh bạn muốn tạo với AI"
+                title={"Chọn hình ảnh bạn muốn tạo với AI"}
                 newImage={currentImage ?? undefined}
               />
             </div>
-            <div className="flex flex-row gap-4 py-4 overflow-x-auto">
+            <div className="flex flex-row gap-4 py-4">
               <div
-                className={`flex justify-center items-center w-16 h-[90px] rounded-lg border-2 ${
-                  selectedStyle === "original"
+                className={`flex justify-center items-center w-16 h-full object-cover rounded-lg border-2 ${
+                  selectedBackground === null
                     ? "border-[#645bff]"
                     : "border-white"
                 } cursor-pointer`}
-                onClick={() => handleStyleSelect("original")}
+                onClick={() => handleBackgroundSelect(null)}
               >
                 <Ban size={25} />
               </div>
               <div className="h-1/2 w-0.5 bg-indigo-300 my-auto"></div>
               <div className="flex flex-row gap-4">
-                {DATA.AI_STYLE.map((item: any) => (
+                {DATA.AI_STYLE.map((item: any, index: number) => (
                   <div
                     key={item.id}
                     onClick={() => handleStyleSelect(item?.style)}
@@ -567,9 +617,9 @@ export default function AppFrameClient() {
                     <Image
                       src={item.url}
                       alt=""
-                      width={64}
-                      height={90}
-                      className="w-16 h-[90px] object-cover rounded-lg"
+                      width={1000}
+                      height={1000}
+                      className={`w-16 cursor-pointer`}
                     />
                   </div>
                 ))}
