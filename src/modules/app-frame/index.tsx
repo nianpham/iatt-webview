@@ -16,27 +16,39 @@ import { IMAGES } from "@/utils/image";
 import Link from "next/link";
 import UploadBackground from "./components/upload-background";
 import { ROUTES } from "@/utils/route";
+// Define the shape of the state for each tab
+interface TabState {
+  uploadedFile: File | null;
+  currentImage: string | null;
+  originalImage: string | null;
+  responseImage: string | null;
+}
+
+// Define the tabs and their initial state
+const initialTabState: TabState = {
+  uploadedFile: null,
+  currentImage: null,
+  originalImage: null,
+  responseImage: null,
+};
 
 export default function AppFrameClient() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get("function");
+  const tab = searchParams.get("function") || "md"; // Default to 'md' if no tab is specified
   const router = useRouter();
 
-  const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
-  const [currentImage, setCurrentImage] = React.useState<string | null>(null);
-  const [originalImage, setOriginalImage] = React.useState<string | null>(null);
-  const [responseImage1, setResponseImage1] = React.useState<string | null>(
-    null
-  ); // face2paint
-  const [responseImage2, setResponseImage2] = React.useState<string | null>(
-    null
-  ); // paprika
-  const [responseImage3, setResponseImage3] = React.useState<string | null>(
-    null
-  );
+  // State to hold tab-specific data
+  const [tabStates, setTabStates] = React.useState<{
+    [key: string]: TabState;
+  }>({
+    md: { ...initialTabState },
+    cl: { ...initialTabState },
+    xp: { ...initialTabState },
+    ai: { ...initialTabState },
+  });
+
   const [selectedStyle, setSelectedStyle] = React.useState<string>("original");
   const [loading, setLoading] = React.useState(false);
-  const [loadingUpload, setLoadingUpload] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [customBackgrounds, setCustomBackgrounds] = React.useState<
     { id: number; url: string }[]
@@ -51,37 +63,31 @@ export default function AppFrameClient() {
   const [selectedQuality, setSelectedQuality] = React.useState<string | null>(
     null
   );
-
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
+  // Update device height on resize
   React.useEffect(() => {
     const updateHeight = () => {
       setDeviceHeight(`${window.innerHeight}px`);
     };
-
     updateHeight();
-
     window.addEventListener("resize", updateHeight);
-
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
+  // Clean up object URLs to prevent memory leaks
   useEffect(() => {
-    // Revoke object URLs to prevent memory leaks
     return () => {
-      if (currentImage) URL.revokeObjectURL(currentImage);
-      if (originalImage) URL.revokeObjectURL(originalImage);
+      Object.values(tabStates).forEach((tabState) => {
+        if (tabState.currentImage) URL.revokeObjectURL(tabState.currentImage);
+        if (tabState.originalImage) URL.revokeObjectURL(tabState.originalImage);
+        if (tabState.responseImage) URL.revokeObjectURL(tabState.responseImage);
+      });
     };
-  }, [currentImage, originalImage]);
+  }, [tabStates]);
 
+  // Reset states when tab changes
   useEffect(() => {
-    // Reset states when tab changes
-    setUploadedFile(null);
-    setCurrentImage(null);
-    setOriginalImage(null);
-    setResponseImage1(null);
-    setResponseImage2(null);
-    setResponseImage3(null);
     setSelectedStyle("original");
     setLoading(false);
     setRefresh(false);
@@ -96,54 +102,47 @@ export default function AppFrameClient() {
     window.location.reload();
   };
 
-  const handleImageUpload = async (file: File | null) => {
-    if (file) {
-      setLoadingUpload(true);
-      const upload: any = await UploadService.uploadToCloudinary([file]);
-      setUploadedFile(file);
-      const originalUrl = URL.createObjectURL(file);
-      setCurrentImage(upload[0].secure_url);
-      setOriginalImage(upload[0].secure_url);
-      setSelectedStyle("original");
-      setLoadingUpload(false);
-    } else {
-      setUploadedFile(null);
-      setCurrentImage(null);
-      setOriginalImage(null);
-    }
+  const handleImageUpload = (file: File | null) => {
+    setTabStates((prev) => {
+      const newState = { ...prev };
+      if (file) {
+        const originalUrl = URL.createObjectURL(file);
+        newState[tab] = {
+          uploadedFile: file,
+          currentImage: originalUrl,
+          originalImage: originalUrl,
+          responseImage: null,
+        };
+      } else {
+        newState[tab] = { ...initialTabState };
+      }
+      return newState;
+    });
   };
 
   const handleStyleSelect = (style: string) => {
     if (style === "original") {
       setSelectedStyle(style);
-      setCurrentImage(originalImage);
+      setTabStates((prev) => ({
+        ...prev,
+        [tab]: {
+          ...prev[tab],
+          currentImage: prev[tab].originalImage,
+        },
+      }));
       return;
     }
 
-    let hasResult = false;
-    switch (style) {
-      case "face2paint":
-        if (responseImage1) {
-          setCurrentImage(responseImage1);
-          hasResult = true;
-        }
-        break;
-      case "paprika":
-        if (responseImage2) {
-          setCurrentImage(responseImage2);
-          hasResult = true;
-        }
-        break;
-      case "webtoon":
-        if (responseImage3) {
-          setCurrentImage(responseImage3);
-          hasResult = true;
-        }
-        break;
-    }
-
+    const hasResult = tabStates[tab].responseImage && style !== "original";
     if (hasResult) {
       setSelectedStyle(style);
+      setTabStates((prev) => ({
+        ...prev,
+        [tab]: {
+          ...prev[tab],
+          currentImage: prev[tab].responseImage,
+        },
+      }));
     } else {
       toast({
         title: "",
@@ -173,34 +172,16 @@ export default function AppFrameClient() {
     setSelectedBackground(backgroundUrl);
   };
 
-  const handleSmoothSkin: (smoothSkinUrl: string | null) => void = (
-    smoothSkinUrl
-  ) => {
-    // if (!removeBackground) {
-    //   toast({
-    //     title: "",
-    //     description: "Vui lòng làm mịn da trước khi chọn kiểu làm mịn!",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+  const handleSmoothSkin = (smoothSkinUrl: string | null) => {
     setSelectedSmoothSkin(smoothSkinUrl);
   };
 
   const handleQualitySelect = (qualityUrl: string | null) => {
-    // if (!removeBackground) {
-    //   toast({
-    //     title: "",
-    //     description: "Vui lòng xóa phông nền trước khi chọn nền mới!",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
     setSelectedQuality(qualityUrl);
   };
 
   const validateForm = () => {
-    if (!uploadedFile) {
+    if (!tabStates[tab].uploadedFile) {
       toast({
         title: "",
         description: "Vui lòng tải lên một hình ảnh!",
@@ -217,7 +198,7 @@ export default function AppFrameClient() {
     try {
       setLoading(true);
       const upload: any = await UploadService.uploadToCloudinary([
-        uploadedFile,
+        tabStates[tab].uploadedFile,
       ]);
 
       let response;
@@ -225,30 +206,25 @@ export default function AppFrameClient() {
         response = await MobileService.smoothSkin(upload[0].secure_url);
       } else if (tab === "cl") {
         response = await MobileService.increaseQuality(upload[0].secure_url);
-      } else if (tab === "ai") {
-        const [res1, res2, res3] = await Promise.all([
-          MobileService.imageAI(upload[0].secure_url, "face2paint"),
-          MobileService.imageAI(upload[0].secure_url, "paprika"),
-          MobileService.imageAI(upload[0].secure_url, "webtoon"),
-        ]);
-        if (res1.data && res2.data && res3.data) {
-          response = res1;
-        }
-        setResponseImage1(res1.data);
-        setResponseImage2(res2.data);
-        setResponseImage3(res3.data);
-        setCurrentImage(res1.data);
-        setSelectedStyle("face2paint");
       } else if (tab === "xp") {
         response = await MobileService.removeBackground(upload[0].secure_url);
         setRemoveBackground(true);
+      } else if (tab === "ai") {
+        response = await MobileService.imageAI(
+          upload[0].secure_url,
+          selectedStyle
+        );
       }
 
       if (response && response.data) {
-        if (currentImage) {
-          URL.revokeObjectURL(currentImage);
-        }
-        setCurrentImage(response.data);
+        setTabStates((prev) => ({
+          ...prev,
+          [tab]: {
+            ...prev[tab],
+            currentImage: response.data,
+            responseImage: response.data,
+          },
+        }));
       } else {
         toast({
           title: "",
@@ -270,20 +246,11 @@ export default function AppFrameClient() {
 
   const handleContinue = () => {
     const hasResult =
-      currentImage || responseImage1 || responseImage2 || responseImage3;
-
+      tabStates[tab].currentImage || tabStates[tab].responseImage;
     if (hasResult) {
-      let resultImage = currentImage;
-      if (selectedStyle === "face2paint" && responseImage1)
-        resultImage = responseImage1;
-      else if (selectedStyle === "paprika" && responseImage2)
-        resultImage = responseImage2;
-      else if (selectedStyle === "webtoon" && responseImage3)
-        resultImage = responseImage3;
-
       router.push(
         `https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
-          resultImage ?? ""
+          tabStates[tab].currentImage ?? ""
         )}`
       );
     } else {
@@ -300,21 +267,6 @@ export default function AppFrameClient() {
       className="relative w-full h-screen flex flex-col justify-center items-center"
       style={{ height: deviceHeight }}
     >
-      {loadingUpload && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
-          <div
-            className="w-full bg-black bg-opacity-50 flex flex-col gap-10 justify-center items-center"
-            style={{ height: deviceHeight }}
-          >
-            <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
-              <ImageProcessing />
-              <div className="text-black font-medium">Đang tải hình ảnh...</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PROCESSING  */}
       {loading && (
         <div className="absolute top-0 left-0 right-0 bottom-0 z-20">
           <div
@@ -360,7 +312,7 @@ export default function AppFrameClient() {
             </div>
             <a
               href={`https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
-                currentImage ?? ""
+                tabStates[tab].currentImage ?? ""
               )}`}
               target="_blank"
               className="bg-[#645bff] text-white font-medium text-sm px-3 py-2 mr-2 rounded-lg"
@@ -376,7 +328,7 @@ export default function AppFrameClient() {
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
                 title={"Chọn hình ảnh bạn muốn làm mịn da"}
-                newImage={currentImage ?? undefined}
+                newImage={tabStates[tab].currentImage ?? undefined}
               />
             </div>
             <div className="flex flex-row gap-4 py-4">
@@ -432,7 +384,7 @@ export default function AppFrameClient() {
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
                 title={"Chọn hình ảnh bạn muốn tăng chất lượng"}
-                newImage={currentImage ?? undefined}
+                newImage={tabStates[tab].currentImage ?? undefined}
               />
             </div>
             <div className="flex flex-row gap-4 py-4">
@@ -486,7 +438,7 @@ export default function AppFrameClient() {
             <div className="flex-1">
               {removeBackground && (
                 <ImageComposer
-                  foregroundImage={currentImage}
+                  foregroundImage={tabStates[tab].currentImage}
                   backgroundImage={selectedBackground}
                 />
               )}
@@ -494,7 +446,7 @@ export default function AppFrameClient() {
                 <ImageUploadMobile
                   onImageChange={handleImageUpload}
                   title={"Chọn hình ảnh bạn muốn xóa phông"}
-                  newImage={currentImage ?? undefined}
+                  newImage={tabStates[tab].currentImage ?? undefined}
                 />
               )}
             </div>
@@ -520,10 +472,7 @@ export default function AppFrameClient() {
                       : "border-white"
                   } cursor-pointer`}
                 >
-                  <UploadBackground
-                    onBackgroundAdd={addCustomBackground}
-                    // result={removeBackground}
-                  />
+                  <UploadBackground onBackgroundAdd={addCustomBackground} />
                 </div>
                 {customBackgrounds
                   .slice()
@@ -588,7 +537,7 @@ export default function AppFrameClient() {
               <ImageUploadMobile
                 onImageChange={handleImageUpload}
                 title={"Chọn hình ảnh bạn muốn tạo với AI"}
-                newImage={currentImage ?? undefined}
+                newImage={tabStates[tab].currentImage ?? undefined}
               />
             </div>
             <div className="flex flex-row gap-4 py-4">
