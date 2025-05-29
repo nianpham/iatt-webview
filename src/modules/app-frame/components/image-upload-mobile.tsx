@@ -69,108 +69,108 @@ const ImageUploadMobile = ({
   };
 
   return (
-    <div
-      className={cn(
-        "flex justify-center lg:!justify-start lg:items-start h-full",
-        className
-      )}
-    >
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        capture="environment"
-        className="hidden"
-      />
-      {!newImage ? (
-        <div className="flex justify-center !w-full">
-          <div
-            onClick={handleClick}
-            className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 mb-0 rounded-lg"
-            // style={{ height: deviceHeight }}
-          >
-            <div className="text-gray-700 flex flex-col items-center">
-              <div className="flex flex-row justify-center items-center gap-2">
-                <Upload size={20} />
-                <span>Tải hình ảnh lên</span>
-              </div>
-              <span className="text-xs mt-1">{title}</span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="relative group w-full">
-          <div
-            className={cn("relative w-full overflow-hidden rounded-xl")}
-            style={{ height: deviceHeight }}
-          >
-            {/* <div className={`relative !w-full`} /> */}
-            <Image
-              style={{ height: deviceHeight }}
-              src={newImage}
-              alt="Preview"
-              width={1000}
-              height={1000}
-              priority
-              className="w-full object-cover object-top border-2 border-[#645bff] rounded-xl"
-            />
-          </div>
-          {/* <div
-            onClick={handleClick}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white px-5 py-3 mt-5 text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-primary-700 cursor-pointer"
-          >
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-gray-500">Thay đổi hình ảnh</span>
-            </div>
-          </div> */}
-        </div>
-      )}
-    </div>
-
-    // <div className={cn("flex flex-col items-center w-full", className)}>
-    //   {title && (
-    //     <h2 className="text-white text-center text-lg font-medium mb-4">
-    //       {title}
-    //     </h2>
+    // <div
+    //   className={cn(
+    //     "flex justify-center lg:!justify-start lg:items-start h-full",
+    //     className
     //   )}
+    // >
     //   <input
     //     type="file"
     //     ref={fileInputRef}
     //     onChange={handleFileChange}
     //     accept="image/*"
-    //     capture="environment" // Enable camera access on iOS
+    //     capture="environment"
     //     className="hidden"
     //   />
-    //   <div className="relative w-full h-[300px] rounded-xl overflow-hidden border-2 border-gray-600">
-    //     {newImage ? (
-    //       <Image
-    //         src={newImage}
-    //         alt="Preview"
-    //         fill
-    //         priority
-    //         className="object-contain rounded-xl"
-    //       />
-    //     ) : (
+    //   {!newImage ? (
+    //     <div className="flex justify-center !w-full">
     //       <div
     //         onClick={handleClick}
-    //         className="cursor-pointer flex flex-col items-center justify-center h-full bg-gray-200 text-gray-700"
+    //         className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 mb-0 rounded-lg"
+    //         // style={{ height: deviceHeight }}
     //       >
-    //         <Upload size={20} />
-    //         <span className="mt-2">Tải hình ảnh lên</span>
-    //         <span className="text-xs mt-1">{title}</span>
+    //         <div className="text-gray-700 flex flex-col items-center">
+    //           <div className="flex flex-row justify-center items-center gap-2">
+    //             <Upload size={20} />
+    //             <span>Tải hình ảnh lên</span>
+    //           </div>
+    //           <span className="text-xs mt-1">{title}</span>
+    //         </div>
     //       </div>
-    //     )}
-    //   </div>
-    //   {newImage && (
-    //     <button
-    //       onClick={handleClick}
-    //       className="mt-4 bg-[#645bff] text-white font-medium text-sm px-4 py-2 rounded-lg hover:bg-[#5348cc]"
-    //     >
-    //       Thay đổi hình ảnh
-    //     </button>
+    //     </div>
+    //   ) : (
+    //     <div className="relative group w-full">
+    //       <div
+    //         className={cn("relative w-full overflow-hidden rounded-xl")}
+    //         style={{ height: deviceHeight }}
+    //       >
+    //         {/* <div className={`relative !w-full`} /> */}
+    //         <Image
+    //           style={{ height: deviceHeight }}
+    //           src={newImage}
+    //           alt="Preview"
+    //           width={1000}
+    //           height={1000}
+    //           priority
+    //           className="w-full object-cover object-top border-2 border-[#645bff] rounded-xl"
+    //         />
+    //       </div>
+    //       {/* <div
+    //         onClick={handleClick}
+    //         className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white px-5 py-3 mt-5 text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-primary-700 cursor-pointer"
+    //       >
+    //         <div className="flex flex-col items-center">
+    //           <span className="text-xs text-gray-500">Thay đổi hình ảnh</span>
+    //         </div>
+    //       </div> */}
+    //     </div>
     //   )}
     // </div>
+
+    <div className={cn("flex flex-col items-center w-full", className)}>
+      {title && (
+        <h2 className="text-white text-center text-lg font-medium mb-4">
+          {title}
+        </h2>
+      )}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        capture="environment" // Enable camera access on iOS
+        className="hidden"
+      />
+      <div className="relative w-full h-[300px] rounded-xl overflow-hidden border-2 border-gray-600">
+        {newImage ? (
+          <Image
+            src={newImage}
+            alt="Preview"
+            fill
+            priority
+            className="object-contain rounded-xl"
+          />
+        ) : (
+          <div
+            onClick={handleClick}
+            className="cursor-pointer flex flex-col items-center justify-center h-full bg-gray-200 text-gray-700"
+          >
+            <Upload size={20} />
+            <span className="mt-2">Tải hình ảnh lên</span>
+            <span className="text-xs mt-1">{title}</span>
+          </div>
+        )}
+      </div>
+      {newImage && (
+        <button
+          onClick={handleClick}
+          className="mt-4 bg-[#645bff] text-white font-medium text-sm px-4 py-2 rounded-lg hover:bg-[#5348cc]"
+        >
+          Thay đổi hình ảnh
+        </button>
+      )}
+    </div>
   );
 };
 
