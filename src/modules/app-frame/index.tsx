@@ -47,17 +47,9 @@ export default function AppFrameClient() {
   const [selectedSmoothSkin, setSelectedSmoothSkin] = React.useState<
     string | null
   >(null);
-  const [isIOS, setIsIOS] = React.useState(false);
   const [selectedQuality, setSelectedQuality] = React.useState<string | null>(
     null
   );
-
-  // Detect iOS device
-  useEffect(() => {
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-    setIsIOS(isIOSDevice);
-  }, []);
 
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
@@ -73,7 +65,6 @@ export default function AppFrameClient() {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
-  // Reset states and handle single reload on tab change for iOS
   useEffect(() => {
     // Revoke object URLs to prevent memory leaks
     if (currentImage) {
@@ -98,33 +89,9 @@ export default function AppFrameClient() {
     setSelectedBackground(null);
     setSelectedSmoothSkin(null);
     setSelectedQuality(null);
-
-    // On iOS, reload the page only once per session
-    if (isIOS) {
-      const hasReloaded = sessionStorage.getItem("hasReloaded");
-      if (!hasReloaded) {
-        sessionStorage.setItem("hasReloaded", "true");
-        window.location.reload();
-      }
-    }
-  }, [tab, isIOS]);
+  }, [tab]);
 
   const handleRefresh = () => {
-    setRefresh(true);
-    // Reset image-related states to allow new image upload
-    setUploadedFile(null);
-    setCurrentImage(null);
-    setOriginalImage(null);
-    setResponseImage1(null);
-    setResponseImage2(null);
-    setResponseImage3(null);
-    setSelectedStyle("original");
-    setRemoveBackground(false);
-    setSelectedBackground(null);
-    setSelectedSmoothSkin(null);
-    setSelectedQuality(null);
-    // Clear the reload flag to allow one more reload on manual refresh
-    sessionStorage.removeItem("hasReloaded");
     window.location.reload();
   };
 
