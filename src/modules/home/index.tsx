@@ -36,7 +36,7 @@ export default function HomeClient() {
             className="w-full flex justify-center items-center gap-3 text-white font-medium text-[16px] py-4 text-center"
           >
             <Aperture />
-            Sáng tạo hình ảnh cá nhân
+            Sáng tạo hình ảnh cá nhân eh
           </Link>
         </div>
 
