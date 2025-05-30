@@ -47,7 +47,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ action }) => {
           icon={<WandSparkles />}
           label="Mịn da"
           active={action === "md"}
-          path={`/app-frame-func1?function=md`}
+          path={`${ROUTES.APP_FRAME}?function=md`}
         />
 
         <NavItem
