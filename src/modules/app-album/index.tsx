@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { ChooseOption } from "./dialog/choose-option";
 import ImageUploadMobileAlbum from "./components/image-upload-mobile-album";
 import { UploadService } from "@/services/upload";
-import ImageProcessing from "../app-frame/components/image-processing";
 import Image from "next/image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import { ChevronLeft, RefreshCcw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { OrderService } from "@/services/order";
 import { ROUTES } from "@/utils/route";
+import ImageProcessing from "./components/image-processing";
 
 type LayoutDimensions =
   | { width: number; height: number }

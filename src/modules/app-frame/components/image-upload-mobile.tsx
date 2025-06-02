@@ -17,7 +17,6 @@ const ImageUploadMobile = ({
   title,
   className,
 }: ImageUploadProps) => {
-  const [preview, setPreview] = React.useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [deviceHeight, setDeviceHeight] = React.useState("410px");
 
@@ -26,11 +25,8 @@ const ImageUploadMobile = ({
       const height = window.innerHeight;
       setDeviceHeight(height < 720 ? "325px" : "410px");
     };
-
     updateHeight();
-
     window.addEventListener("resize", updateHeight);
-
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
@@ -63,7 +59,7 @@ const ImageUploadMobile = ({
   return (
     <div
       className={cn(
-        "flex justify-center lg:!justify-start lg:items-start h-full",
+        "w-full flex justify-center lg:!justify-start lg:items-start h-full",
         className
       )}
     >
@@ -79,7 +75,6 @@ const ImageUploadMobile = ({
           <div
             onClick={handleClick}
             className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 mb-0 rounded-lg"
-            // style={{ height: deviceHeight }}
           >
             <div className="text-gray-700 flex flex-col items-center">
               <div className="flex flex-row justify-center items-center gap-2">
@@ -96,7 +91,6 @@ const ImageUploadMobile = ({
             className={cn("relative w-full overflow-hidden rounded-xl")}
             style={{ height: deviceHeight }}
           >
-            {/* <div className={`relative !w-full`} /> */}
             <Image
               style={{ height: deviceHeight }}
               src={newImage}
@@ -107,14 +101,6 @@ const ImageUploadMobile = ({
               className="w-full object-cover object-top border-2 border-[#645bff] rounded-xl"
             />
           </div>
-          {/* <div
-            onClick={handleClick}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white px-5 py-3 mt-5 text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-primary-700 cursor-pointer"
-          >
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-gray-500">Thay đổi hình ảnh</span>
-            </div>
-          </div> */}
         </div>
       )}
     </div>
