@@ -13,8 +13,8 @@ interface ImageUploadProps {
 
 const ImageUploadMobile = ({
   onImageChange,
-  newImage,
   title,
+  newImage,
   className,
 }: ImageUploadProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -32,23 +32,32 @@ const ImageUploadMobile = ({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-    if (file.size > 1 * 1024 * 1024) {
-      toast({
-        title: "",
-        description: "File ảnh quá lớn, vui lòng chọn file dưới 1MB",
-        variant: "destructive",
-      });
+    if (!file) {
+      onImageChange(null);
       return;
     }
+
+    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "",
-        description: "Vui lòng chọn file hình ảnh",
+        title: "Lỗi",
+        description: "Vui lòng chọn file hình ảnh (jpg, png, v.v.)!",
         variant: "destructive",
       });
       return;
     }
+
+    // Validate file size (max 10MB)
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSizeInBytes) {
+      toast({
+        title: "Lỗi",
+        description: "Hình ảnh quá lớn. Vui lòng chọn file dưới 10MB!",
+        variant: "destructive",
+      });
+      return;
+    }
+
     onImageChange(file);
   };
 
@@ -68,6 +77,7 @@ const ImageUploadMobile = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="image/*"
+        capture="environment"
         className="hidden"
       />
       {!newImage ? (

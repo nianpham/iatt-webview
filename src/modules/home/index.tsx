@@ -8,9 +8,7 @@ import { ROUTES } from "@/utils/route";
 
 export default function HomeClient() {
   return (
-    <div
-      className="relative w-full min-h-screen flex flex-col justify-center items-center gap-2"
-    >
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center gap-2">
       <Image
         src={IMAGES.BG}
         alt=""
