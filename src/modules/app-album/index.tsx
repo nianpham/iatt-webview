@@ -16,9 +16,9 @@ import ImageProcessing from "./components/image-processing";
 type LayoutDimensions =
   | { width: number; height: number }
   | {
-      large: { width: number; height: number };
-      small: { width: number; height: number };
-    };
+    large: { width: number; height: number };
+    small: { width: number; height: number };
+  };
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
@@ -214,32 +214,32 @@ export default function AppAlbumClient() {
         return layoutId === "2-1"
           ? { width: 135, height: 270 }
           : layoutId === "2-2"
-          ? { width: 270, height: 135 }
-          : layoutId.includes("3") && index === 0
-          ? { width: 135, height: 270 }
-          : layoutId.includes("3")
-          ? { width: 135, height: 130 }
-          : { width: 135, height: 130 };
+            ? { width: 270, height: 135 }
+            : layoutId.includes("3") && index === 0
+              ? { width: 135, height: 270 }
+              : layoutId.includes("3")
+                ? { width: 135, height: 130 }
+                : { width: 135, height: 130 };
       case "30x20":
         return layoutId === "2-1"
           ? { width: 90, height: 120 }
           : layoutId === "2-2"
-          ? { width: 170, height: 50 }
-          : layoutId.includes("3") && index === 0
-          ? { width: 90, height: 120 }
-          : layoutId.includes("3")
-          ? { width: 90, height: 55 }
-          : { width: 90, height: 55 };
+            ? { width: 170, height: 50 }
+            : layoutId.includes("3") && index === 0
+              ? { width: 90, height: 120 }
+              : layoutId.includes("3")
+                ? { width: 90, height: 55 }
+                : { width: 90, height: 55 };
       case "35x25":
         return layoutId === "2-1"
           ? { width: 110, height: 173 }
           : layoutId === "2-2"
-          ? { width: 220, height: 93 }
-          : layoutId.includes("3") && index === 0
-          ? { width: 110, height: 160 }
-          : layoutId.includes("3")
-          ? { width: 110, height: 75 }
-          : { width: 110, height: 75 };
+            ? { width: 220, height: 93 }
+            : layoutId.includes("3") && index === 0
+              ? { width: 110, height: 160 }
+              : layoutId.includes("3")
+                ? { width: 110, height: 75 }
+                : { width: 110, height: 75 };
       default:
         return { width: 100, height: 100 };
     }
@@ -373,7 +373,7 @@ export default function AppAlbumClient() {
       const tolerance = 0.05;
       if (
         Math.abs(actualAspectRatio - expectedAspectRatio) /
-          expectedAspectRatio >
+        expectedAspectRatio >
         tolerance
       ) {
         return false;
@@ -416,11 +416,9 @@ export default function AppAlbumClient() {
       if (files.length < MIN_IMAGES) {
         toast({
           title: "Lỗi",
-          description: `Trang ${
-            index + 1
-          } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại đang có ${
-            files.length
-          } ảnh.`,
+          description: `Trang ${index + 1
+            } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại đang có ${files.length
+            } ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -444,9 +442,8 @@ export default function AppAlbumClient() {
       if (!isValid) {
         toast({
           title: "Lỗi",
-          description: `Vài ảnh ở trang ${
-            index + 1
-          } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
+          description: `Vài ảnh ở trang ${index + 1
+            } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -574,25 +571,6 @@ export default function AppAlbumClient() {
 
   return (
     <div className="relative w-full flex flex-col justify-center items-center">
-      {!isOpen ? (
-        <Image
-          src={IMAGES.BACKGROUND_MOBILE}
-          alt=""
-          fill
-          priority
-          objectFit="cover"
-          className="opacity-50 z-0 h-[100vh]"
-        />
-      ) : (
-        <Image
-          src={IMAGES.BACKGROUND_MOBILE}
-          alt=""
-          width={1000}
-          height={1000}
-          objectFit="cover"
-          className="opacity-50 z-0 h-[100vh]"
-        />
-      )}
       <ChooseOption
         isOpen={isOpen}
         setIsOpen={setIsOpen}

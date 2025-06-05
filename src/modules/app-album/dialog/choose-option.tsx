@@ -69,14 +69,13 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
               <button
                 key={index}
                 onClick={() => setSelectedSize(size)}
-                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 focus:outline-none`}
+                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-[#645bff] focus:outline-none`}
               >
                 <span
-                  className={`w-full relative px-5 py-2.5 transition-all ease-in duration-75 rounded-md ${
-                    selectedSize === size
-                      ? "bg-transparent text-white"
-                      : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
-                  }`}
+                  className={`w-full relative px-5 py-2.5 transition-all ease-in duration-75 rounded-md ${selectedSize === size
+                    ? "bg-transparent text-white"
+                    : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
+                    }`}
                 >
                   {size}
                 </span>
@@ -89,14 +88,13 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
               <button
                 key={index}
                 onClick={() => setSelectedPages(pages)}
-                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300`}
+                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-[#645bff]`}
               >
                 <span
-                  className={`w-full relative px-2 py-2.5 transition-all ease-in duration-75 rounded-md ${
-                    selectedPages === pages
-                      ? "bg-transparent text-white"
-                      : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
-                  }`}
+                  className={`w-full relative px-2 py-2.5 transition-all ease-in duration-75 rounded-md ${selectedPages === pages
+                    ? "bg-transparent text-white"
+                    : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
+                    }`}
                 >
                   {pages} trang
                 </span>
@@ -107,11 +105,19 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
         <DialogFooter>
           <Button
             type="submit"
+            className="bg-gray-200 text-black hover:opacity-80 mt-2"
+            onClick={() => handleSave()}
+          >
+            Trang chủ
+          </Button>
+          <Button
+            type="submit"
             className="bg-[#645bff] text-white hover:bg-[#4b47ff]"
             onClick={() => handleSave()}
           >
-            Lưu thay đổi
+            Xác nhận
           </Button>
+
         </DialogFooter>
       </DialogContent>
     </Dialog>
