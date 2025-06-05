@@ -16,9 +16,9 @@ import ImageProcessing from "./components/image-processing";
 type LayoutDimensions =
   | { width: number; height: number }
   | {
-    large: { width: number; height: number };
-    small: { width: number; height: number };
-  };
+      large: { width: number; height: number };
+      small: { width: number; height: number };
+    };
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
@@ -214,32 +214,32 @@ export default function AppAlbumClient() {
         return layoutId === "2-1"
           ? { width: 135, height: 270 }
           : layoutId === "2-2"
-            ? { width: 270, height: 135 }
-            : layoutId.includes("3") && index === 0
-              ? { width: 135, height: 270 }
-              : layoutId.includes("3")
-                ? { width: 135, height: 130 }
-                : { width: 135, height: 130 };
+          ? { width: 270, height: 135 }
+          : layoutId.includes("3") && index === 0
+          ? { width: 135, height: 270 }
+          : layoutId.includes("3")
+          ? { width: 135, height: 130 }
+          : { width: 135, height: 130 };
       case "30x20":
         return layoutId === "2-1"
           ? { width: 90, height: 120 }
           : layoutId === "2-2"
-            ? { width: 170, height: 50 }
-            : layoutId.includes("3") && index === 0
-              ? { width: 90, height: 120 }
-              : layoutId.includes("3")
-                ? { width: 90, height: 55 }
-                : { width: 90, height: 55 };
+          ? { width: 170, height: 50 }
+          : layoutId.includes("3") && index === 0
+          ? { width: 90, height: 120 }
+          : layoutId.includes("3")
+          ? { width: 90, height: 55 }
+          : { width: 90, height: 55 };
       case "35x25":
         return layoutId === "2-1"
           ? { width: 110, height: 173 }
           : layoutId === "2-2"
-            ? { width: 220, height: 93 }
-            : layoutId.includes("3") && index === 0
-              ? { width: 110, height: 160 }
-              : layoutId.includes("3")
-                ? { width: 110, height: 75 }
-                : { width: 110, height: 75 };
+          ? { width: 220, height: 93 }
+          : layoutId.includes("3") && index === 0
+          ? { width: 110, height: 160 }
+          : layoutId.includes("3")
+          ? { width: 110, height: 75 }
+          : { width: 110, height: 75 };
       default:
         return { width: 100, height: 100 };
     }
@@ -373,7 +373,7 @@ export default function AppAlbumClient() {
       const tolerance = 0.05;
       if (
         Math.abs(actualAspectRatio - expectedAspectRatio) /
-        expectedAspectRatio >
+          expectedAspectRatio >
         tolerance
       ) {
         return false;
@@ -416,9 +416,11 @@ export default function AppAlbumClient() {
       if (files.length < MIN_IMAGES) {
         toast({
           title: "Lỗi",
-          description: `Trang ${index + 1
-            } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại đang có ${files.length
-            } ảnh.`,
+          description: `Trang ${
+            index + 1
+          } nên có ít nhất ${MIN_IMAGES} ảnh. Hiện tại đang có ${
+            files.length
+          } ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -442,8 +444,9 @@ export default function AppAlbumClient() {
       if (!isValid) {
         toast({
           title: "Lỗi",
-          description: `Vài ảnh ở trang ${index + 1
-            } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
+          description: `Vài ảnh ở trang ${
+            index + 1
+          } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
           variant: "destructive",
         });
         return false;
@@ -523,18 +526,19 @@ export default function AppAlbumClient() {
           variant: "destructive",
         });
       } else {
-        // const newTabUrl = `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`;
-        // const newWindow = window.open(newTabUrl, "_blank");
-        // if (newWindow) {
-        //   newWindow.focus();
-        // } else {
-        //   toast({
-        //     title: "Thông báo",
-        //     description: "Đang chuyển hướng trang. Vui lòng đợi.",
-        //     variant: "default",
-        //   });
-        //   window.location.href = newTabUrl;
-        // }
+        // console.log("Order created successfully:", response.data.order_id);
+        const newTabUrl = `https://premium.inanhtructuyen.com/tao-don-hang?type=album&orderAlbumID=${response.data.order_id}`;
+        const newWindow = window.open(newTabUrl, "_blank");
+        if (newWindow) {
+          newWindow.focus();
+        } else {
+          toast({
+            title: "Thông báo",
+            description: "Đang chuyển hướng trang. Vui lòng đợi.",
+            variant: "default",
+          });
+          window.location.href = newTabUrl;
+        }
       }
       setError(null);
     } catch (error) {
@@ -570,7 +574,15 @@ export default function AppAlbumClient() {
   }, [previewUrls]);
 
   return (
-    <div className="relative w-full flex flex-col justify-center items-center">
+    <div className="relative w-full h-screen flex flex-col justify-center items-center">
+      <Image
+        src={IMAGES.BACKGROUND_MOBILE}
+        alt=""
+        fill
+        priority
+        objectFit="cover"
+        className="opacity-50 z-0 h-[100vh]"
+      />
       <ChooseOption
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -587,7 +599,7 @@ export default function AppAlbumClient() {
         </div>
       )}
       <div className="w-full h-full flex flex-col z-10">
-        <header className="w-full text-white pt-3 p-2 text-center shrink-0">
+        <header className="w-full text-white pt-3 py-2 px-3 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
             <Link href={ROUTES.HOME}>
               <ChevronLeft color="black" />
@@ -607,7 +619,7 @@ export default function AppAlbumClient() {
           {albumConfig.pages > 0 &&
             Array.from({ length: albumConfig.pages }).map((_, index) => (
               <div key={index} className={`album-page-${index}`}>
-                <div className="mb-2">Trang {index + 1}</div>
+                <div className="mb-2 font-medium">Trang {index + 1}</div>
                 <div className="w-full items-center">
                   <ImageUploadMobileAlbum
                     onImageChange={handleImageUpload}

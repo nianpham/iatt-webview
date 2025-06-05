@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface ChooseOptionProps {
@@ -17,12 +18,13 @@ interface ChooseOptionProps {
 }
 
 export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
+  const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedPages, setSelectedPages] = useState<number>();
 
   const sizes = ["25x25", "30x20", "35x25"];
   // const pageOptions = [10, 15, 20];
-  const pageOptions = [10, 12, 14];
+  const pageOptions = [1, 2, 3];
 
   const validateForm = () => {
     if (!selectedPages) {
@@ -63,38 +65,60 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <div className="font-medium mb-2">Kích thước:</div>
+          <div className="relative">
+            <div
+              className={`absolute bottom-[11%] left-[12%] h-[3px] w-16 bg-[#645bff] opacity-45 z-10`}
+            ></div>
+            <div className="font-medium mb-2 relative">
+              Kích thước:
+              {/* <div className="absolute w-[28%] h-[1px] bg-black"></div> */}
+            </div>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             {sizes.map((size: string, index: number) => (
               <button
                 key={index}
                 onClick={() => setSelectedSize(size)}
-                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-[#645bff] focus:outline-none`}
+                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group focus:outline-none`}
               >
                 <span
-                  className={`w-full relative px-5 py-2.5 transition-all ease-in duration-75 rounded-md ${selectedSize === size
-                    ? "bg-transparent text-white"
-                    : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
-                    }`}
+                  className={`w-full relative px-5 py-2.5 rounded-md ${
+                    selectedSize === size
+                      ? "border-2 border-[#645bff] text-[#645bff]"
+                      : "bg-white text-gray-400 border-2 border-gray-300 "
+                  }`}
                 >
                   {size}
                 </span>
               </button>
             ))}
           </div>
-          <div className="font-medium mb-2">Tổng số trang:</div>
+          {/* <div className="font-medium mb-2 mt-2.5 relative">
+            Tổng số trang:
+            <div className="absolute w-[36%] h-[1px] bg-black"></div>
+          </div> */}
+          <div className="relative">
+            <div
+              className={`absolute bottom-[11%] left-[14%] h-[3px] w-20 bg-[#645bff] opacity-45 z-10`}
+            ></div>
+            <div className="font-medium mb-2 relative">
+              Tổng số trang:
+              {/* <div className="absolute w-[28%] h-[1px] bg-black"></div> */}
+            </div>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             {pageOptions.map((pages: number, index: number) => (
               <button
                 key={index}
                 onClick={() => setSelectedPages(pages)}
-                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group bg-[#645bff]`}
+                className={`relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium rounded-lg group`}
               >
                 <span
-                  className={`w-full relative px-2 py-2.5 transition-all ease-in duration-75 rounded-md ${selectedPages === pages
-                    ? "bg-transparent text-white"
-                    : "bg-white text-gray-900 group-hover:bg-transparent group-hover:text-white"
-                    }`}
+                  className={`w-full relative px-2 py-2.5 rounded-md ${
+                    selectedPages === pages
+                      ? "border-2 border-[#645bff] text-[#645bff]"
+                      : "bg-white text-gray-400 border-2 border-gray-300 "
+                  }`}
                 >
                   {pages} trang
                 </span>
@@ -105,8 +129,8 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
         <DialogFooter>
           <Button
             type="submit"
-            className="bg-gray-200 text-black hover:opacity-80 mt-2"
-            onClick={() => handleSave()}
+            className="bg-gray-200 text-black hover:bg-gray-300 hover:opacity-80 mt-2"
+            onClick={() => router.push("/")}
           >
             Trang chủ
           </Button>
@@ -117,7 +141,6 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
           >
             Xác nhận
           </Button>
-
         </DialogFooter>
       </DialogContent>
     </Dialog>
