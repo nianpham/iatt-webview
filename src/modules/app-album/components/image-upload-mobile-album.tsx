@@ -356,7 +356,7 @@ const ImageUploadMobileAlbum = ({
         return (
           <div
             data-screenshot="true"
-            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full ${
+            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 rounded !w-full ${
               albumSize === "25x25"
                 ? "h-[284px]"
                 : albumSize === "30x20"
@@ -374,9 +374,9 @@ const ImageUploadMobileAlbum = ({
                   albumSize === "25x25"
                     ? "h-[273px]"
                     : albumSize === "30x20"
-                    ? "h-[189px]"
-                    : "h-[239px]"
-                } object-cover border border-gray-500`}
+                    ? "h-[188px]"
+                    : "h-[238px]"
+                } object-cover border border-gray-500 rounded`}
                 crossOrigin="anonymous"
               />
             ))}
@@ -386,7 +386,7 @@ const ImageUploadMobileAlbum = ({
         return (
           <div
             data-screenshot="true"
-            className={`border-2 border-gray-300 grid grid-rows-2 p-1 gap-1 !w-full ${
+            className={`border-2 border-gray-300 grid grid-rows-2 p-1 gap-1 rounded !w-full ${
               albumSize === "25x25"
                 ? "h-[284px]"
                 : albumSize === "30x20"
@@ -400,7 +400,7 @@ const ImageUploadMobileAlbum = ({
                 key={`img-${index}-${Date.now()}`}
                 src={src}
                 alt={`Image ${index + 1}`}
-                className="w-full h-full object-cover border border-gray-500"
+                className="w-full h-full object-cover border border-gray-500 rounded"
                 crossOrigin="anonymous"
               />
             ))}
@@ -410,7 +410,7 @@ const ImageUploadMobileAlbum = ({
         return (
           <div
             data-screenshot="true"
-            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full ${
+            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 rounded !w-full ${
               albumSize === "25x25"
                 ? "h-[298px]"
                 : albumSize === "30x20"
@@ -424,11 +424,11 @@ const ImageUploadMobileAlbum = ({
               alt="Image 1"
               className={`w-full ${
                 albumSize === "25x25"
-                  ? "h-[287px]"
+                  ? "h-[286px]"
                   : albumSize === "30x20"
-                  ? "h-[189px]"
+                  ? "h-[188px]"
                   : "h-[239px]"
-              } object-cover border border-gray-500`}
+              } object-cover border border-gray-500 rounded`}
               crossOrigin="anonymous"
             />
             <div className="grid grid-rows-2 gap-1">
@@ -444,7 +444,7 @@ const ImageUploadMobileAlbum = ({
                       : albumSize === "30x20"
                       ? "h-[92px]"
                       : "h-[117px]"
-                  } object-cover border border-gray-500`}
+                  } object-cover border border-gray-500 rounded`}
                   crossOrigin="anonymous"
                 />
               ))}
@@ -455,7 +455,7 @@ const ImageUploadMobileAlbum = ({
         return (
           <div
             data-screenshot="true"
-            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full ${
+            className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 rounded !w-full ${
               albumSize === "25x25"
                 ? "h-[298px]"
                 : albumSize === "30x20"
@@ -476,7 +476,7 @@ const ImageUploadMobileAlbum = ({
                       : albumSize === "30x20"
                       ? "h-[92px]"
                       : "h-[117px]"
-                  } object-cover border border-gray-500`}
+                  } object-cover border border-gray-500 rounded`}
                   crossOrigin="anonymous"
                 />
               ))}
@@ -487,11 +487,11 @@ const ImageUploadMobileAlbum = ({
               alt="Image 1"
               className={`w-full ${
                 albumSize === "25x25"
-                  ? "h-[287px]"
+                  ? "h-[286px]"
                   : albumSize === "30x20"
-                  ? "h-[189px]"
+                  ? "h-[188px]"
                   : "h-[238px]"
-              } object-cover border border-gray-500`}
+              } object-cover border border-gray-500 rounded`}
               crossOrigin="anonymous"
             />
           </div>
@@ -500,7 +500,7 @@ const ImageUploadMobileAlbum = ({
         return (
           <div
             data-screenshot="true"
-            className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-1 gap-1 !w-full ${
+            className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-1 gap-1 rounded !w-full ${
               albumSize === "25x25"
                 ? "h-[284px]"
                 : albumSize === "30x20"
@@ -520,7 +520,7 @@ const ImageUploadMobileAlbum = ({
                     : albumSize === "30x20"
                     ? "h-[92px]"
                     : "h-[117px]"
-                } object-cover border border-gray-500`}
+                } object-cover border border-gray-500 rounded`}
                 crossOrigin="anonymous"
               />
             ))}
@@ -535,76 +535,39 @@ const ImageUploadMobileAlbum = ({
     const imageHeight2 =
       albumSize === "25x25"
         ? selectedLayout === "2-1"
-          ? "h-[246px]"
-          : "h-[130px]"
+          ? "h-[272px]"
+          : "h-[134px]"
         : albumSize === "30x20"
         ? selectedLayout === "2-1"
-          ? "h-[166px]"
-          : "h-[75px]"
+          ? "h-[188px]"
+          : "h-[92px]"
         : selectedLayout === "2-1"
-        ? "h-[194px]"
-        : "h-[108px]";
+        ? "h-[237px]"
+        : "h-[117px]";
 
     const imageHeight3 =
       albumSize === "25x25"
-        ? "h-[120px]"
+        ? "h-[134px]"
         : albumSize === "30x20"
-        ? "h-[79px]"
-        : "h-[85px]";
+        ? "h-[92px]"
+        : "h-[117px]";
     const imageHeight4 =
       albumSize === "25x25"
-        ? "h-[120px]"
+        ? "h-[134px]"
         : albumSize === "30x20"
-        ? "h-[77px]"
-        : "h-[85px]";
+        ? "h-[92px]"
+        : "h-[117px]";
 
     return (
       <DndProvider backend={MultiBackend} options={DND_BACKEND}>
         <div className="w-full">
           {selectedLayout === "2-1" && (
             <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-2 !w-full rounded ${
+              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full rounded ${
                 albumSize === "25x25"
-                  ? "h-[275px]"
+                  ? "h-[284px]"
                   : albumSize === "30x20"
-                  ? "h-[195px]"
-                  : "h-[222px]"
-              }`}
-            >
-              {localFiles.map((file, index) => (
-                <div key={`${index}-${Date.now()}`} className="relative">
-                  <Div
-                    src={URL.createObjectURL(file)}
-                    title={`Image ${index + 1}`}
-                    id={`${index}-${Date.now()}`}
-                    index={index}
-                    moveImage={moveImage}
-                    albumSize={albumSize || "25x25"}
-                    imageHeight={imageHeight2}
-                  />
-                  {/* <button
-                    onClick={() => handleCropButtonClick(index)}
-                    className="absolute -bottom-2 -left-1.5 bg-green-100 text-white p-1 rounded-full"
-                  >
-                    <Crop size={15} color="black" />
-                  </button> */}
-                  <button
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-2 -right-1.5 bg-red-500 text-white p-1 rounded-full"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {selectedLayout === "2-2" && (
-            <div
-              className={`border-2 border-gray-300 grid grid-rows-2 p-1 gap-2 !w-full rounded ${
-                albumSize === "25x25"
-                  ? "h-[300px]"
-                  : albumSize === "30x20"
-                  ? "h-[190px]"
+                  ? "h-[200px]"
                   : "h-[250px]"
               }`}
             >
@@ -627,7 +590,44 @@ const ImageUploadMobileAlbum = ({
                   </button> */}
                   <button
                     onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-2 -right-1.5 bg-red-500 text-white p-1 rounded-full"
+                    className="absolute -top-2 -right-1.5 bg-red-500 text-white p-1 rounded-full z-20"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {selectedLayout === "2-2" && (
+            <div
+              className={`border-2 border-gray-300 grid grid-rows-2 p-1 gap-1 !w-full rounded ${
+                albumSize === "25x25"
+                  ? "h-[284px]"
+                  : albumSize === "30x20"
+                  ? "h-[200px]"
+                  : "h-[250px]"
+              }`}
+            >
+              {localFiles.map((file, index) => (
+                <div key={`${index}-${Date.now()}`} className="relative">
+                  <Div
+                    src={URL.createObjectURL(file)}
+                    title={`Image ${index + 1}`}
+                    id={`${index}-${Date.now()}`}
+                    index={index}
+                    moveImage={moveImage}
+                    albumSize={albumSize || "25x25"}
+                    imageHeight={imageHeight2}
+                  />
+                  {/* <button
+                    onClick={() => handleCropButtonClick(index)}
+                    className="absolute -bottom-2 -left-1.5 bg-green-100 text-white p-1 rounded-full"
+                  >
+                    <Crop size={15} color="black" />
+                  </button> */}
+                  <button
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute -top-2 -right-1.5 bg-red-500 text-white p-1 rounded-full z-20"
                   >
                     <X size={12} />
                   </button>
@@ -637,12 +637,12 @@ const ImageUploadMobileAlbum = ({
           )}
           {selectedLayout === "3-1" && (
             <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-2 !w-full rounded ${
+              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full rounded ${
                 albumSize === "25x25"
-                  ? "h-[276px]"
+                  ? "h-[284px]"
                   : albumSize === "30x20"
-                  ? "h-[193px]"
-                  : "h-[208px]"
+                  ? "h-[200px]"
+                  : "h-[250px]"
               }`}
             >
               <div className="relative">
@@ -655,10 +655,10 @@ const ImageUploadMobileAlbum = ({
                   albumSize={albumSize || "25x25"}
                   imageHeight={
                     albumSize === "25x25"
-                      ? "h-[248px]"
+                      ? "h-[272px]"
                       : albumSize === "30x20"
-                      ? "h-[165px]"
-                      : "h-[180px]"
+                      ? "h-[188px]"
+                      : "h-[238px]"
                   }
                 />
                 {/* <button
@@ -669,12 +669,12 @@ const ImageUploadMobileAlbum = ({
                 </button> */}
                 <button
                   onClick={() => handleRemoveImage(0)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full z-20"
                 >
                   <X size={12} />
                 </button>
               </div>
-              <div className="grid grid-rows-2 gap-2">
+              <div className="grid grid-rows-2 gap-1">
                 {localFiles.slice(1).map((file, idx) => (
                   <div key={`${idx + 1}-${Date.now()}`} className="relative">
                     <Div
@@ -694,7 +694,7 @@ const ImageUploadMobileAlbum = ({
                     </button> */}
                     <button
                       onClick={() => handleRemoveImage(idx + 1)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full z-20"
                     >
                       <X size={12} />
                     </button>
@@ -705,15 +705,15 @@ const ImageUploadMobileAlbum = ({
           )}
           {selectedLayout === "3-2" && (
             <div
-              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-2 !w-full rounded ${
+              className={`border-2 border-gray-300 grid grid-cols-2 p-1 gap-1 !w-full rounded ${
                 albumSize === "25x25"
-                  ? "h-[276px]"
+                  ? "h-[284px]"
                   : albumSize === "30x20"
-                  ? "h-[193px]"
-                  : "h-[208px]"
+                  ? "h-[200px]"
+                  : "h-[250px]"
               }`}
             >
-              <div className="grid grid-rows-2 gap-2">
+              <div className="grid grid-rows-2 gap-1">
                 {localFiles.slice(1).map((file, idx) => (
                   <div key={`${idx + 1}-${Date.now()}`} className="relative">
                     <Div
@@ -733,7 +733,7 @@ const ImageUploadMobileAlbum = ({
                     </button> */}
                     <button
                       onClick={() => handleRemoveImage(idx + 1)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full z-20"
                     >
                       <X size={12} />
                     </button>
@@ -750,10 +750,10 @@ const ImageUploadMobileAlbum = ({
                   albumSize={albumSize || "25x25"}
                   imageHeight={
                     albumSize === "25x25"
-                      ? "h-[248px]"
+                      ? "h-[272px]"
                       : albumSize === "30x20"
-                      ? "h-[165px]"
-                      : "h-[180px]"
+                      ? "h-[188px]"
+                      : "h-[238px]"
                   }
                 />
                 {/* <button
@@ -764,7 +764,7 @@ const ImageUploadMobileAlbum = ({
                 </button> */}
                 <button
                   onClick={() => handleRemoveImage(0)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full z-20"
                 >
                   <X size={12} />
                 </button>
@@ -773,12 +773,12 @@ const ImageUploadMobileAlbum = ({
           )}
           {selectedLayout === "4-1" && (
             <div
-              className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-1 gap-2 !w-full rounded ${
+              className={`border-2 border-gray-300 grid grid-cols-2 grid-rows-2 p-1 gap-1 !w-full rounded ${
                 albumSize === "25x25"
-                  ? "h-[276px]"
+                  ? "h-[284px]"
                   : albumSize === "30x20"
-                  ? "h-[193px]"
-                  : "h-[208px]"
+                  ? "h-[200px]"
+                  : "h-[250px]"
               }`}
             >
               {localFiles.map((file, index) => (
@@ -800,7 +800,7 @@ const ImageUploadMobileAlbum = ({
                   </button> */}
                   <button
                     onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-1.5 -right-1.5 bg-red-500 text-white p-1 rounded-full"
+                    className="absolute -top-1.5 -right-1.5 bg-red-500 text-white p-1 rounded-full z-20"
                   >
                     <X size={12} />
                   </button>
@@ -910,95 +910,6 @@ const ImageUploadMobileAlbum = ({
     4: [{ id: "4-1", name: "Layout 1", cols: 2, rows: 2 }],
   };
 
-  // const renderLayoutPreview = (option: {
-  //   id: string;
-  //   cols: number;
-  //   rows: number;
-  // }) => {
-  //   switch (option.id) {
-  //     case "2-1":
-  //       return (
-  //         <div
-  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
-  //             ? "h-[200px]"
-  //             : albumSize === "30x20"
-  //               ? "h-[150px]"
-  //               : "h-[167px]"
-  //             } border border-gray-300 rounded p-1`}
-  //         >
-  //           <div className="bg-gray-300 rounded"></div>
-  //           <div className="bg-gray-300 rounded"></div>
-  //         </div>
-  //       );
-  //     case "2-2":
-  //       return (
-  //         <div
-  //           className={`grid grid-rows-2 gap-1 w-full ${albumSize === "25x25"
-  //             ? "h-[200px]"
-  //             : albumSize === "30x20"
-  //               ? "h-[150px]"
-  //               : "h-[167px]"
-  //             } border border-gray-300 rounded p-1`}
-  //         >
-  //           <div className="bg-gray-300 rounded"></div>
-  //           <div className="bg-gray-300 rounded"></div>
-  //         </div>
-  //       );
-  //     case "3-1":
-  //       return (
-  //         <div
-  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
-  //             ? "h-[200px]"
-  //             : albumSize === "30x20"
-  //               ? "h-[150px]"
-  //               : "h-[167px]"
-  //             } border border-gray-300 rounded p-1`}
-  //         >
-  //           <div className="bg-gray-300 rounded grid grid-rows-2"></div>
-  //           <div className="grid grid-rows-2 gap-1">
-  //             <div className="bg-gray-300 rounded"></div>
-  //             <div className="bg-gray-300 rounded"></div>
-  //           </div>
-  //         </div>
-  //       );
-  //     case "3-2":
-  //       return (
-  //         <div
-  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
-  //             ? "h-[200px]"
-  //             : albumSize === "30x20"
-  //               ? "h-[150px]"
-  //               : "h-[167px]"
-  //             } border border-gray-300 rounded p-1`}
-  //         >
-  //           <div className="grid grid-rows-2 gap-1">
-  //             <div className="bg-gray-300 rounded"></div>
-  //             <div className="bg-gray-300 rounded"></div>
-  //           </div>
-  //           <div className="bg-gray-300 rounded grid grid-rows-2"></div>
-  //         </div>
-  //       );
-  //     case "4-1":
-  //       return (
-  //         <div
-  //           className={`grid grid-cols-2 grid-rows-2 gap-1 w-full ${albumSize === "25x25"
-  //             ? "h-[200px]"
-  //             : albumSize === "30x20"
-  //               ? "h-[150px]"
-  //               : "h-[167px]"
-  //             } border border-gray-300 rounded p-1`}
-  //         >
-  //           <div className="bg-gray-300 rounded"></div>
-  //           <div className="bg-gray-300 rounded"></div>
-  //           <div className="bg-gray-300 rounded"></div>
-  //           <div className="bg-gray-300 rounded"></div>
-  //         </div>
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
-
   const renderLayoutPreview = (option: {
     id: string;
     cols: number;
@@ -1011,9 +922,9 @@ const ImageUploadMobileAlbum = ({
       switch (albumSize) {
         case "25x25":
           return layoutId === "3-1" && index === 0
-            ? "h-[197px]"
+            ? "h-[196px]"
             : layoutId === "3-2" && index === 0
-            ? "h-[197px]"
+            ? "h-[196px]"
             : "h-[96px]"; // Adjusted for smaller preview grid
         case "30x20":
           return layoutId === "3-1" && index === 0
@@ -1049,7 +960,7 @@ const ImageUploadMobileAlbum = ({
       case "2-1":
         return (
           <div
-            className={`grid grid-cols-2 gap-1 w-full ${getPreviewHeightFor2()} border border-gray-300 p-1`}
+            className={`grid grid-cols-2 gap-1 w-full ${getPreviewHeightFor2()} border border-gray-300 p-1 rounded`}
           >
             {images.slice(0, 2).map((src, index) => (
               <img
@@ -1062,7 +973,7 @@ const ImageUploadMobileAlbum = ({
                     : albumSize === "30x20"
                     ? "h-[140px]"
                     : "h-[157px]"
-                } object-cover border border-gray-500`}
+                } object-cover border border-gray-500 rounded`}
                 crossOrigin="anonymous"
               />
             ))}
@@ -1071,14 +982,14 @@ const ImageUploadMobileAlbum = ({
       case "2-2":
         return (
           <div
-            className={`grid grid-rows-2 gap-1 w-full ${getPreviewHeightFor2()} border border-gray-300 p-1`}
+            className={`grid grid-rows-2 gap-1 w-full ${getPreviewHeightFor2()} border border-gray-300 p-1 rounded`}
           >
             {images.slice(0, 2).map((src, index) => (
               <img
                 key={`preview-2-2-${index}`}
                 src={src}
                 alt={`Preview ${index + 1}`}
-                className="w-full h-full object-cover border border-gray-500"
+                className="w-full h-full object-cover border border-gray-500 rounded"
                 crossOrigin="anonymous"
               />
             ))}
@@ -1089,11 +1000,11 @@ const ImageUploadMobileAlbum = ({
           <div
             className={`grid grid-cols-2 gap-1 w-full ${
               albumSize === "25x25"
-                ? "h-[208px]"
+                ? "h-[206px]"
                 : albumSize === "30x20"
                 ? "h-[150px]"
                 : "h-[167px]"
-            } border border-gray-300 p-1`}
+            } border border-gray-300 p-1 rounded`}
           >
             <img
               src={images[0]}
@@ -1101,7 +1012,7 @@ const ImageUploadMobileAlbum = ({
               className={`w-full ${getPreviewHeightFor3(
                 "3-1",
                 0
-              )} object-cover border border-gray-500`}
+              )} object-cover border border-gray-500 rounded`}
               crossOrigin="anonymous"
             />
             <div className="grid grid-rows-2 gap-1">
@@ -1113,7 +1024,7 @@ const ImageUploadMobileAlbum = ({
                   className={`w-full ${getPreviewHeightFor3(
                     "3-1",
                     index + 1
-                  )} object-cover border border-gray-500`}
+                  )} object-cover border border-gray-500 rounded`}
                   crossOrigin="anonymous"
                 />
               ))}
@@ -1125,11 +1036,11 @@ const ImageUploadMobileAlbum = ({
           <div
             className={`grid grid-cols-2 gap-1 w-full ${
               albumSize === "25x25"
-                ? "h-[208px]"
+                ? "h-[206px]"
                 : albumSize === "30x20"
                 ? "h-[150px]"
                 : "h-[167px]"
-            } border border-gray-300 p-1`}
+            } border border-gray-300 p-1 rounded`}
           >
             <div className="grid grid-rows-2 gap-1">
               {images.slice(1, 3).map((src, index) => (
@@ -1140,7 +1051,7 @@ const ImageUploadMobileAlbum = ({
                   className={`w-full ${getPreviewHeightFor3(
                     "3-2",
                     index + 1
-                  )} object-cover border border-gray-500`}
+                  )} object-cover border border-gray-500 rounded`}
                   crossOrigin="anonymous"
                 />
               ))}
@@ -1151,7 +1062,7 @@ const ImageUploadMobileAlbum = ({
               className={`w-full ${getPreviewHeightFor3(
                 "3-2",
                 0
-              )} object-cover border border-gray-500`}
+              )} object-cover border border-gray-500 rounded`}
               crossOrigin="anonymous"
             />
           </div>
@@ -1165,7 +1076,7 @@ const ImageUploadMobileAlbum = ({
                 : albumSize === "30x20"
                 ? "h-[150px]"
                 : "h-[167px]"
-            } border border-gray-300 p-1`}
+            } border border-gray-300 p-1 rounded`}
           >
             {images.slice(0, 4).map((src, index) => (
               <img
@@ -1178,7 +1089,7 @@ const ImageUploadMobileAlbum = ({
                     : albumSize === "30x20"
                     ? "h-[68px]"
                     : "h-[77px]"
-                } object-cover border border-gray-500`}
+                } object-cover border border-gray-500 rounded`}
                 crossOrigin="anonymous"
               />
             ))}
@@ -1218,7 +1129,10 @@ const ImageUploadMobileAlbum = ({
                     <div>Bố cục</div>
                   </div>
                 </DialogTrigger>
-                <DialogContent className="max-w-[350px] max-h-[90vh] rounded-lg flex flex-col">
+                <DialogContent
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                  className="max-w-[350px] max-h-[90vh] rounded-lg flex flex-col"
+                >
                   <DialogHeader>
                     <DialogTitle>
                       Trang Album {pageIndex !== undefined ? pageIndex + 1 : ""}
@@ -1267,7 +1181,7 @@ const ImageUploadMobileAlbum = ({
                             <Button
                               type="button"
                               variant="secondary"
-                              className="!px-10 !text-[16px] mt-3"
+                              className="!px-10 !text-[16px] mt-3 border-2 border-[#645bff] text-[#645bff] bg-white hover:bg-[#645bff] hover:text-white"
                             >
                               Đóng
                             </Button>
@@ -1357,7 +1271,11 @@ const ImageUploadMobileAlbum = ({
                   </DialogContent>
                 </Dialog>
               )}
-              <div className={cn("relative w-full overflow-hidden bg-white")}>
+              <div
+                className={cn(
+                  "relative w-full overflow-hidden rounded bg-white"
+                )}
+              >
                 {renderImageGrid()}
               </div>
             </>
@@ -1371,7 +1289,7 @@ const ImageUploadMobileAlbum = ({
                   : albumSize === "30x20"
                   ? "h-[200px]"
                   : "h-[250px]"
-              } w-full items-center justify-center gap-2 border-2 border-dashed border-gray-300 bg-white px-5 py-3 mt-0 text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-primary-700 cursor-pointer`}
+              } w-full items-center justify-center gap-2 border-2 border-dashed border-gray-300 bg-white px-5 py-3 mt-0 text-sm font-medium text-gray-900 hover:bg-gray-50 hover:text-primary-700 cursor-pointer rounded`}
             >
               <div className="flex flex-col items-center">
                 <div className="flex flex-row items-center gap-2">
