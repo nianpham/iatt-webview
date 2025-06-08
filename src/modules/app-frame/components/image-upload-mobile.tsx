@@ -36,8 +36,6 @@ const ImageUploadMobile = ({
       onImageChange(null);
       return;
     }
-
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Lỗi",
@@ -46,9 +44,7 @@ const ImageUploadMobile = ({
       });
       return;
     }
-
-    // Validate file size (max 10MB)
-    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+    const maxSizeInBytes = 10 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
       toast({
         title: "Lỗi",
@@ -57,7 +53,6 @@ const ImageUploadMobile = ({
       });
       return;
     }
-
     onImageChange(file);
   };
 

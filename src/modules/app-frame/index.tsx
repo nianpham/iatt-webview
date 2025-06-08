@@ -7,6 +7,21 @@ import Image from "next/image";
 import { IMAGES } from "@/utils/image";
 import Link from "next/link";
 import { ROUTES } from "@/utils/route";
+import { UploadService } from "@/services/upload";
+import { SwapService } from "@/services/swap";
+
+const model = [
+  {
+    id: "style_01",
+    name: "Style 01",
+    image: "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/raq9puevs1uopxnfydjo.png",
+  },
+  {
+    id: "style_02",
+    name: "Style 02",
+    image: "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/kfmyiwu4ywkkyhthughn.png",
+  },
+];
 
 export default function AppFrameClient() {
 
@@ -29,10 +44,39 @@ export default function AppFrameClient() {
     window.location.reload();
   };
 
-  const handleImageUpload = (file: File | null) => {
+  const handleImageUpload = async (file: File | null) => {
     if (file) {
       setUploadedFile(file);
       const originalUrl = URL.createObjectURL(file);
+      await UploadService.uploadToCloudinary([file])
+        .then((res) => {
+          if (res && res.length > 0) {
+            setCurrentImage(res[0].secure_url);
+          } else {
+            setCurrentImage(originalUrl);
+          }
+        }
+        )
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+          setCurrentImage(originalUrl);
+        }
+        );
+    }
+  };
+
+  const handleSwap = async (targetUrl: string, inputUrl: string) => {
+    const taskId = await SwapService.process(targetUrl, inputUrl);
+    console.log("Task ID:", taskId);
+    if (taskId) {
+      const interval = setInterval(async () => {
+        const result = await SwapService.getResult(taskId);
+        console.log("Swap Result URL:", result);
+        if (result) {
+          setCurrentImage(result);
+          clearInterval(interval);
+        }
+      }, 5000);
     }
   };
 
@@ -84,13 +128,14 @@ export default function AppFrameClient() {
           </div>
           <div className="w-full grid grid-cols-2 gap-4 mt-4">
             {
-              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+              model?.map((item: any, index: any) => (
                 <div
                   key={index}
                   className="w-full"
+                  onClick={() => handleSwap(item.image, currentImage ?? "")}
                 >
                   <Image
-                    src={IMAGES.STYLE_01}
+                    src={item.image}
                     alt=""
                     width={200}
                     height={200}
