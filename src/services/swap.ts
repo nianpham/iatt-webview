@@ -6,6 +6,7 @@ const processs = async (targetUrl: string, inputUrl: string) => {
     const myHeaders = new Headers();
 
     myHeaders.append("x-api-key", String(APIKEY));
+    myHeaders.append("Content-Type", "application/json");
     const raw = {
       model: "Qubico/image-toolkit",
       task_type: "face-swap",
@@ -28,7 +29,7 @@ const processs = async (targetUrl: string, inputUrl: string) => {
       .catch((error) => console.error(error));
     return taskId;
   } catch (error: any) {
-    console.error("========= Error Swap Image:", error);
+    console.error("========= Error Swap Image 1: ", error);
     return false;
   }
 };
@@ -38,6 +39,7 @@ const getResult = async (taskId: string) => {
     let outputUrl = "";
     const myHeaders = new Headers();
     myHeaders.append("x-api-key", String(APIKEY));
+    myHeaders.append("Content-Type", "application/json");
     const requestOptions: any = {
       method: "GET",
       headers: myHeaders,
@@ -51,7 +53,7 @@ const getResult = async (taskId: string) => {
       .catch((error) => console.error(error));
     return outputUrl;
   } catch (error: any) {
-    console.error("========= Error Swap Image:", error);
+    console.error("========= Error Swap Image 2: ", error);
     return false;
   }
 };

@@ -10,6 +10,7 @@ import { ROUTES } from "@/utils/route";
 import { UploadService } from "@/services/upload";
 import { SwapService } from "@/services/swap";
 import ImageProcessing from "../app-album/components/image-processing";
+import { Button } from "@/components/ui/button";
 
 const model = [
   {
@@ -30,6 +31,7 @@ export default function AppFrameClient() {
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
   const [refresh, setRefresh] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
 
   const [loading, setLoading] = React.useState(false);
   const [imageProcessing, setImageProcessing] = React.useState(false);
@@ -72,15 +74,26 @@ export default function AppFrameClient() {
 
   const handleSwap = async (targetUrl: string, inputUrl: string) => {
     setLoading(true);
+    setProgress(0);
     const taskId = await SwapService.processs(targetUrl, inputUrl);
-    // console.log("Task ID:", taskId);
+
     if (taskId) {
-      const interval = setInterval(async () => {
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 99) {
+            clearInterval(progressInterval);
+            return 99;
+          }
+          return prev + 3;
+        });
+      }, 200);
+
+      const checkInterval = setInterval(async () => {
         const result = await SwapService.getResult(taskId);
-        // console.log("Swap Result URL:", result);
         if (result) {
           setCurrentImage(result);
-          clearInterval(interval);
+          setProgress(100);
+          clearInterval(checkInterval);
           setLoading(false);
         }
       }, 5000);
@@ -92,12 +105,29 @@ export default function AppFrameClient() {
       className="relative w-full h-screen flex flex-col justify-center items-center"
       style={{ height: deviceHeight }}
     >
+      <Image
+        src={IMAGES.BACKGROUND_MOBILE}
+        alt=""
+        fill
+        priority
+        objectFit="cover"
+        className="opacity-20 z-0 h-[100vh]"
+      />
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
             <ImageProcessing />
             <div className="text-black font-medium">
               Hình ảnh đang được xử lí...
+            </div>
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div className="w-64 bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-[#645bff] h-2.5 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <div className="text-black font-medium">{progress}%</div>
             </div>
           </div>
         </div>
@@ -158,7 +188,10 @@ export default function AppFrameClient() {
               <div
                 key={index}
                 className="w-full"
-                onClick={() => handleSwap(item.image, currentImage ?? "")}
+                onClick={() => {
+                  handleSwap(item.image, currentImage ?? "");
+                  setProgress(0);
+                }}
               >
                 <Image
                   src={item.image}

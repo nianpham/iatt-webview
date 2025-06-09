@@ -688,7 +688,7 @@ export default function AppAlbumClient() {
         fill
         priority
         objectFit="cover"
-        className="opacity-50 z-0 h-[100vh]"
+        className="opacity-20 z-0 h-[100vh]"
       />
       <ChooseOption
         isOpen={isOpen}
@@ -708,7 +708,7 @@ export default function AppAlbumClient() {
       <div className="w-full h-full flex flex-col z-10">
         <header className="w-full text-white pt-3 py-2 px-3 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
-            <Link href={ROUTES.HOME}>
+            <Link href={ROUTES.HOME} className="ml-1">
               <ChevronLeft color="black" />
             </Link>
             <div className="flex flex-row justify-center items-center gap-3 ml-12">
@@ -716,7 +716,7 @@ export default function AppAlbumClient() {
             </div>
             <button
               onClick={handleSubmit}
-              className="bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl text-white font-medium text-sm px-3 py-2 rounded-lg"
+              className="bg-[#8E97FD] text-white font-medium text-md px-4 py-2 mr-2 rounded-full"
             >
               Tiếp tục
             </button>
