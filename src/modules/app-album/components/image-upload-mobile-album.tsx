@@ -63,6 +63,17 @@ const DND_BACKEND = {
   ],
 };
 
+const detectDevice = (): "iOS" | "Android" | "Other" => {
+  const userAgent = navigator.userAgent || navigator.vendor;
+  if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+    return "iOS";
+  }
+  if (/android/i.test(userAgent)) {
+    return "Android";
+  }
+  return "Other";
+};
+
 const Div: React.FC<DivProps> = ({
   src,
   title,
@@ -141,6 +152,9 @@ const ImageUploadMobileAlbum = ({
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const MIN_IMAGES = 2;
   const MAX_IMAGES = 4;
+  const [deviceType, setDeviceType] = useState<"iOS" | "Android" | "Other">(
+    "Other"
+  );
 
   const [localFiles, setLocalFiles] = useState<File[]>(originalFiles);
   const [localPreviews, setLocalPreviews] = useState<string[]>(newImages);
@@ -159,6 +173,10 @@ const ImageUploadMobileAlbum = ({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
   const [isReordered, setIsReordered] = useState(false);
+
+  useEffect(() => {
+    setDeviceType(detectDevice());
+  }, []);
 
   useEffect(() => {
     setLocalFiles(originalFiles);
@@ -1115,6 +1133,7 @@ const ImageUploadMobileAlbum = ({
           accept="image/*"
           multiple
           className="hidden"
+          {...(deviceType === "iOS" ? { capture: "environment" } : {})}
         />
         <div className="relative group w-full h-full">
           {localFiles.length > 0 && (
