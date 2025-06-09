@@ -66,9 +66,6 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
         </DialogHeader>
         <div>
           <div className="relative">
-            <div
-              className={`absolute bottom-[11%] left-[12%] h-[3px] w-16 bg-[#645bff] opacity-45 z-10`}
-            ></div>
             <div className="font-medium mb-2 relative">
               Kích thước:
               {/* <div className="absolute w-[28%] h-[1px] bg-black"></div> */}
@@ -98,9 +95,6 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
             <div className="absolute w-[36%] h-[1px] bg-black"></div>
           </div> */}
           <div className="relative">
-            <div
-              className={`absolute bottom-[11%] left-[14%] h-[3px] w-20 bg-[#645bff] opacity-45 z-10`}
-            ></div>
             <div className="font-medium mb-2 relative">
               Tổng số trang:
               {/* <div className="absolute w-[28%] h-[1px] bg-black"></div> */}
@@ -132,7 +126,7 @@ export function ChooseOption({ isOpen, setIsOpen, onSave }: ChooseOptionProps) {
             className="bg-gray-200 text-black hover:bg-gray-300 hover:opacity-80 mt-2"
             onClick={() => router.push("/")}
           >
-            Trang chủ
+            Trở về
           </Button>
           <Button
             type="submit"
