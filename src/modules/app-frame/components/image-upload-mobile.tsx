@@ -76,7 +76,7 @@ const ImageUploadMobile = ({
         className="hidden"
       />
       {!newImage ? (
-        <div className="flex justify-center !w-full">
+        <div className="flex justify-center !w-full !h-full">
           <div
             onClick={handleClick}
             className="cursor-pointer border-2 border-dashed border-gray-600 p-4 flex flex-col items-center justify-center !w-full lg:!w-80 mb-0 rounded-lg"
@@ -91,9 +91,9 @@ const ImageUploadMobile = ({
           </div>
         </div>
       ) : (
-        <div className="relative group w-full">
+        <div className="relative group w-full !h-full">
           <div
-            className={cn("relative w-full overflow-hidden rounded-xl")}
+            className={cn("relative w-full !h-full overflow-hidden rounded-xl")}
             style={{ height: deviceHeight }}
           >
             <Image

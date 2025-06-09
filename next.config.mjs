@@ -12,6 +12,9 @@ const nextConfig = {
             },
         ],
     },
+    env: {
+        NEXT_PUBLIC_PIAPI_KEY: process.env.SWAPFACE_API_KEY,
+    },
 };
 
 export default nextConfig;

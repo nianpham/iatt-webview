@@ -1,21 +1,24 @@
-const process = async (targetUrl: string, inputUrl: string) => {
+const APIKEY = process.env.NEXT_PUBLIC_PIAPI_KEY;
+
+const processs = async (targetUrl: string, inputUrl: string) => {
   try {
     let taskId = "";
     const myHeaders = new Headers();
-    myHeaders.append("x-api-key", "");
+
+    myHeaders.append("x-api-key", String(APIKEY));
     const raw = {
-      "model": "Qubico/image-toolkit",
-      "task_type": "face-swap",
-      "input": {
-        "target_image": targetUrl,
-        "swap_image": inputUrl
-      }
-    }
+      model: "Qubico/image-toolkit",
+      task_type: "face-swap",
+      input: {
+        target_image: targetUrl,
+        swap_image: inputUrl,
+      },
+    };
     const requestOptions: any = {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify(raw),
-      redirect: "follow"
+      redirect: "follow",
     };
     await fetch("https://api.piapi.ai/api/v1/task", requestOptions)
       .then((response) => response.json())
@@ -34,11 +37,11 @@ const getResult = async (taskId: string) => {
   try {
     let outputUrl = "";
     const myHeaders = new Headers();
-    myHeaders.append("x-api-key", "");
+    myHeaders.append("x-api-key", String(APIKEY));
     const requestOptions: any = {
       method: "GET",
       headers: myHeaders,
-      redirect: "follow"
+      redirect: "follow",
     };
     await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, requestOptions)
       .then((response) => response.json())
@@ -54,6 +57,6 @@ const getResult = async (taskId: string) => {
 };
 
 export const SwapService = {
-  process,
-  getResult
+  processs,
+  getResult,
 };

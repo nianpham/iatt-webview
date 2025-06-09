@@ -9,25 +9,30 @@ import Link from "next/link";
 import { ROUTES } from "@/utils/route";
 import { UploadService } from "@/services/upload";
 import { SwapService } from "@/services/swap";
+import ImageProcessing from "../app-album/components/image-processing";
 
 const model = [
   {
     id: "style_01",
     name: "Style 01",
-    image: "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/raq9puevs1uopxnfydjo.png",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/raq9puevs1uopxnfydjo.png",
   },
   {
     id: "style_02",
     name: "Style 02",
-    image: "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/kfmyiwu4ywkkyhthughn.png",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/kfmyiwu4ywkkyhthughn.png",
   },
 ];
 
 export default function AppFrameClient() {
-
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
   const [refresh, setRefresh] = React.useState(false);
+
+  const [loading, setLoading] = React.useState(false);
+  const [imageProcessing, setImageProcessing] = React.useState(false);
 
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
 
@@ -46,35 +51,37 @@ export default function AppFrameClient() {
 
   const handleImageUpload = async (file: File | null) => {
     if (file) {
+      setImageProcessing(true);
       setUploadedFile(file);
       const originalUrl = URL.createObjectURL(file);
       await UploadService.uploadToCloudinary([file])
         .then((res) => {
           if (res && res.length > 0) {
             setCurrentImage(res[0].secure_url);
+            setImageProcessing(false);
           } else {
             setCurrentImage(originalUrl);
           }
-        }
-        )
+        })
         .catch((error) => {
           console.error("Error uploading image:", error);
           setCurrentImage(originalUrl);
-        }
-        );
+        });
     }
   };
 
   const handleSwap = async (targetUrl: string, inputUrl: string) => {
-    const taskId = await SwapService.process(targetUrl, inputUrl);
-    console.log("Task ID:", taskId);
+    setLoading(true);
+    const taskId = await SwapService.processs(targetUrl, inputUrl);
+    // console.log("Task ID:", taskId);
     if (taskId) {
       const interval = setInterval(async () => {
         const result = await SwapService.getResult(taskId);
-        console.log("Swap Result URL:", result);
+        // console.log("Swap Result URL:", result);
         if (result) {
           setCurrentImage(result);
           clearInterval(interval);
+          setLoading(false);
         }
       }, 5000);
     }
@@ -85,6 +92,24 @@ export default function AppFrameClient() {
       className="relative w-full h-screen flex flex-col justify-center items-center"
       style={{ height: deviceHeight }}
     >
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
+            <ImageProcessing />
+            <div className="text-black font-medium">
+              Hình ảnh đang được xử lí...
+            </div>
+          </div>
+        </div>
+      )}
+      {imageProcessing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
+            <ImageProcessing />
+            <div className="text-black font-medium">Đang tải hình ảnh...</div>
+          </div>
+        </div>
+      )}
       <div
         className="w-full h-full flex flex-col z-10"
         style={{ height: deviceHeight }}
@@ -118,8 +143,10 @@ export default function AppFrameClient() {
         </header>
         <main className="w-full flex flex-col flex-1 p-4">
           <h1 className="text-2xl font-bold">Tải hỉnh ảnh của bạn</h1>
-          <h1 className="text-lg font-light mb-4">Sau đó chọn style yêu thích</h1>
-          <div className="w-full h-80 flex">
+          <h1 className="text-lg font-light mb-4">
+            Sau đó chọn style yêu thích
+          </h1>
+          <div className="w-full h-[410px] flex">
             <ImageUploadMobile
               onImageChange={handleImageUpload}
               title={"Chọn hình ảnh bạn muốn tạo với AI"}
@@ -127,23 +154,21 @@ export default function AppFrameClient() {
             />
           </div>
           <div className="w-full grid grid-cols-2 gap-4 mt-4">
-            {
-              model?.map((item: any, index: any) => (
-                <div
-                  key={index}
-                  className="w-full"
-                  onClick={() => handleSwap(item.image, currentImage ?? "")}
-                >
-                  <Image
-                    src={item.image}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="w-full rounded-lg"
-                  />
-                </div>
-              ))
-            }
+            {model?.map((item: any, index: any) => (
+              <div
+                key={index}
+                className="w-full"
+                onClick={() => handleSwap(item.image, currentImage ?? "")}
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  width={200}
+                  height={200}
+                  className="w-full rounded-lg"
+                />
+              </div>
+            ))}
           </div>
         </main>
       </div>
