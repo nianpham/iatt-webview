@@ -32,11 +32,13 @@ export default function AppFrameClient() {
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
   const [refresh, setRefresh] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-
   const [loading, setLoading] = React.useState(false);
   const [imageProcessing, setImageProcessing] = React.useState(false);
-
   const [deviceHeight, setDeviceHeight] = React.useState("90vh");
+  const [progressInterval, setProgressInterval] =
+    React.useState<NodeJS.Timeout | null>(null);
+  const [checkInterval, setCheckInterval] =
+    React.useState<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     const updateHeight = () => {
@@ -72,31 +74,75 @@ export default function AppFrameClient() {
     }
   };
 
+  const handleCancel = () => {
+    if (progressInterval) {
+      clearInterval(progressInterval);
+      setProgressInterval(null);
+    }
+    if (checkInterval) {
+      clearInterval(checkInterval);
+      setCheckInterval(null);
+    }
+    setLoading(false);
+    setProgress(0);
+  };
+
+  // const handleSwap = async (targetUrl: string, inputUrl: string) => {
+  //   setLoading(true);
+  //   setProgress(0);
+  //   const taskId = await SwapService.processs(targetUrl, inputUrl);
+
+  //   if (taskId) {
+  //     const progressInterval = setInterval(() => {
+  //       setProgress((prev) => {
+  //         if (prev >= 99) {
+  //           clearInterval(progressInterval);
+  //           return 99;
+  //         }
+  //         return prev + 3;
+  //       });
+  //     }, 200);
+
+  //     const checkInterval = setInterval(async () => {
+  //       const result = await SwapService.getResult(taskId);
+  //       if (result) {
+  //         setCurrentImage(result);
+  //         setProgress(100);
+  //         clearInterval(checkInterval);
+  //         setLoading(false);
+  //       }
+  //     }, 5000);
+  //   }
+  // };
+
   const handleSwap = async (targetUrl: string, inputUrl: string) => {
     setLoading(true);
     setProgress(0);
     const taskId = await SwapService.processs(targetUrl, inputUrl);
 
     if (taskId) {
-      const progressInterval = setInterval(() => {
+      const newProgressInterval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 99) {
-            clearInterval(progressInterval);
+            clearInterval(newProgressInterval);
             return 99;
           }
           return prev + 3;
         });
       }, 200);
+      setProgressInterval(newProgressInterval);
 
-      const checkInterval = setInterval(async () => {
+      const newCheckInterval = setInterval(async () => {
         const result = await SwapService.getResult(taskId);
         if (result) {
           setCurrentImage(result);
           setProgress(100);
-          clearInterval(checkInterval);
+          clearInterval(newCheckInterval);
+          setCheckInterval(null);
           setLoading(false);
         }
       }, 5000);
+      setCheckInterval(newCheckInterval);
     }
   };
 
@@ -129,6 +175,13 @@ export default function AppFrameClient() {
               </div>
               <div className="text-black font-medium">{progress}%</div>
             </div>
+            <Button
+              type="submit"
+              className="bg-gray-200 text-black hover:bg-gray-300 hover:opacity-80 mt-0 w-full"
+              onClick={handleCancel}
+            >
+              Hủy
+            </Button>
           </div>
         </div>
       )}
