@@ -31,6 +31,9 @@ export default function AppAlbumClient() {
   const [previewUrls, setPreviewUrls] = useState<{ [key: number]: string[] }>(
     {}
   );
+  const [croppedStatus, setCroppedStatus] = useState<{
+    [key: number]: boolean[];
+  }>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -93,6 +96,8 @@ export default function AppAlbumClient() {
     reorderedFiles?: File[]
   ) => {
     const currentFiles = pageFiles[pageIndex] || [];
+    const currentCroppedStatus =
+      croppedStatus[pageIndex] || Array(currentFiles.length).fill(false);
 
     if (reorderedFiles) {
       setPageFiles((prev) => ({
@@ -102,6 +107,10 @@ export default function AppAlbumClient() {
       setPreviewUrls((prev) => ({
         ...prev,
         [pageIndex]: reorderedFiles.map((file) => URL.createObjectURL(file)),
+      }));
+      setCroppedStatus((prev) => ({
+        ...prev,
+        [pageIndex]: currentCroppedStatus,
       }));
     } else if (
       files &&
@@ -120,11 +129,21 @@ export default function AppAlbumClient() {
         ...prev,
         [pageIndex]: [...currentFiles, ...fileArray],
       }));
+      setCroppedStatus((prev) => ({
+        ...prev,
+        [pageIndex]: [
+          ...currentCroppedStatus,
+          ...Array(fileArray.length).fill(false),
+        ],
+      }));
     } else if (removedIndex !== undefined) {
       const updatedFiles = currentFiles.filter(
         (_, idx) => idx !== removedIndex
       );
       const updatedUrls = (previewUrls[pageIndex] || []).filter(
+        (_, idx) => idx !== removedIndex
+      );
+      const updatedCroppedStatus = currentCroppedStatus.filter(
         (_, idx) => idx !== removedIndex
       );
 
@@ -135,6 +154,10 @@ export default function AppAlbumClient() {
       setPreviewUrls((prev) => ({
         ...prev,
         [pageIndex]: updatedUrls,
+      }));
+      setCroppedStatus((prev) => ({
+        ...prev,
+        [pageIndex]: updatedCroppedStatus,
       }));
     } else if (croppedIndex !== undefined && croppedFile) {
       const updatedFiles = [...currentFiles];
@@ -146,6 +169,9 @@ export default function AppAlbumClient() {
       }
       updatedUrls[croppedIndex] = URL.createObjectURL(croppedFile);
 
+      const updatedCroppedStatus = [...currentCroppedStatus];
+      updatedCroppedStatus[croppedIndex] = true;
+
       setPageFiles((prev) => ({
         ...prev,
         [pageIndex]: updatedFiles,
@@ -153,6 +179,10 @@ export default function AppAlbumClient() {
       setPreviewUrls((prev) => ({
         ...prev,
         [pageIndex]: updatedUrls,
+      }));
+      setCroppedStatus((prev) => ({
+        ...prev,
+        [pageIndex]: updatedCroppedStatus,
       }));
     }
   };
@@ -243,6 +273,52 @@ export default function AppAlbumClient() {
       default:
         return { width: 100, height: 100 };
     }
+  };
+
+  const autoCropImage = async (
+    file: File,
+    aspectRatio: number
+  ): Promise<File> => {
+    const img = new window.Image();
+    img.src = URL.createObjectURL(file);
+    await new Promise((resolve) => (img.onload = resolve));
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    const imgAspectRatio = img.width / img.height;
+
+    let cropWidth, cropHeight, cropX, cropY;
+
+    if (imgAspectRatio > aspectRatio) {
+      cropHeight = img.height;
+      cropWidth = img.height * aspectRatio;
+      cropX = (img.width - cropWidth) / 2;
+      cropY = 0;
+    } else {
+      cropWidth = img.width;
+      cropHeight = img.width / aspectRatio;
+      cropX = 0;
+      cropY = (img.height - cropHeight) / 2;
+    }
+
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+
+    ctx.drawImage(
+      img,
+      cropX,
+      cropY,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      cropWidth,
+      cropHeight
+    );
+
+    const croppedUrl = canvas.toDataURL("image/jpeg");
+    const croppedBlob = dataURLtoBlob(croppedUrl);
+    return new File([croppedBlob], file.name, { type: "image/jpeg" });
   };
 
   const renderToCanvas = async (
@@ -493,7 +569,37 @@ export default function AppAlbumClient() {
           return false;
         }
 
-        const dataUrl = await renderToCanvas(files, layout, albumConfig.size);
+        const pageCroppedStatus =
+          croppedStatus[index] || Array(files.length).fill(false);
+        const updatedFiles = await Promise.all(
+          files.map(async (file, idx) => {
+            if (!pageCroppedStatus[idx]) {
+              const aspectRatio = getAspectRatio(layout, idx, albumConfig.size);
+              return await autoCropImage(file, aspectRatio);
+            }
+            return file;
+          })
+        );
+
+        // Update pageFiles and previewUrls for cropped images
+        setPageFiles((prev) => ({
+          ...prev,
+          [index]: updatedFiles,
+        }));
+        setPreviewUrls((prev) => ({
+          ...prev,
+          [index]: updatedFiles.map((file) => URL.createObjectURL(file)),
+        }));
+        setCroppedStatus((prev) => ({
+          ...prev,
+          [index]: Array(updatedFiles.length).fill(true),
+        }));
+
+        const dataUrl = await renderToCanvas(
+          updatedFiles,
+          layout,
+          albumConfig.size
+        );
         const blob = dataURLtoBlob(dataUrl);
         const file = new File([blob], `album-page-${index + 1}.jpg`, {
           type: "image/jpeg",
@@ -506,6 +612,7 @@ export default function AppAlbumClient() {
             description: `Không thể up hình ở trang ${index + 1}`,
             variant: "destructive",
           });
+          setLoading(false);
           return false;
         }
 
