@@ -1,0 +1,89 @@
+
+  // const renderLayoutPreview = (option: {
+  //   id: string;
+  //   cols: number;
+  //   rows: number;
+  // }) => {
+  //   switch (option.id) {
+  //     case "2-1":
+  //       return (
+  //         <div
+  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
+  //             ? "h-[200px]"
+  //             : albumSize === "30x20"
+  //               ? "h-[150px]"
+  //               : "h-[167px]"
+  //             } border border-gray-300 rounded p-1`}
+  //         >
+  //           <div className="bg-gray-300 rounded"></div>
+  //           <div className="bg-gray-300 rounded"></div>
+  //         </div>
+  //       );
+  //     case "2-2":
+  //       return (
+  //         <div
+  //           className={`grid grid-rows-2 gap-1 w-full ${albumSize === "25x25"
+  //             ? "h-[200px]"
+  //             : albumSize === "30x20"
+  //               ? "h-[150px]"
+  //               : "h-[167px]"
+  //             } border border-gray-300 rounded p-1`}
+  //         >
+  //           <div className="bg-gray-300 rounded"></div>
+  //           <div className="bg-gray-300 rounded"></div>
+  //         </div>
+  //       );
+  //     case "3-1":
+  //       return (
+  //         <div
+  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
+  //             ? "h-[200px]"
+  //             : albumSize === "30x20"
+  //               ? "h-[150px]"
+  //               : "h-[167px]"
+  //             } border border-gray-300 rounded p-1`}
+  //         >
+  //           <div className="bg-gray-300 rounded grid grid-rows-2"></div>
+  //           <div className="grid grid-rows-2 gap-1">
+  //             <div className="bg-gray-300 rounded"></div>
+  //             <div className="bg-gray-300 rounded"></div>
+  //           </div>
+  //         </div>
+  //       );
+  //     case "3-2":
+  //       return (
+  //         <div
+  //           className={`grid grid-cols-2 gap-1 w-full ${albumSize === "25x25"
+  //             ? "h-[200px]"
+  //             : albumSize === "30x20"
+  //               ? "h-[150px]"
+  //               : "h-[167px]"
+  //             } border border-gray-300 rounded p-1`}
+  //         >
+  //           <div className="grid grid-rows-2 gap-1">
+  //             <div className="bg-gray-300 rounded"></div>
+  //             <div className="bg-gray-300 rounded"></div>
+  //           </div>
+  //           <div className="bg-gray-300 rounded grid grid-rows-2"></div>
+  //         </div>
+  //       );
+  //     case "4-1":
+  //       return (
+  //         <div
+  //           className={`grid grid-cols-2 grid-rows-2 gap-1 w-full ${albumSize === "25x25"
+  //             ? "h-[200px]"
+  //             : albumSize === "30x20"
+  //               ? "h-[150px]"
+  //               : "h-[167px]"
+  //             } border border-gray-300 rounded p-1`}
+  //         >
+  //           <div className="bg-gray-300 rounded"></div>
+  //           <div className="bg-gray-300 rounded"></div>
+  //           <div className="bg-gray-300 rounded"></div>
+  //           <div className="bg-gray-300 rounded"></div>
+  //         </div>
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };

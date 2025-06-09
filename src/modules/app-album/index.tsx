@@ -526,18 +526,19 @@ export default function AppAlbumClient() {
           variant: "destructive",
         });
       } else {
-        // const newTabUrl = `https://www.inanhtructuyen.com/tai-khoan?tab=order-album&orderAlbumID=${response.data.order_id}`;
-        // const newWindow = window.open(newTabUrl, "_blank");
-        // if (newWindow) {
-        //   newWindow.focus();
-        // } else {
-        //   toast({
-        //     title: "Thông báo",
-        //     description: "Đang chuyển hướng trang. Vui lòng đợi.",
-        //     variant: "default",
-        //   });
-        //   window.location.href = newTabUrl;
-        // }
+        // console.log("Order created successfully:", response.data.order_id);
+        const newTabUrl = `https://premium.inanhtructuyen.com/tao-don-hang?type=album&orderAlbumID=${response.data.order_id}`;
+        const newWindow = window.open(newTabUrl, "_blank");
+        if (newWindow) {
+          newWindow.focus();
+        } else {
+          toast({
+            title: "Thông báo",
+            description: "Đang chuyển hướng trang. Vui lòng đợi.",
+            variant: "default",
+          });
+          window.location.href = newTabUrl;
+        }
       }
       setError(null);
     } catch (error) {
@@ -573,26 +574,15 @@ export default function AppAlbumClient() {
   }, [previewUrls]);
 
   return (
-    <div className="relative w-full flex flex-col justify-center items-center">
-      {!isOpen ? (
-        <Image
-          src={IMAGES.BACKGROUND_MOBILE}
-          alt=""
-          fill
-          priority
-          objectFit="cover"
-          className="opacity-50 z-0 h-[100vh]"
-        />
-      ) : (
-        <Image
-          src={IMAGES.BACKGROUND_MOBILE}
-          alt=""
-          width={1000}
-          height={1000}
-          objectFit="cover"
-          className="opacity-50 z-0 h-[100vh]"
-        />
-      )}
+    <div className="relative w-full h-screen flex flex-col justify-center items-center">
+      <Image
+        src={IMAGES.BACKGROUND_MOBILE}
+        alt=""
+        fill
+        priority
+        objectFit="cover"
+        className="opacity-50 z-0 h-[100vh]"
+      />
       <ChooseOption
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -609,7 +599,7 @@ export default function AppAlbumClient() {
         </div>
       )}
       <div className="w-full h-full flex flex-col z-10">
-        <header className="w-full text-white pt-3 p-2 text-center shrink-0">
+        <header className="w-full text-white pt-3 py-2 px-3 text-center shrink-0">
           <div className="flex flex-row justify-between items-center">
             <Link href={ROUTES.HOME}>
               <ChevronLeft color="black" />
@@ -629,7 +619,7 @@ export default function AppAlbumClient() {
           {albumConfig.pages > 0 &&
             Array.from({ length: albumConfig.pages }).map((_, index) => (
               <div key={index} className={`album-page-${index}`}>
-                <div className="mb-2">Trang {index + 1}</div>
+                <div className="mb-2 font-medium">Trang {index + 1}</div>
                 <div className="w-full items-center">
                   <ImageUploadMobileAlbum
                     onImageChange={handleImageUpload}
