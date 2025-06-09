@@ -358,29 +358,29 @@ export default function AppAlbumClient() {
     return width / height;
   };
 
-  const validateImageDimensions = async (
-    files: File[],
-    layout: string,
-    albumSize: string
-  ): Promise<boolean> => {
-    const loadedImages = await preloadImages(files);
-    for (let idx = 0; idx < loadedImages.length; idx++) {
-      const img = loadedImages[idx];
-      const expected = getImageDimensions(albumSize, layout, idx);
-      const actualAspectRatio = img.width / img.height;
-      const expectedAspectRatio = expected.width / expected.height;
+  // const validateImageDimensions = async (
+  //   files: File[],
+  //   layout: string,
+  //   albumSize: string
+  // ): Promise<boolean> => {
+  //   const loadedImages = await preloadImages(files);
+  //   for (let idx = 0; idx < loadedImages.length; idx++) {
+  //     const img = loadedImages[idx];
+  //     const expected = getImageDimensions(albumSize, layout, idx);
+  //     const actualAspectRatio = img.width / img.height;
+  //     const expectedAspectRatio = expected.width / expected.height;
 
-      const tolerance = 0.05;
-      if (
-        Math.abs(actualAspectRatio - expectedAspectRatio) /
-          expectedAspectRatio >
-        tolerance
-      ) {
-        return false;
-      }
-    }
-    return true;
-  };
+  //     const tolerance = 0.05;
+  //     if (
+  //       Math.abs(actualAspectRatio - expectedAspectRatio) /
+  //         expectedAspectRatio >
+  //       tolerance
+  //     ) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   const getLayoutForPage = (imageCount: number, pageIndex: number): string => {
     const node = document.querySelector(
@@ -436,21 +436,21 @@ export default function AppAlbumClient() {
         return false;
       }
 
-      const isValid = await validateImageDimensions(
-        files,
-        layout,
-        albumConfig.size
-      );
-      if (!isValid) {
-        toast({
-          title: "Lỗi",
-          description: `Vài ảnh ở trang ${
-            index + 1
-          } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
-          variant: "destructive",
-        });
-        return false;
-      }
+      // const isValid = await validateImageDimensions(
+      //   files,
+      //   layout,
+      //   albumConfig.size
+      // );
+      // if (!isValid) {
+      //   toast({
+      //     title: "Lỗi",
+      //     description: `Vài ảnh ở trang ${
+      //       index + 1
+      //     } không vừa với layout (${layout}). Vui lòng cắt ảnh.`,
+      //     variant: "destructive",
+      //   });
+      //   return false;
+      // }
     }
     return true;
   };
