@@ -214,7 +214,7 @@ export default function AppFrameClient() {
               <Undo2 className="scale-x-[-1] text-[#4B5563] z-0" />
             </div>
             <a
-              href={`https://www.inanhtructuyen.com/tai-khoan?tab=order-single&frameImage=${encodeURIComponent(
+              href={`https://www.inanhtructuyen.com/tao-don-hang?type=frame&frameImage=${encodeURIComponent(
                 currentImage ?? ""
               )}`}
               target="_blank"
