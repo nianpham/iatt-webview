@@ -19,6 +19,7 @@ type LayoutDimensions =
       large: { width: number; height: number };
       small: { width: number; height: number };
     };
+// kkk: { width: number; height: number };
 
 export default function AppAlbumClient() {
   const [isOpen, setIsOpen] = useState(true);
