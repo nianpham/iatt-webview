@@ -25,6 +25,12 @@ const model = [
     image:
       "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/kfmyiwu4ywkkyhthughn.png",
   },
+  {
+    id: "style_03",
+    name: "Style 03",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1749832355/iatt/bp3dgrwqtwpelk3azozd.png",
+  },
 ];
 
 export default function AppFrameClient() {

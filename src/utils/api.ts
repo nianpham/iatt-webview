@@ -12,7 +12,14 @@ const MOBILE = {
   IMAGE_AI: `${BASE_URL}/inanhtructuyen/helper/image-ai`,
 };
 
+const FACESWAP = {
+  PROCESS: 'https://api.piapi.ai/api/v1/task',
+  CREATE_TASK: '/api/faceswap/create-task',
+  GET_TASK: '/api/faceswap/get-task',
+};
+
 export const API = {
   ORDER,
   MOBILE,
+  FACESWAP
 };
