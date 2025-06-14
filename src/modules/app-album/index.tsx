@@ -683,14 +683,14 @@ export default function AppAlbumClient() {
 
   return (
     <div className="relative w-full h-screen flex flex-col justify-center items-center">
-      <Image
+      {/* <Image
         src={IMAGES.BACKGROUND_MOBILE}
         alt=""
         fill
         priority
         objectFit="cover"
         className="opacity-20 z-0 h-[100vh]"
-      />
+      /> */}
       <ChooseOption
         isOpen={isOpen}
         setIsOpen={setIsOpen}

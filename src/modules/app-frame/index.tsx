@@ -17,19 +17,25 @@ const model = [
     id: "style_01",
     name: "Style 01",
     image:
-      "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/raq9puevs1uopxnfydjo.png",
+      "https://res.cloudinary.com/farmcode/image/upload/v1749891322/iatt/nkk3sudgzg4kuqhyq9re.png",
   },
   {
     id: "style_02",
     name: "Style 02",
     image:
-      "https://res.cloudinary.com/farmcode/image/upload/v1749407792/iatt/kfmyiwu4ywkkyhthughn.png",
+      "https://res.cloudinary.com/farmcode/image/upload/v1749891321/iatt/xeelbb0zjoykqzk2nsfc.png",
   },
   {
     id: "style_03",
     name: "Style 03",
     image:
-      "https://res.cloudinary.com/farmcode/image/upload/v1749832355/iatt/bp3dgrwqtwpelk3azozd.png",
+      "https://res.cloudinary.com/farmcode/image/upload/v1749891319/iatt/dvq3bp7qgbxehz3kloxv.png",
+  },
+  {
+    id: "style_04",
+    name: "Style 04",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1749891316/iatt/amyneivalvuozcyi5fon.png",
   },
 ];
 
@@ -157,14 +163,14 @@ export default function AppFrameClient() {
       className="relative w-full h-screen flex flex-col justify-center items-center"
       style={{ height: deviceHeight }}
     >
-      <Image
+      {/* <Image
         src={IMAGES.BACKGROUND_MOBILE}
         alt=""
         fill
         priority
         objectFit="cover"
         className="opacity-20 z-0 h-[100vh]"
-      />
+      /> */}
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white px-7 py-8 rounded-lg flex flex-col items-center gap-6">
