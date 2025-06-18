@@ -103,7 +103,7 @@ const ImageUploadMobile = ({
               width={1000}
               height={1000}
               priority
-              className="w-full object-cover object-top border-2 border-[#645bff] rounded-xl"
+              className="w-full object-cover object-top rounded-xl"
             />
           </div>
         </div>

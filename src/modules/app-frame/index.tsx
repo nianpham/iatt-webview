@@ -13,12 +13,12 @@ import ImageProcessing from "../app-album/components/image-processing";
 import { Button } from "@/components/ui/button";
 
 const model = [
-  {
-    id: "style_01",
-    name: "Style 01",
-    image:
-      "https://res.cloudinary.com/farmcode/image/upload/v1749891322/iatt/nkk3sudgzg4kuqhyq9re.png",
-  },
+  // {
+  //   id: "style_01",
+  //   name: "Style 01",
+  //   image:
+  //     "https://res.cloudinary.com/farmcode/image/upload/v1749891322/iatt/nkk3sudgzg4kuqhyq9re.png",
+  // },
   {
     id: "style_02",
     name: "Style 02",

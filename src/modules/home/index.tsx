@@ -63,7 +63,7 @@ export default function HomeClient() {
               />
             </div>
           </Link>
-          <Link href={ROUTES.APP_ALBUM} className="w-full flex justify-center items-center gap-4 px-8 mt-2">
+          {/* <Link href={ROUTES.APP_ALBUM} className="w-full flex justify-center items-center gap-4 px-8 mt-2">
             <div className="w-1/4 h-24 bg-[#ffffff] border-2 border-[#8E97FD] rounded-3xl p-6 flex flex-col justify-center items-center">
               <Image
                 src={IMAGES.LOGO_LIGHT}
@@ -89,7 +89,7 @@ export default function HomeClient() {
                 <span></span>
               </div>
             </div>
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div className="absolute bottom-12 pb-2 text-[#8E97FD] text-sm flex justify-center items-center gap-2">
