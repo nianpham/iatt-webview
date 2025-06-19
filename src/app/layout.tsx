@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     "Chỉnh sửa ảnh miễn phí và in ảnh trực tuyến dễ dàng. Tải lên những tấm ảnh yêu thích và bắt đầu chỉnh sửa ngay!",
 };
+// ehehe
 
 export default function RootLayout({
   children,
