@@ -635,7 +635,7 @@ export default function AppAlbumClient() {
         });
       } else {
         // console.log("Order created successfully:", response.data.order_id);
-        const newTabUrl = `https://premium.inanhtructuyen.com/tao-don-hang?type=album&orderAlbumID=${response.data.order_id}`;
+        const newTabUrl = `https://inanhtructuyen.com/tao-don-hang?type=album&orderAlbumID=${response.data.order_id}`;
         const newWindow = window.open(newTabUrl, "_blank");
         if (newWindow) {
           newWindow.focus();
