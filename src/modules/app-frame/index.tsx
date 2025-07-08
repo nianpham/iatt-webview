@@ -10,6 +10,7 @@ import { ROUTES } from "@/utils/route";
 import { UploadService } from "@/services/upload";
 import { SwapService } from "@/services/swap";
 import ImageProcessing from "../app-album/components/image-processing";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
 const model = [
@@ -36,6 +37,60 @@ const model = [
     name: "Style 04",
     image:
       "https://res.cloudinary.com/farmcode/image/upload/v1749891316/iatt/amyneivalvuozcyi5fon.png",
+  },
+  {
+    id: "style_05",
+    name: "Style 05",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964532/iatt/1_avlrmv.jpg",
+  },
+  {
+    id: "style_06",
+    name: "Style 06",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964550/iatt/2_i8miyt.png",
+  },
+  {
+    id: "style_04",
+    name: "Style 04",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964568/iatt/3_mhwlhu.png",
+  },
+  {
+    id: "style_07",
+    name: "Style 07",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964584/iatt/4_uwjrj2.png",
+  },
+  {
+    id: "style_08",
+    name: "Style 08",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964605/iatt/5_dbmou7.jpg",
+  },
+  {
+    id: "style_09",
+    name: "Style 09",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964618/iatt/6_tue1wn.png",
+  },
+  {
+    id: "style_10",
+    name: "Style 10",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964636/iatt/7_d5uqnt.jpg",
+  },
+  {
+    id: "style_11",
+    name: "Style 11",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964653/iatt/8_yzjrzj.jpg",
+  },
+  {
+    id: "style_12",
+    name: "Style 12",
+    image:
+      "https://res.cloudinary.com/farmcode/image/upload/v1751964666/iatt/9_nidl0f.jpg",
   },
 ];
 
@@ -128,6 +183,14 @@ export default function AppFrameClient() {
   // };
 
   const handleSwap = async (targetUrl: string, inputUrl: string) => {
+     if (!currentImage) {
+     toast({
+          title: "Thông báo",
+          description: `Vui lòng tải lên hình ảnh trước khi chọn style.`,
+          variant: "destructive",
+        });
+    return;
+  }
     setLoading(true);
     setProgress(0);
     const taskId = await SwapService.processs(targetUrl, inputUrl);
@@ -146,7 +209,7 @@ export default function AppFrameClient() {
 
       const newCheckInterval = setInterval(async () => {
         const result = await SwapService.getResult(taskId);
-        if (result) {
+        if (result) {          
           setCurrentImage(result);
           setProgress(100);
           clearInterval(newCheckInterval);
