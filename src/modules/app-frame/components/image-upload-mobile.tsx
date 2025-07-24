@@ -53,7 +53,23 @@ const ImageUploadMobile = ({
       });
       return;
     }
-    onImageChange(file);
+
+    // Check image dimensions
+    const img = new window.Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      if (img.width > 2048 || img.height > 2048) {
+        toast({
+          title: "Lỗi",
+          description:
+            "Kích thước hình ảnh quá lớn. Vui lòng chọn hình ảnh có kích thước tối đa 2048x2048 pixels!",
+          variant: "destructive",
+        });
+        return;
+      }
+      onImageChange(file);
+    };
   };
 
   const handleClick = () => {

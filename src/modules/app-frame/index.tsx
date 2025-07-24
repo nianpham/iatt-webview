@@ -130,6 +130,8 @@ export default function AppFrameClient() {
           if (res && res.length > 0) {
             setCurrentImage(res[0].secure_url);
             setImageProcessing(false);
+
+            // console.log("=============check upload img: ==============", res[0].secure_url);
           } else {
             setCurrentImage(originalUrl);
           }
@@ -183,16 +185,18 @@ export default function AppFrameClient() {
   // };
 
   const handleSwap = async (targetUrl: string, inputUrl: string) => {
-     if (!currentImage) {
-     toast({
-          title: "Thông báo",
-          description: `Vui lòng tải lên hình ảnh trước khi chọn style.`,
-          variant: "destructive",
-        });
-    return;
-  }
+    if (!currentImage) {
+      toast({
+        title: "Thông báo",
+        description: `Vui lòng tải lên hình ảnh trước khi chọn style.`,
+        variant: "destructive",
+      });
+      return;
+    }
     setLoading(true);
     setProgress(0);
+    // console.log("check input url: ", inputUrl);
+
     const taskId = await SwapService.processs(targetUrl, inputUrl);
 
     if (taskId) {
@@ -209,7 +213,7 @@ export default function AppFrameClient() {
 
       const newCheckInterval = setInterval(async () => {
         const result = await SwapService.getResult(taskId);
-        if (result) {          
+        if (result) {
           setCurrentImage(result);
           setProgress(100);
           clearInterval(newCheckInterval);
